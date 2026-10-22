@@ -1,0 +1,63 @@
+# =============================================================================
+# URTC-GATEWAY - CI baseline workflow
+# Copyright (C) 2026 JuanenRac (Electro Hobby 3D) <electrohobby3d@gmail.com>
+# GPL-3.0-or-later - see LICENSE
+# =============================================================================
+name: URTC CI baseline
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    name: Validate project baseline
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Validate manifest, version, documentation and secret policy
+        run: python tools/ci_validate.py
+      - name: Compile Python sources without running versioning build scripts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import py_compile
+
+          excluded = {".git", ".venv", "node_modules", "dist", "build", "target", "__pycache__"}
+          files = [path for path in Path(".").rglob("*.py") if not any(part in excluded for part in path.parts)]
+          for path in files:
+              py_compile.compile(str(path), doraise=True)
+          print(f"PYTHON_SYNTAX=PASS files={len(files)}")
+          PY
+      - name: Check the generated table of identifiers is current
+        run: python tools/make_id_table.py --check
+      - name: Install and run the real Python test suite
+        run: |
+          python -m pip install -e ".[dev]"
+          python -m pytest tests/ -q
+      - name: Lint
+        run: python -m ruff check .
+
+  windows:
+    name: Tests on Windows
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Run the tests (line endings and file modes behave differently on Windows)
+        run: |
+          python -m pip install -e ".[dev]"
+          python -m pytest tests -q

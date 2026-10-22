@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+# =============================================================================
+# URTC-GATEWAY - bump_version.py
+# Copyright (C) 2026 JuanenRac (Electro Hobby 3D) <electrohobby3d@gmail.com>
+# GPL-3.0-or-later - see LICENSE
+#
+# Applies the ecosystem-wide "odometer" version bump to this project's own
+# pyproject.toml (and its mirrored src/urtc_common/__init__.py)
+# before every real build: PATCH goes up by 1; if that would push PATCH past
+# 9, it resets to 0 and MINOR goes up by 1 instead (e.g. 0.0.9 -> 0.1.0).
+# MAJOR is never touched by this script - deliberate manual-only decision,
+# same convention across the ecosystem.
+#
+# Called from build.bat/build.sh right before the environment is prepared,
+# so every real build carries a version 1 higher than the last real build.
+# Also runs standalone (`python bump_version.py`) - stdlib only, no deps.
+# =============================================================================
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+PYPROJECT_FILE = ROOT / "pyproject.toml"
+INIT_FILE = ROOT / "src" / "urtc_common" / "__init__.py"
+
+PYPROJECT_VERSION_RE = re.compile(r'^version\s*=\s*"(\d+)\.(\d+)\.(\d+)"\s*$', re.MULTILINE)
+INIT_VERSION_RE = re.compile(r'^__version__\s*=\s*"(\d+)\.(\d+)\.(\d+)"\s*$', re.MULTILINE)
+
+
+def bump(major: int, minor: int, patch: int) -> tuple[int, int, int]:
+    """Odometer-style carry: PATCH+1, rolling over into MINOR past 9. MAJOR
+    is never touched here."""
+    patch += 1
+    if patch > 9:
+        patch = 0
+        minor += 1
+    return major, minor, patch
+
+
+def main() -> int:
+    if not PYPROJECT_FILE.is_file():
+        print(f"ERROR: {PYPROJECT_FILE} does not exist.", file=sys.stderr)
+        return 1
+
+    text = PYPROJECT_FILE.read_text(encoding="utf-8")
+    match = PYPROJECT_VERSION_RE.search(text)
+    if not match:
+        print(f'ERROR: no version = "X.Y.Z" line found in {PYPROJECT_FILE}', file=sys.stderr)
+        return 1
+
+    old = tuple(int(part) for part in match.groups())
+    new = bump(*old)
+    old_str = ".".join(str(part) for part in old)
+    new_str = ".".join(str(part) for part in new)
+
+    new_text = text[: match.start()] + f'version = "{new_str}"' + text[match.end():]
+    PYPROJECT_FILE.write_text(new_text, encoding="utf-8")
+
+    # Keep the package's own __version__ mirrored, if present.
+    if INIT_FILE.is_file():
+        init_text = INIT_FILE.read_text(encoding="utf-8")
+        init_match = INIT_VERSION_RE.search(init_text)
+        if init_match:
+            new_init_text = (
+                init_text[: init_match.start()]
+                + f'__version__ = "{new_str}"'
+                + init_text[init_match.end():]
+            )
+            INIT_FILE.write_text(new_init_text, encoding="utf-8")
+
+    print(f"Version bumped: {old_str} -> {new_str}")
+    return 0
+
+
+def _delegate_to_shared_utility():
+    """Hand the bump over to the shared utility once the version has four parts.
+
+    Returns its exit code, or None when this step is an ordinary three-part one.
+    """
+    import importlib.util
+    import json as _json
+    from pathlib import Path as _Path
+
+    here = _Path(__file__).resolve().parent
+    root = here if (here / "bump_manifest_version.py").is_file() else here.parent
+    utility, manifest = root / "bump_manifest_version.py", root / "urtc.project.json"
+    if not utility.is_file() or not manifest.is_file():
+        return None
+    spec = importlib.util.spec_from_file_location("_shared_bump", utility)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    version = _json.loads(manifest.read_text(encoding="utf-8")).get("version", "")
+    if not hasattr(module, "FOUR_PART_FROM") or module.next_version(version).count(".") != 3:
+        return None
+    return module.main()
+
+
+if __name__ == "__main__":
+    _shared_exit = _delegate_to_shared_utility()
+    if _shared_exit is not None:
+        raise SystemExit(_shared_exit)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

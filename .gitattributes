@@ -1,0 +1,15 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+# Shell scripts keep LF, Windows batch files keep CRLF on every platform.
+*.sh text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Generated and compared byte for byte: they keep LF endings on every platform.
+spec/*.json text eol=lf
+conformance/*.json text eol=lf
+generated/* text eol=lf
+src/urtc_common/protocol.py text eol=lf
+docs/PROTOCOL_TABLE.md text eol=lf
+docs/ALLOWED_IDS.md text eol=lf
+src/urtc_gateway/urtc_protocol.py text eol=lf

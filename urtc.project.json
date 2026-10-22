@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "ecosystem": "URTC",
+  "name": "URTC-GATEWAY",
+  "version": "0.0.1",
+  "role": "tool",
+  "stack": "python",
+  "technologies": [
+    "Python",
+    "CAN",
+    "HMAC"
+  ],
+  "deployment_target": "user-pc",
+  "maturity": "scaffolding",
+  "evidence": "host-test",
+  "family": "URTC Tool Platform",
+  "parent": null,
+  "build": "python tools/build_test.py",
+  "notes": "A gateway in front of the URTC CAN bus, for an installation that cannot keep the bus closed: only the identifiers a host may send (made from the protocol specification) cross towards the bus, dangerous ones (bootloader, persistent settings) are refused unless unlocked, the payload must be one the specification allows, the rate is limited, and a peer must prove it holds a session key (HMAC with a nonce and a counter, so nothing recorded can be replayed). Every protection can be switched off from the file or the command line and the program says so. Host-tested only: no bus, adapter or board has been used.",
+  "native_version": {
+    "file": "pyproject.toml",
+    "pattern": "^version\\s*=\\s*\"(\\d+)\\.(\\d+)\\.(\\d+)\""
+  }
+}
