@@ -108,9 +108,10 @@ def test_a_bit_rate_the_adapter_does_not_take_is_refused_before_anything_opens()
 
 
 def test_a_url_nobody_listens_on_raises():
-    adapter = FakeAdapter()
-    url = adapter.url
-    adapter.close()
+    probe = socket.socket()
+    probe.bind(("127.0.0.1", 0))
+    url = f"socket://127.0.0.1:{probe.getsockname()[1]}"
+    probe.close()  # the port is free again and nothing listens on it
     with pytest.raises(Exception):  # noqa: B017 - pyserial raises SerialException or an OSError, depending on the platform
         SerialSlcanBus(url, 500000)
 
