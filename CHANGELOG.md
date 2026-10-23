@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A static check on every push:** `ruff.toml` (unused names, exception chaining and syntax errors, the rules the flasher and the tester already ran) and a step of the CI that runs `ruff check .` with a pinned ruff; nothing to fix.
 - **The serial bus opens pyserial URLs:** a `--bus` value with `://` (for example `socket://127.0.0.1:7777`, the virtual board of URTC-COMMON or a serial server) is opened with `serial_for_url`; a plain port name opens as before. 4 new tests, one against the virtual board when URTC-COMMON is checked out beside this repository.
 - The CI holds the tests to a coverage floor of 66 percent (measured 74; `pytest-cov` and `pyserial` are in the `dev` extra).
 
