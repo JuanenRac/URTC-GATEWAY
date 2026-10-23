@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any, cast
 
 from . import ids
 from . import urtc_protocol as proto
@@ -14,7 +15,7 @@ from .config import GatewayConfig
 from .ratelimit import RateLimiter, TokenBucket
 
 LAYOUTS_BY_ID: dict[int, list[dict]] = {}
-for _layout in proto.LAYOUTS.values():
+for _layout in cast("dict[str, dict[str, Any]]", proto.LAYOUTS).values():
     LAYOUTS_BY_ID.setdefault(_layout["id"], []).append(_layout)
 
 

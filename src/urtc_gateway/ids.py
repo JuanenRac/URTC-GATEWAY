@@ -17,7 +17,12 @@ An identifier that is in none of them (unknown, or one the board only sends) is 
 """
 from __future__ import annotations
 
+from typing import Any, cast
+
 from . import urtc_protocol as proto
+
+# the table of the shared protocol copy, typed as what it is (the copy is generated and is not edited here)
+MESSAGES = cast("dict[int, dict[str, Any]]", proto.MESSAGES)
 
 LOCKED_GROUPS = {"bootloader", "slave_bridge"}
 PERSISTENT_NAMES = {"PID_CONFIG"}
@@ -25,7 +30,7 @@ PERSISTENT_NAMES = {"PID_CONFIG"}
 
 def dangerous_reason(can_id: int) -> str | None:
     """Why an identifier is dangerous to forward, or None when it is not."""
-    info = proto.MESSAGES.get(can_id)
+    info = MESSAGES.get(can_id)
     if info is None:
         return None
     if info.get("gates", {}).get("needs_magic"):
@@ -40,7 +45,7 @@ def dangerous_reason(can_id: int) -> str | None:
 
 
 def _from_hosts() -> dict[int, dict]:
-    return {i: m for i, m in proto.MESSAGES.items() if m["direction"] in ("host_to_board", "both")}
+    return {i: m for i, m in MESSAGES.items() if m["direction"] in ("host_to_board", "both")}
 
 
 def inbound_ids() -> frozenset[int]:
@@ -52,11 +57,11 @@ def dangerous_ids() -> frozenset[int]:
 
 
 def outbound_ids() -> frozenset[int]:
-    return frozenset(i for i, m in proto.MESSAGES.items() if m["direction"] in ("board_to_host", "both"))
+    return frozenset(i for i, m in MESSAGES.items() if m["direction"] in ("board_to_host", "both"))
 
 
 def name_of(can_id: int) -> str:
-    info = proto.MESSAGES.get(can_id)
+    info = MESSAGES.get(can_id)
     return info["name"] if info else f"0x{can_id:03X}"
 
 
@@ -66,7 +71,7 @@ def table_markdown() -> str:
     lines = ["<!-- GENERATED from the protocol specification by tools/make_id_table.py - do not edit by hand. -->", "",
              "# Identifiers and the gateway", "",
              "| Identifier | Name | Towards the bus | Towards the network |", "|---|---|---|---|"]
-    for can_id in sorted(proto.MESSAGES):
+    for can_id in sorted(MESSAGES):
         if can_id in inbound:
             to_bus = "forwarded"
         elif can_id in dangerous:

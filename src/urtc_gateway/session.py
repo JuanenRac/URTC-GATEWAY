@@ -99,7 +99,7 @@ class Session:
     peer: str | None = None
     last_counter: int = -1
 
-    def verify(self, peer: str, counter: int, can_id: int, data: bytes, tag: bytes) -> str | None:
+    def verify(self, peer: str, counter: object, can_id: int, data: bytes, tag: bytes) -> str | None:
         """None when the frame is authentic and new; otherwise the reason (``unknown_peer``, ``bad_mac``, ``replay``, ``wrong_peer``)."""
         key = self.keys.get(peer)
         if key is None:

@@ -69,10 +69,12 @@ if errorlevel 1 goto :error
 echo       Done.
 echo.
 
-echo [3/5] Installing project (editable, with dev extras) into the venv...
+echo [3/5] Installing project (editable) and the pinned dev dependencies into the venv...
 python -m pip install --upgrade pip >nul
 if errorlevel 1 goto :error
-python -m pip install -e ".[dev]"
+python -m pip install --require-hashes -r requirements-dev.lock
+if errorlevel 1 goto :error
+python -m pip install --no-deps -e .
 if errorlevel 1 goto :error
 echo       Done.
 echo.
