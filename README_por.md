@@ -72,6 +72,7 @@ python -m pytest tests -q                                          # os testes
 python -m urtc_gateway.cli policy                                  # as opções efetivas e um aviso por cada proteção desligada
 python -m urtc_gateway.cli keygen keys.txt controller              # um novo ficheiro de chaves (só para o proprietário, nunca é substituído)
 python -m urtc_gateway.cli run --key-file keys.txt --bus loopback  # escutar em 127.0.0.1:8765 sem nada no barramento
+python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777# a placa virtual do URTC-COMMON (ou qualquer URL do pyserial) em vez de um adaptador
 ```
 
 `build.sh` / `build.bat` sobem a versão um passo (o conta-quilómetros do ecossistema), instalam o pacote e executam os testes; `build-test.sh` / `build-test.bat` verificam sem alterar nenhuma versão; `run.sh` / `run.bat` iniciam a linha de comandos (`policy`, `ids`, `keygen`, `run`).

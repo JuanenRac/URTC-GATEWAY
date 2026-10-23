@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## [Unreleased]
+
+- **The serial bus opens pyserial URLs:** a `--bus` value with `://` (for example `socket://127.0.0.1:7777`, the virtual board of URTC-COMMON or a serial server) is opened with `serial_for_url`; a plain port name opens as before. 4 new tests, one against the virtual board when URTC-COMMON is checked out beside this repository.
+- The CI holds the tests to a coverage floor of 66 percent (measured 74; `pytest-cov` and `pyserial` are in the `dev` extra).
+
 ## [0.0.1] - A gateway in front of the CAN bus
 
 - First version of the gateway: a program in front of the URTC CAN bus for an installation that cannot keep the bus closed.

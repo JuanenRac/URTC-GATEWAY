@@ -64,7 +64,10 @@ class SerialSlcanBus:
             raise RuntimeError("the serial bus needs the pyserial package (pip install pyserial)") from error
         if bitrate not in self.BITRATE_CODES:
             raise ValueError(f"bit rate {bitrate} is not one an SLCAN adapter takes")
-        self._port = serial.Serial(port, baudrate, timeout=0.05)
+        if "://" in port:  # a pyserial URL such as socket://127.0.0.1:7777: the virtual board of URTC-COMMON, or a serial server
+            self._port = serial.serial_for_url(port, baudrate=baudrate, timeout=0.05)
+        else:
+            self._port = serial.Serial(port, baudrate, timeout=0.05)
         self._buffer = b""
         self._lock = threading.Lock()
         for command in ("C", self.BITRATE_CODES[bitrate], "O"):

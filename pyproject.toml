@@ -16,7 +16,7 @@ keywords = ["urtc", "can-bus", "gateway", "security", "slcan"]
 
 [project.optional-dependencies]
 serial = ["pyserial>=3.5"]
-dev = ["pytest>=8.0", "ruff>=0.6"]
+dev = ["pytest>=8.0", "pytest-cov>=5", "ruff>=0.6", "pyserial>=3.5"]
 
 [project.urls]
 Homepage = "https://github.com/JuanenRac/URTC-GATEWAY"

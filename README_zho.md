@@ -72,6 +72,7 @@ python -m pytest tests -q                                          # 测试
 python -m urtc_gateway.cli policy                                  # 实际生效的选项，以及对每项已关闭保护的警告
 python -m urtc_gateway.cli keygen keys.txt controller              # 新的密钥文件（仅所有者可读，绝不覆盖）
 python -m urtc_gateway.cli run --key-file keys.txt --bus loopback  # 在 127.0.0.1:8765 监听，总线上没有任何东西
+python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777# 用 URTC-COMMON 的虚拟板（或任意 pyserial URL）代替适配器
 ```
 
 `build.sh` / `build.bat` 将版本号前进一步（生态系统的里程表）、安装软件包并运行测试；`build-test.sh` / `build-test.bat` 在不改变任何版本的情况下检查；`run.sh` / `run.bat` 启动命令行（`policy`、`ids`、`keygen`、`run`）。

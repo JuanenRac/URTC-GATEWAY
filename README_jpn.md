@@ -72,6 +72,7 @@ python -m pytest tests -q                                          # テスト
 python -m urtc_gateway.cli policy                                  # 有効なオプションと、オフの保護ごとの警告
 python -m urtc_gateway.cli keygen keys.txt controller              # 新しい鍵ファイル（所有者のみ、上書きしない）
 python -m urtc_gateway.cli run --key-file keys.txt --bus loopback  # バスに何もつながずに 127.0.0.1:8765 で待ち受ける
+python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777# アダプターの代わりに URTC-COMMON の仮想ボード（または任意の pyserial URL）を使う
 ```
 
 `build.sh` / `build.bat` はバージョンを 1 つ進め（エコシステムのオドメーター）、パッケージをインストールしてテストを実行します。`build-test.sh` / `build-test.bat` はバージョンを変えずに確認します。`run.sh` / `run.bat` はコマンドライン（`policy`、`ids`、`keygen`、`run`）を起動します。
