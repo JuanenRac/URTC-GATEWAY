@@ -105,6 +105,12 @@ URTC は独立したリポジトリで構成され、それぞれに固有のバ
 
 **JuanenRac (Electro Hobby 3D)** · electrohobby3d@gmail.com
 
+<!-- urtc-section:compatibility -->
+## 🧩 互換性
+
+どのバージョンの URTC プログラムが連携して動作し、それぞれがどのプロトコルバージョンを話すかは、URTC-COMMON が生成する互換性表に載っています：[docs/COMPATIBILITY.md](https://github.com/JuanenRac/URTC/blob/main/docs/COMPATIBILITY.md)。
+<!-- /urtc-section:compatibility -->
+
 ## 📜 ライセンス
 
 GPL-3.0-or-later - [LICENSE](LICENSE) を参照してください。

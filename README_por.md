@@ -105,6 +105,12 @@ Onde ler mais:
 
 **JuanenRac (Electro Hobby 3D)** · electrohobby3d@gmail.com
 
+<!-- urtc-section:compatibility -->
+## 🧩 Compatibilidade
+
+As versões dos programas URTC que funcionam em conjunto, e a versão do protocolo que cada uma fala, constam da tabela de compatibilidade que o URTC-COMMON gera: [docs/COMPATIBILITY.md](https://github.com/JuanenRac/URTC/blob/main/docs/COMPATIBILITY.md).
+<!-- /urtc-section:compatibility -->
+
 ## 📜 LICENÇA
 
 GPL-3.0-or-later - consulte [LICENSE](LICENSE).

@@ -105,6 +105,12 @@ URTC 由相互独立的仓库组成，每个仓库都有自己的版本、测试
 
 **JuanenRac (Electro Hobby 3D)** · electrohobby3d@gmail.com
 
+<!-- urtc-section:compatibility -->
+## 🧩 兼容性
+
+哪些版本的 URTC 程序可以配合使用、各自使用哪个协议版本，列在 URTC-COMMON 生成的兼容性表中：[docs/COMPATIBILITY.md](https://github.com/JuanenRac/URTC/blob/main/docs/COMPATIBILITY.md)。
+<!-- /urtc-section:compatibility -->
+
 ## 📜 许可证
 
 GPL-3.0-or-later - 参见 [LICENSE](LICENSE)。
