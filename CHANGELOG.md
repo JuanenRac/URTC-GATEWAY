@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The copy of the shared protocol is current:** it now knows `0x222` (the patch companion of the slave version, sent by the board and refused towards it, with an optional third byte), and `docs/ALLOWED_IDS.md` lists it.
 - **The dev dependencies are closed with hashes and the types are checked:** `requirements-dev.lock` pins every package the tests need, with the hash of every file (the CI and the build scripts install it with `--require-hashes`, then the project itself without dependencies), and `mypy` runs on `src` in the CI (the shared protocol table is typed where it is read, ten findings fixed, no behaviour changed).
 - **The README files carry sections written once in URTC-COMMON:** "Compatibility", in the eight languages, between marker comments before the license heading (`tools/readme_sections.py` of URTC-COMMON writes and checks them; the rest of each README is hand-written as before).
 - **A static check on every push:** `ruff.toml` (unused names, exception chaining and syntax errors, the rules the flasher and the tester already ran) and a step of the CI that runs `ruff check .` with a pinned ruff; nothing to fix.

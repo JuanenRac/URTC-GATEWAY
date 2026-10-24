@@ -70,6 +70,7 @@
 | 0x219 | SLAVE_VERIFY_FAIL_REASON | refused (dangerous) | forwarded |
 | 0x220 | SLAVE_REG_WRITE | refused (dangerous) | refused |
 | 0x221 | SLAVE_REG_READ | refused (dangerous) | forwarded |
+| 0x222 | SLAVE_APP_PATCH | refused | forwarded |
 | 0x230 | PASTE_JETTING_CONFIG | forwarded | refused |
 | 0x231 | PASTE_JETTING_PULSE | forwarded | refused |
 | 0x240 | ADS1115_CONFIG | forwarded | refused |
