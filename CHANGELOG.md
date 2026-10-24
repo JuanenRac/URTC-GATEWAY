@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here.
 
-## [Unreleased]
+## [0.0.2] - The copy of the shared protocol is current and the dev dependencies are closed with hashes and the types are checked
 
 - The test count of the At a glance table is current.
 - **The copy of the shared protocol is current:** it now knows `0x222` (the patch companion of the slave version, sent by the board and refused towards it, with an optional third byte), and `docs/ALLOWED_IDS.md` lists it.
