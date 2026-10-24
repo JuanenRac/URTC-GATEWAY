@@ -111,6 +111,21 @@ Onde ler mais:
 As versões dos programas URTC que funcionam em conjunto, e a versão do protocolo que cada uma fala, constam da tabela de compatibilidade que o URTC-COMMON gera: [docs/COMPATIBILITY.md](https://github.com/JuanenRac/URTC/blob/main/docs/COMPATIBILITY.md).
 <!-- /urtc-section:compatibility -->
 
+<!-- urtc-section:status_gateway -->
+## 💡 Estado do projeto
+
+🟢 feito e verificado · 🟡 funciona, com limites conhecidos · 🟠 a meio ou por verificar · 🔴 por fazer ou a não funcionar. Nada é verde se nunca correu em hardware real.
+
+| Parte | Estado | O que o repositório consegue demonstrar |
+| --- | :---: | --- |
+| Software | 🟡 | Funciona num PC e contra o simulador; nunca foi usado com uma placa real. |
+| Testes | 🟢 | A bateria de testes passa na CI em cada envio. |
+| Hardware real | 🟠 | Ainda não correu numa placa real: o ensaio de bancada continua pendente. |
+| Segurança | 🟡 | Deixa passar só os identificadores listados e limita a sua taxa; verificado num PC, nunca diante de um barramento real. |
+| Documentação | 🟡 | README em oito línguas e documentos de referência; as traduções não foram revistas por falantes nativos. |
+
+<!-- /urtc-section:status_gateway -->
+
 ## 📜 LICENÇA
 
 GPL-3.0-or-later - consulte [LICENSE](LICENSE).
