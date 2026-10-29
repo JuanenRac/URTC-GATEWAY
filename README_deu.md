@@ -35,6 +35,21 @@
 | Ziel | Der PC der Person, die es benutzt |
 | Auf echter Hardware | Nur simuliert: gegen Emulatoren, Attrappen oder Simulatoren getestet; für diese Version ist kein Lauf auf echter Hardware vermerkt |
 
+<!-- urtc-section:status_gateway -->
+## 🚦 Projektstatus
+
+🟢 fertig und überprüft · 🟡 funktioniert, mit bekannten Grenzen · 🟠 halb fertig oder nicht überprüft · 🔴 nicht gemacht oder funktioniert nicht. Nichts ist grün, wenn es nie auf echter Hardware lief.
+
+| Teil | Status | Was das Repository belegen kann |
+| --- | :---: | --- |
+| Software | 🟡 | Läuft am PC und gegen den Simulator; nie an einer echten Platine ausgeführt. |
+| Tests | 🟢 | Die Testsuite besteht bei jedem Push in der CI. |
+| Echte Hardware | 🟠 | Noch kein Lauf an einer echten Platine: der Bankversuch steht noch aus. |
+| Sicherheit | 🟡 | Lässt nur gelistete Kennungen durch und begrenzt ihre Rate; am PC geprüft, nie vor einem echten Bus. |
+| Dokumentation | 🟡 | README in acht Sprachen und Referenzdokumente; die Übersetzungen wurden nicht von Muttersprachlern geprüft. |
+
+<!-- /urtc-section:status_gateway -->
+
 ## 🎯 Überblick
 
 Der CAN-Bus des Werkzeugkopfs authentifiziert den Absender nicht: Jedem Knoten an den Leitungen wird gehorcht. Wenn eine Installation den Bus nicht geschlossen halten kann, sitzt dieses Gateway davor:
@@ -110,21 +125,6 @@ Mehr zum Lesen:
 
 Welche Versionen der URTC-Programme zusammenarbeiten und welche Protokollversion jede spricht, steht in der Kompatibilitätstabelle, die URTC-COMMON erzeugt: [docs/COMPATIBILITY.md](https://github.com/JuanenRac/URTC/blob/main/docs/COMPATIBILITY.md).
 <!-- /urtc-section:compatibility -->
-
-<!-- urtc-section:status_gateway -->
-## 💡 Projektstatus
-
-🟢 fertig und überprüft · 🟡 funktioniert, mit bekannten Grenzen · 🟠 halb fertig oder nicht überprüft · 🔴 nicht gemacht oder funktioniert nicht. Nichts ist grün, wenn es nie auf echter Hardware lief.
-
-| Teil | Status | Was das Repository belegen kann |
-| --- | :---: | --- |
-| Software | 🟡 | Läuft am PC und gegen den Simulator; nie an einer echten Platine ausgeführt. |
-| Tests | 🟢 | Die Testsuite besteht bei jedem Push in der CI. |
-| Echte Hardware | 🟠 | Noch kein Lauf an einer echten Platine: der Bankversuch steht noch aus. |
-| Sicherheit | 🟡 | Lässt nur gelistete Kennungen durch und begrenzt ihre Rate; am PC geprüft, nie vor einem echten Bus. |
-| Dokumentation | 🟡 | README in acht Sprachen und Referenzdokumente; die Übersetzungen wurden nicht von Muttersprachlern geprüft. |
-
-<!-- /urtc-section:status_gateway -->
 
 ## 📜 LIZENZ
 

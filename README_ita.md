@@ -35,6 +35,21 @@
 | Destinazione | Il PC di chi lo usa |
 | Su hardware reale | Solo simulato: provato con emulatori, test double o simulatori; per questa versione non risulta alcuna esecuzione su hardware reale |
 
+<!-- urtc-section:status_gateway -->
+## 🚦 Stato del progetto
+
+🟢 fatto e verificato · 🟡 funziona, con limiti noti · 🟠 a metà o non verificato · 🔴 non fatto o non funzionante. Nulla è verde se non ha mai girato su hardware reale.
+
+| Parte | Stato | Ciò che il repository può dimostrare |
+| --- | :---: | --- |
+| Software | 🟡 | Funziona su un PC e contro il simulatore; mai usato con una scheda reale. |
+| Test | 🟢 | La suite di test passa nella CI a ogni push. |
+| Hardware reale | 🟠 | Nessuna esecuzione su una scheda reale: la prova al banco è ancora da fare. |
+| Sicurezza | 🟡 | Lascia passare solo gli identificatori elencati e ne limita la frequenza; verificato su PC, mai davanti a un bus reale. |
+| Documentazione | 🟡 | README in otto lingue e documenti di riferimento; le traduzioni non sono state riviste da madrelingua. |
+
+<!-- /urtc-section:status_gateway -->
+
 ## 🎯 Panoramica
 
 Il bus CAN della testa utensile non autentica il mittente: qualsiasi nodo collegato ai fili viene obbedito. Quando un'installazione non può tenere il bus chiuso, questo gateway si colloca davanti:
@@ -110,21 +125,6 @@ Dove leggere di più:
 
 Quali versioni dei programmi URTC funzionano insieme, e quale versione del protocollo parla ciascuna, è elencato nella tabella di compatibilità generata da URTC-COMMON: [docs/COMPATIBILITY.md](https://github.com/JuanenRac/URTC/blob/main/docs/COMPATIBILITY.md).
 <!-- /urtc-section:compatibility -->
-
-<!-- urtc-section:status_gateway -->
-## 💡 Stato del progetto
-
-🟢 fatto e verificato · 🟡 funziona, con limiti noti · 🟠 a metà o non verificato · 🔴 non fatto o non funzionante. Nulla è verde se non ha mai girato su hardware reale.
-
-| Parte | Stato | Ciò che il repository può dimostrare |
-| --- | :---: | --- |
-| Software | 🟡 | Funziona su un PC e contro il simulatore; mai usato con una scheda reale. |
-| Test | 🟢 | La suite di test passa nella CI a ogni push. |
-| Hardware reale | 🟠 | Nessuna esecuzione su una scheda reale: la prova al banco è ancora da fare. |
-| Sicurezza | 🟡 | Lascia passare solo gli identificatori elencati e ne limita la frequenza; verificato su PC, mai davanti a un bus reale. |
-| Documentazione | 🟡 | README in otto lingue e documenti di riferimento; le traduzioni non sono state riviste da madrelingua. |
-
-<!-- /urtc-section:status_gateway -->
 
 ## 📜 LICENZA
 

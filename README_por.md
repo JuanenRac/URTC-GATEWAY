@@ -35,6 +35,21 @@
 | Destino | O PC de quem o usa |
 | Em hardware real | Só simulado: testado com emuladores, dublês de teste ou simuladores; não há registo de execução em hardware real para esta versão |
 
+<!-- urtc-section:status_gateway -->
+## 🚦 Estado do projeto
+
+🟢 feito e verificado · 🟡 funciona, com limites conhecidos · 🟠 a meio ou por verificar · 🔴 por fazer ou a não funcionar. Nada é verde se nunca correu em hardware real.
+
+| Parte | Estado | O que o repositório consegue demonstrar |
+| --- | :---: | --- |
+| Software | 🟡 | Funciona num PC e contra o simulador; nunca foi usado com uma placa real. |
+| Testes | 🟢 | A bateria de testes passa na CI em cada envio. |
+| Hardware real | 🟠 | Ainda não correu numa placa real: o ensaio de bancada continua pendente. |
+| Segurança | 🟡 | Deixa passar só os identificadores listados e limita a sua taxa; verificado num PC, nunca diante de um barramento real. |
+| Documentação | 🟡 | README em oito línguas e documentos de referência; as traduções não foram revistas por falantes nativos. |
+
+<!-- /urtc-section:status_gateway -->
+
 ## 🎯 Visão geral
 
 O barramento CAN da cabeça de ferramenta não autentica o emissor: qualquer nó ligado aos fios é obedecido. Quando uma instalação não consegue manter o barramento fechado, esta gateway coloca-se à frente:
@@ -110,21 +125,6 @@ Onde ler mais:
 
 As versões dos programas URTC que funcionam em conjunto, e a versão do protocolo que cada uma fala, constam da tabela de compatibilidade que o URTC-COMMON gera: [docs/COMPATIBILITY.md](https://github.com/JuanenRac/URTC/blob/main/docs/COMPATIBILITY.md).
 <!-- /urtc-section:compatibility -->
-
-<!-- urtc-section:status_gateway -->
-## 💡 Estado do projeto
-
-🟢 feito e verificado · 🟡 funciona, com limites conhecidos · 🟠 a meio ou por verificar · 🔴 por fazer ou a não funcionar. Nada é verde se nunca correu em hardware real.
-
-| Parte | Estado | O que o repositório consegue demonstrar |
-| --- | :---: | --- |
-| Software | 🟡 | Funciona num PC e contra o simulador; nunca foi usado com uma placa real. |
-| Testes | 🟢 | A bateria de testes passa na CI em cada envio. |
-| Hardware real | 🟠 | Ainda não correu numa placa real: o ensaio de bancada continua pendente. |
-| Segurança | 🟡 | Deixa passar só os identificadores listados e limita a sua taxa; verificado num PC, nunca diante de um barramento real. |
-| Documentação | 🟡 | README em oito línguas e documentos de referência; as traduções não foram revistas por falantes nativos. |
-
-<!-- /urtc-section:status_gateway -->
 
 ## 📜 LICENÇA
 

@@ -35,6 +35,21 @@
 | Cible | Le PC de la personne qui l'utilise |
 | Sur matériel réel | Simulé seulement : testé avec des émulateurs, des doubles de test ou des simulateurs ; aucune exécution sur du matériel réel n'est consignée pour cette version |
 
+<!-- urtc-section:status_gateway -->
+## 🚦 État du projet
+
+🟢 fait et vérifié · 🟡 fonctionne, avec des limites connues · 🟠 à moitié fait ou non vérifié · 🔴 non fait ou non fonctionnel. Rien n'est vert si cela n'a jamais tourné sur du vrai matériel.
+
+| Partie | État | Ce que le dépôt peut démontrer |
+| --- | :---: | --- |
+| Logiciel | 🟡 | Fonctionne sur un PC et face au simulateur ; jamais utilisé avec une vraie carte. |
+| Tests | 🟢 | La suite de tests passe dans la CI à chaque push. |
+| Matériel réel | 🟠 | Pas encore d'essai sur une vraie carte : l'essai au banc reste à faire. |
+| Sécurité | 🟡 | Ne laisse passer que les identifiants listés et limite leur débit ; vérifié sur PC, jamais devant un vrai bus. |
+| Documentation | 🟡 | README en huit langues et documents de référence ; les traductions n'ont pas été relues par des locuteurs natifs. |
+
+<!-- /urtc-section:status_gateway -->
+
 ## 🎯 Vue d'ensemble
 
 Le bus CAN de la tête d'outil n'authentifie pas l'émetteur : tout nœud raccordé aux fils est obéi. Quand une installation ne peut pas garder le bus fermé, cette passerelle se place devant :
@@ -110,21 +125,6 @@ Pour en savoir plus :
 
 Les versions des programmes URTC qui fonctionnent ensemble, et la version du protocole que parle chacune, figurent dans le tableau de compatibilité que génère URTC-COMMON : [docs/COMPATIBILITY.md](https://github.com/JuanenRac/URTC/blob/main/docs/COMPATIBILITY.md).
 <!-- /urtc-section:compatibility -->
-
-<!-- urtc-section:status_gateway -->
-## 💡 État du projet
-
-🟢 fait et vérifié · 🟡 fonctionne, avec des limites connues · 🟠 à moitié fait ou non vérifié · 🔴 non fait ou non fonctionnel. Rien n'est vert si cela n'a jamais tourné sur du vrai matériel.
-
-| Partie | État | Ce que le dépôt peut démontrer |
-| --- | :---: | --- |
-| Logiciel | 🟡 | Fonctionne sur un PC et face au simulateur ; jamais utilisé avec une vraie carte. |
-| Tests | 🟢 | La suite de tests passe dans la CI à chaque push. |
-| Matériel réel | 🟠 | Pas encore d'essai sur une vraie carte : l'essai au banc reste à faire. |
-| Sécurité | 🟡 | Ne laisse passer que les identifiants listés et limite leur débit ; vérifié sur PC, jamais devant un vrai bus. |
-| Documentation | 🟡 | README en huit langues et documents de référence ; les traductions n'ont pas été relues par des locuteurs natifs. |
-
-<!-- /urtc-section:status_gateway -->
 
 ## 📜 LICENCE
 

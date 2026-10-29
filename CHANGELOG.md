@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## [Unreleased]
+
+- **The layout of the README is checked in the CI:** the validator runs `tools/universal_readme_check.py` and lists, as a warning, what differs from the universal layout of the README.
+- **Project status is the second section of the README,** right after At a glance, in the eight languages.
+
 ## [0.0.2] - The copy of the shared protocol is current and the dev dependencies are closed with hashes and the types are checked
 
 - The test count of the At a glance table is current.
