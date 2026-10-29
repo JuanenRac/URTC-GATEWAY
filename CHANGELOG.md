@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The README follows the universal layout in the eight languages** and now carries what was only in `docs/POLICY.md`: the command line (`policy`, `ids`, `keygen`, `run`), the line protocol of a session, a table of every protection with how to switch it, and the threats the gateway answers. The Architecture and the Repository Structure are drawn from `docs/architecture.json` and `docs/structure.json`.
 - **The layout of the README is checked in the CI:** the validator runs `tools/universal_readme_check.py` and lists, as a warning, what differs from the universal layout of the README.
 - **Project status is the second section of the README,** right after At a glance, in the eight languages.
 

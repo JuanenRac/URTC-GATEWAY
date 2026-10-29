@@ -13,6 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Tests-79-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -34,6 +35,8 @@
 | Stack | Python / CAN / HMAC |
 | Target | The PC of the person using it |
 | On real hardware | Simulated only: tested against emulators, fakes or simulators; no run on real hardware is recorded for this version |
+
+**Jump to:** [Overview](#-overview) · [Architecture](#-architecture) · [Security](#-security--safety) · [Interfaces](#-interfaces) · [Configuration](#-configuration) · [Quick start](#-quick-start) · [Testing](#-testing) · [Structure](#-repository-structure) · [Related](#-related-projects)
 
 <!-- urtc-section:status_gateway -->
 ## 🚦 Project status
@@ -64,20 +67,65 @@ The CAN bus of the tool head has no sender authentication: any node on the wires
 
 The threat model of the URTC repository says that, if an installation cannot keep the bus closed or cannot avoid bridging it to a network, the protection belongs in a gateway in front of the bus and not in each tool head. This repository is that gateway: useful for a tunnel between the robot controller and the tool heads and for exposing the bus to a network. It uses the protocol specification of URTC-COMMON as its only source of identifiers and layouts.
 
-## 📂 Repository Structure
+## 🏛️ Architecture
 
-```text
-URTC-GATEWAY/
-├── src/urtc_gateway/  the gateway: identifier lists, policy, rate limit, session keys, options, TCP and serial ends, command line
-├── docs/              the options (POLICY.md) and the generated table of identifiers
-├── tests/             unit tests of every protection and a test over a real local socket
-├── tools/             make_id_table.py and the shared CI checks of the ecosystem
-├── images/            the banner
-├── build.sh / build.bat, build-test.sh / build-test.bat, run.sh / run.bat
-└── urtc.project.json, pyproject.toml, CHANGELOG.md, LICENSE
+<p align="center">
+  <img src="images/architecture.svg" alt="URTC-GATEWAY architecture: who uses it, what it holds and what it depends on" width="100%">
+</p>
+
+How the parts of this repository fit together: who uses it, what it holds and what it depends on. The picture is drawn from `docs/architecture.json` and checked against the code.
+
+## 🔒 Security & Safety
+
+| Threat | Defence |
+|---|---|
+| A node on the wires sends a dangerous command (bootloader, update of the expansion slave, erase of the saved state, a persistent setting) | The identifier list refuses them until the operator unlocks them with `--unlock-dangerous` |
+| A value outside what the protocol allows (a setpoint out of range, a direction that does not exist, wrong magic bytes) | The payload check refuses the frame |
+| A runaway or hostile sender floods the bus | A token bucket per identifier and for the whole link, and a harder one for an unlocked dangerous identifier |
+| A recorded message is sent again | The session key: an HMAC over a nonce of the connection, a counter that must grow and the frame, so a recording is useless later and elsewhere |
+| The gateway is reachable from a network without a key | Listening on a non-local address without a session key is refused unless `--allow-open-network` is given |
+
+It does not encrypt: the bus is not a secret. It does not stop a peer that holds the key and misbehaves; the list, the payload check and the rate limit are there for that, and the watchdogs of the tool heads. It does not replace the hardware measures of the CAN threat model (an interlock that no frame can close, a closed bus, a stop that cuts power). It has never been used on a real bus.
+
+## 🔌 Interfaces
+
+The command line is `urtc-gateway` (or `python -m urtc_gateway.cli`):
+
+| Command | What it does |
+|---|---|
+| `policy` | shows the effective options and a warning for each protection that is off |
+| `ids` | lists every identifier and what the gateway does with it |
+| `keygen FILE PEER [PEER ...]` | writes a key file with a new random key for each peer (owner-only, never over an existing file, keys are not shown); give each peer only its own line |
+| `run` | listens on a TCP port (`--host`, default `127.0.0.1`; `--port`, default `8765`) and forwards to a bus (`--bus loopback`, a pyserial URL such as `socket://127.0.0.1:7777`, or the serial port of an SLCAN adapter; `--bitrate`, default 500000) |
+
+**The line protocol.** On connection the gateway sends `{"type": "hello", "nonce": "<hex>", "session": true}`. Every message the peer sends is one JSON object per line: `{"id": 304, "data": "012C", "peer": "controller", "counter": 1, "mac": "<32 hex digits>"}`. `mac` is the first 16 bytes of HMAC-SHA256, with the key of the peer, over `urtc-gw/1|<nonce>|<counter>|<id as three hex digits>|<data as hex>`; the counter has to grow with every message of the connection and the nonce is new for every connection. A refused message is answered with `{"type": "refused", "code": "<reason>"}`, and the frames of the bus come back as `{"type": "frame", "id": ..., "data": "<hex>"}`. See [the policy](docs/POLICY.md).
+
+## ⚙️ Configuration
+
+Every protection is on by default and every one can be switched off, in a JSON configuration file (`--config FILE`, `"schema": 1`; an unknown section or option, a wrong type or a negative rate is an error that says what is wrong) and on the command line, which overrides the file. A protection that is off, or loosened, is listed as a warning when the program starts.
+
+| Protection | File section | Off / on | What it does |
+|---|---|---|---|
+| Identifier list | `whitelist.enabled` | `--no-whitelist` / `--whitelist` | only the identifiers a host sends cross towards the bus |
+| Dangerous identifiers | `whitelist.unlock_dangerous` | `--unlock-dangerous` | the bootloader, the expansion-slave update, the erase of the saved state and every persistent setting stay refused until unlocked |
+| Added / removed identifiers | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | add an identifier by hand, or take one out whatever the rest says |
+| Payload check | `payload.enabled` | `--no-payload-check` / `--payload-check` | length and values must be those the specification allows |
+| Rate limit | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 frames per second and a burst of 10 per identifier, a burst of 50 for the link, a burst of 2 for an unlocked dangerous identifier; `rate.overrides` gives an identifier its own rate and burst |
+| Session key | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | a peer proves it holds a key |
+| Outbound filter | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | only what a board sends goes towards the network, at up to 500 frames per second |
+| Open network | `server.allow_open_network` | `--allow-open-network` | listening on a non-local address without a session key is refused unless asked for |
+
+```json
+{
+  "schema": 1,
+  "session": {"enabled": true, "key_file": "keys.txt"},
+  "rate": {"per_id_hz": 20, "per_id_burst": 10, "overrides": {"0x160": [5, 2]}},
+  "whitelist": {"extra_allow": ["0x1B0"], "deny": []},
+  "server": {"host": "127.0.0.1", "port": 8765}
+}
 ```
 
-## 🛠️ BUILD & RUN
+## 🚀 Quick start
 
 **Requirements:** Python 3.10 or newer; pyserial only to use a real SLCAN adapter
 
@@ -90,7 +138,67 @@ python -m urtc_gateway.cli run --key-file keys.txt --bus loopback  # listen on 1
 python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777# the virtual board of URTC-COMMON (or any pyserial URL) in place of an adapter
 ```
 
-`build.sh` / `build.bat` raise the version by one step (the ecosystem's odometer), install the package and run the tests; `build-test.sh` / `build-test.bat` check without changing any version; `run.sh` / `run.bat` start the command line (`policy`, `ids`, `keygen`, `run`).
+<!-- urtc-section:compatibility -->
+### Requirements & compatibility
+
+Which versions of the URTC programs work together, and which protocol version each one speaks, is listed in the compatibility table that URTC-COMMON generates: [docs/COMPATIBILITY.md](https://github.com/JuanenRac/URTC/blob/main/docs/COMPATIBILITY.md).
+<!-- /urtc-section:compatibility -->
+
+## 🧪 Testing
+
+The suite has 79 tests (`python -m pytest tests -q`): the identifier list, the payload check, the rate limit, the session and its refusals, the options and the configuration file, the command line, a test over a real local socket and the serial end against a fake port. One test skips where its optional dependency is missing. `python -m mypy` type-checks the package and `ruff check .` the sources.
+
+## 🏗️ Build & Release
+
+`build.sh` / `build.bat` install the package and run the tests; `build-test.sh` / `build-test.bat` check without changing any version; `run.sh` / `run.bat` start the command line (`policy`, `ids`, `keygen`, `run`). `python tools/make_id_table.py` writes the table of identifiers of [docs/ALLOWED_IDS.md](docs/ALLOWED_IDS.md) from the specification (`--check` compares).
+
+## 📂 Repository Structure
+
+<p align="center">
+  <img src="images/repository-structure.svg" alt="Repository structure of URTC-GATEWAY" width="100%">
+</p>
+
+<details>
+<summary>Text version of the tree</summary>
+
+```text
+URTC-GATEWAY/
+├── src/urtc_gateway/                                the gateway: identifier list, policy, rate limit, session keys, options, TCP and serial ends, command line
+├── docs/                                            the options (POLICY.md) and the generated table of identifiers
+├── tests/                                           unit tests, one on a real socket
+├── tools/                                           make_id_table.py and shared tools
+├── images/                                          banner and the pictures of this README
+├── .github/                                         CI workflow, issue and pull-request templates
+├── build.sh build.bat                               build scripts
+├── build-test.sh build-test.bat                     build and test scripts that change nothing in the repository
+├── test.sh test.bat                                 run the tests
+├── run.sh run.bat                                   start the program
+├── urtc.project.json                                manifest: version, role, maturity and build command
+├── CHANGELOG.md                                     what changed in each version
+├── SECURITY.md SUPPORT.md LICENSE                   security policy, support and license
+├── CONTRIBUTING.md CODE_OF_CONDUCT.md               how to contribute and the code of conduct
+├── .gitattributes .gitignore                        Git settings
+├── bump_version.py bump_manifest_version.py         scripts that raise the version
+└── pyproject.toml requirements-dev.lock ruff.toml   package, locked tools and lint settings
+```
+
+</details>
+
+## 🗺️ Roadmap & Known limits
+
+**Known limits today**
+
+* It has never been connected to a real CAN bus, an adapter or a board, and no installation uses it yet; it is tested in CI with fakes and a local socket.
+* The heating, laser and welding heads still need the hardware measures of the threat model: an interlock that no frame can close, a closed bus and a stop that cuts power.
+* It does not encrypt and does not stop a peer that holds the key and misbehaves.
+
+**Next**
+
+* Try it between a controller and a real tool head on a bench, behind the virtual board first.
+
+## 🌍 Languages
+
+README and texts exist in English, Spanish, French, Italian, German, Chinese, Japanese and European Portuguese.
 
 ## 🔗 Related Projects
 
@@ -106,7 +214,7 @@ URTC is made of independent repositories, each with its own version, tests and R
 * **[ARMOR-DOCS](https://github.com/JuanenRac/ARMOR-DOCS)** - the same idea for the A.R.M.O.R. security ecosystem
 * **[JuanenRac](https://github.com/JuanenRac/JuanenRac)** - the profile and the status dashboard of all the ecosystems
 
-## 📚 Documentation & Community
+## 📚 Documentation
 
 Where to read more:
 
@@ -116,15 +224,17 @@ Where to read more:
 * [License (GPL-3.0-or-later)](LICENSE)
 * Questions, ideas and reports: electrohobby3d@gmail.com
 
+## 🤝 Contributing & Community
+
+* Before a pull request run `URTC_CI=1 python tools/ci_validate.py`: it must pass. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [code of conduct](CODE_OF_CONDUCT.md).
+* The README exists in eight languages: a change to the text is made in all eight files, and the sections shared with other repositories are written by `tools/readme_sections.py` of URTC-COMMON.
+* A change to the CAN protocol starts in URTC-COMMON (`spec/can_protocol.json`) and reaches this repository through the checked copy.
+* Do not describe as working on a board what has only been built.
+* Report a vulnerability privately: [SECURITY.md](SECURITY.md). Questions, ideas and reports: electrohobby3d@gmail.com ([SUPPORT.md](SUPPORT.md)).
+
 ## 👤 AUTHOR
 
 **JuanenRac (Electro Hobby 3D)** · electrohobby3d@gmail.com
-
-<!-- urtc-section:compatibility -->
-## 🧩 Compatibility
-
-Which versions of the URTC programs work together, and which protocol version each one speaks, is listed in the compatibility table that URTC-COMMON generates: [docs/COMPATIBILITY.md](https://github.com/JuanenRac/URTC/blob/main/docs/COMPATIBILITY.md).
-<!-- /urtc-section:compatibility -->
 
 ## 📜 LICENSE
 

@@ -1,0 +1,138 @@
+{
+  "repo": "URTC-GATEWAY",
+  "ecosystem": "urtc",
+  "tagline": "A gateway in front of the CAN bus: an identifier list, a payload check, a rate limit and a session key.",
+  "description": "URTC-GATEWAY listens on a TCP port, lets only the identifiers a host may send cross towards the CAN bus, checks the payload against the protocol specification, limits the rate and requires a peer to prove it holds a key with an HMAC over a connection nonce and a counter. It is tested with fakes and a local socket; it has never been connected to a real bus.",
+  "columns": [
+    "WHO CALLS IT",
+    "THE GATEWAY",
+    "WHAT IT PROTECTS"
+  ],
+  "nodes": [
+    {
+      "id": "peer",
+      "column": 0,
+      "level": "external",
+      "title": "A controller or a host",
+      "lines": [
+        "sends one JSON frame per line",
+        "with its peer name, a counter",
+        "and a MAC"
+      ]
+    },
+    {
+      "id": "op",
+      "column": 0,
+      "level": "external",
+      "title": "The operator",
+      "lines": [
+        "policy, ids, keygen and run on",
+        "the command line; a JSON file",
+        "of options"
+      ],
+      "code": [
+        "src/urtc_gateway/cli.py"
+      ]
+    },
+    {
+      "id": "ids",
+      "column": 1,
+      "level": "contract",
+      "title": "Identifier list",
+      "lines": [
+        "made from the specification;",
+        "dangerous identifiers stay",
+        "refused until unlocked"
+      ],
+      "code": [
+        "src/urtc_gateway/ids.py",
+        "src/urtc_gateway/urtc_protocol.py"
+      ]
+    },
+    {
+      "id": "pol",
+      "column": 1,
+      "level": "tested",
+      "title": "Payload and rate",
+      "lines": [
+        "length and values the spec allows;",
+        "a token bucket per identifier",
+        "and for the whole link"
+      ],
+      "code": [
+        "src/urtc_gateway/policy.py",
+        "src/urtc_gateway/ratelimit.py"
+      ]
+    },
+    {
+      "id": "ses",
+      "column": 1,
+      "level": "tested",
+      "title": "Session key",
+      "lines": [
+        "HMAC over a nonce, a counter",
+        "and the frame; nothing recorded",
+        "can be replayed"
+      ],
+      "code": [
+        "src/urtc_gateway/session.py"
+      ]
+    },
+    {
+      "id": "srv",
+      "column": 1,
+      "level": "config",
+      "title": "TCP and serial ends",
+      "lines": [
+        "listens on 127.0.0.1:8765 by",
+        "default; every protection can",
+        "be switched off"
+      ],
+      "code": [
+        "src/urtc_gateway/serve.py",
+        "src/urtc_gateway/config.py"
+      ]
+    },
+    {
+      "id": "bus",
+      "column": 2,
+      "level": "untested",
+      "title": "The CAN bus",
+      "lines": [
+        "loopback, a virtual board or an",
+        "SLCAN adapter; never connected",
+        "to a real bus"
+      ]
+    },
+    {
+      "id": "spec",
+      "column": 2,
+      "level": "external",
+      "title": "URTC-COMMON",
+      "lines": [
+        "the specification is the only",
+        "source of identifiers and",
+        "layouts (a checked copy)"
+      ],
+      "code": [
+        "src/urtc_gateway/urtc_common.lock.json"
+      ]
+    }
+  ],
+  "edges": [
+    {"from": "peer", "to": "ses", "label": "MAC", "level": "tested"},
+    {"from": "op", "to": "srv", "label": "options", "level": "tested"},
+    {"from": "ids", "to": "pol", "level": "tested"},
+    {"from": "ses", "to": "srv", "level": "tested"},
+    {"from": "srv", "to": "bus", "label": "frames", "level": "untested"},
+    {"from": "ids", "to": "spec", "level": "contract"}
+  ],
+  "legend": {
+    "tested": "covered by tests with fakes",
+    "contract": "the source of the rest",
+    "config": "chosen by the installation",
+    "untested": "has not run on real hardware",
+    "external": "another repository or a person"
+  },
+  "footer": "It does not encrypt and does not replace the hardware measures of the threat model."
+}

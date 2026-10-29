@@ -1,0 +1,335 @@
+{
+  "repo": "URTC-GATEWAY",
+  "ecosystem": "urtc",
+  "svg": "en",
+  "cards": [
+    {
+      "name": "src/urtc_gateway/",
+      "span": 2,
+      "accent": "a",
+      "tree": {
+        "en": "the gateway: identifier list, policy, rate limit, session keys, options, TCP and serial ends, command line",
+        "es": "la pasarela: lista de identificadores, política, límite de tasa, claves de sesión, opciones, extremos TCP y serie y línea de comandos",
+        "de": "das Gateway: Bezeichnerliste, Richtlinie, Ratenbegrenzung, Sitzungsschlüssel, Optionen, TCP- und serielle Enden, Befehlszeile",
+        "fr": "la passerelle : liste d'identifiants, politique, limite de débit, clés de session, options, extrémités TCP et série, ligne de commande",
+        "it": "il gateway: elenco degli identificatori, politica, limite di frequenza, chiavi di sessione, opzioni, estremità TCP e seriale, riga di comando",
+        "zh": "网关：标识符列表、策略、速率限制、会话密钥、选项、TCP 和串口端以及命令行",
+        "ja": "ゲートウェイ：識別子リスト、ポリシー、レート制限、セッションキー、オプション、TCP とシリアルの端、コマンドライン",
+        "pt": "a gateway: lista de identificadores, política, limite de taxa, chaves de sessão, opções, extremos TCP e série e linha de comandos"
+      },
+      "rows": [
+        {
+          "name": "ids.py  policy.py",
+          "desc": {
+            "en": "identifiers and payload check",
+            "es": "la lista de identificadores y la comprobación de la carga",
+            "de": "die Bezeichnerliste und die Nutzdatenprüfung",
+            "fr": "la liste d'identifiants et le contrôle de la charge",
+            "it": "l'elenco degli identificatori e il controllo del payload",
+            "zh": "标识符列表和载荷检查",
+            "ja": "識別子リストとペイロード検査",
+            "pt": "a lista de identificadores e a verificação da carga"
+          }
+        },
+        {
+          "name": "ratelimit.py  session.py",
+          "desc": {
+            "en": "rate limit and session",
+            "es": "el cubo de fichas y la sesión HMAC",
+            "de": "der Token-Bucket und die HMAC-Sitzung",
+            "fr": "le seau à jetons et la session HMAC",
+            "it": "il token bucket e la sessione HMAC",
+            "zh": "令牌桶和 HMAC 会话",
+            "ja": "トークンバケットと HMAC セッション",
+            "pt": "o balde de fichas e a sessão HMAC"
+          }
+        },
+        {
+          "name": "serve.py  config.py  cli.py",
+          "desc": {
+            "en": "ends, options, command line",
+            "es": "los extremos, las opciones y la línea de comandos",
+            "de": "die Enden, die Optionen und die Befehlszeile",
+            "fr": "les extrémités, les options et la ligne de commande",
+            "it": "le estremità, le opzioni e la riga di comando",
+            "zh": "端点、选项和命令行",
+            "ja": "端、オプション、コマンドライン",
+            "pt": "os extremos, as opções e a linha de comandos"
+          }
+        }
+      ]
+    },
+    {
+      "name": "docs/",
+      "span": 1,
+      "accent": "b",
+      "tree": {
+        "en": "the options (POLICY.md) and the generated table of identifiers",
+        "es": "las opciones (POLICY.md) y la tabla generada de identificadores",
+        "de": "die Optionen (POLICY.md) und die erzeugte Bezeichnertabelle",
+        "fr": "les options (POLICY.md) et le tableau généré des identifiants",
+        "it": "le opzioni (POLICY.md) e la tabella generata degli identificatori",
+        "zh": "选项 (POLICY.md) 和生成的标识符表",
+        "ja": "オプション (POLICY.md) と生成された識別子の表",
+        "pt": "as opções (POLICY.md) e a tabela gerada de identificadores"
+      },
+      "rows": [
+        {
+          "name": "POLICY.md",
+          "desc": {
+            "en": "every option and its default",
+            "es": "cada opción y su valor por defecto",
+            "de": "jede Option und ihr Standard",
+            "fr": "chaque option et sa valeur par défaut",
+            "it": "ogni opzione e il suo valore predefinito",
+            "zh": "每个选项及默认值",
+            "ja": "各オプションと既定値",
+            "pt": "cada opção e o seu valor por omissão"
+          }
+        },
+        {
+          "name": "ALLOWED_IDS.md",
+          "desc": {
+            "en": "what happens to each id",
+            "es": "qué pasa con cada identificador",
+            "de": "was mit jedem Bezeichner geschieht",
+            "fr": "ce qui arrive à chaque identifiant",
+            "it": "che cosa succede a ogni identificatore",
+            "zh": "每个标识符的处理方式",
+            "ja": "各識別子の扱い",
+            "pt": "o que acontece a cada identificador"
+          }
+        }
+      ]
+    },
+    {
+      "name": "tests/ tools/ images/ .github/",
+      "kind": "group",
+      "span": 3,
+      "columns": 2,
+      "rows": [
+        {
+          "name": "tests/",
+          "desc": {
+            "en": "unit tests, one on a real socket",
+            "es": "pruebas unitarias de cada protección y una prueba sobre un socket local real",
+            "de": "Unit-Tests jeder Schutzfunktion und ein Test über einen echten lokalen Socket",
+            "fr": "tests unitaires de chaque protection et un test sur une vraie socket locale",
+            "it": "test unitari di ogni protezione e un test su un vero socket locale",
+            "zh": "每项保护的单元测试，以及通过真实本地套接字的测试",
+            "ja": "各保護のユニットテストと実際のローカルソケットでのテスト",
+            "pt": "testes unitários de cada proteção e um teste sobre um socket local real"
+          }
+        },
+        {
+          "name": "tools/",
+          "desc": {
+            "en": "make_id_table.py and shared tools",
+            "es": "make_id_table.py y las herramientas compartidas de CI e imágenes",
+            "de": "make_id_table.py und die gemeinsamen CI- und Bild-Werkzeuge",
+            "fr": "make_id_table.py et les outils partagés de CI et d'images",
+            "it": "make_id_table.py e gli strumenti condivisi di CI e immagini",
+            "zh": "make_id_table.py 以及共用的 CI 和图片工具",
+            "ja": "make_id_table.py と共有の CI・画像ツール",
+            "pt": "make_id_table.py e as ferramentas partilhadas de CI e imagens"
+          }
+        },
+        {
+          "name": "images/",
+          "desc": {
+            "en": "banner and the pictures of this README",
+            "es": "banner e imágenes de este README",
+            "de": "Banner und Bilder dieses READMEs",
+            "fr": "bannière et images de ce README",
+            "it": "banner e immagini di questo README",
+            "zh": "横幅和本 README 的图片",
+            "ja": "バナーとこの README の画像",
+            "pt": "faixa e imagens deste README"
+          }
+        },
+        {
+          "name": ".github/",
+          "desc": {
+            "en": "CI workflow, issue and pull-request templates",
+            "es": "flujo de CI y plantillas de issues y pull requests",
+            "de": "CI-Workflow sowie Vorlagen für Issues und Pull Requests",
+            "fr": "workflow de CI et modèles d'issues et de pull requests",
+            "it": "workflow di CI e modelli per issue e pull request",
+            "zh": "CI 工作流以及 Issue 和 Pull Request 模板",
+            "ja": "CI ワークフローと Issue・プルリクエストのテンプレート",
+            "pt": "fluxo de CI e modelos de issues e pull requests"
+          }
+        }
+      ]
+    },
+    {
+      "name": {
+        "en": "Files at the root",
+        "es": "Archivos de la raíz",
+        "de": "Dateien im Wurzelverzeichnis",
+        "fr": "Fichiers à la racine",
+        "it": "File nella radice",
+        "zh": "根目录文件",
+        "ja": "ルートのファイル",
+        "pt": "Ficheiros na raiz"
+      },
+      "kind": "group",
+      "span": 3,
+      "columns": 2,
+      "rows": [
+        {
+          "name": "build.sh  build.bat",
+          "desc": {
+            "en": "build scripts",
+            "es": "scripts de compilación",
+            "de": "Build-Skripte",
+            "fr": "scripts de compilation",
+            "it": "script di compilazione",
+            "zh": "构建脚本",
+            "ja": "ビルドスクリプト",
+            "pt": "scripts de compilação"
+          },
+          "tree_name": "build.sh build.bat"
+        },
+        {
+          "name": "build-test.sh  build-test.bat",
+          "desc": {
+            "en": "build and test scripts that change nothing in the repository",
+            "es": "scripts de compilación y pruebas que no cambian nada en el repositorio",
+            "de": "Build- und Testskripte, die im Repository nichts ändern",
+            "fr": "scripts de compilation et de test qui ne changent rien dans le dépôt",
+            "it": "script di compilazione e test che non cambiano nulla nel repository",
+            "zh": "构建并测试的脚本，不会修改仓库内容",
+            "ja": "リポジトリを変更しないビルド・テストのスクリプト",
+            "pt": "scripts de compilação e testes que não alteram nada no repositório"
+          },
+          "tree_name": "build-test.sh build-test.bat"
+        },
+        {
+          "name": "test.sh  test.bat",
+          "desc": {
+            "en": "run the tests",
+            "es": "ejecutan las pruebas",
+            "de": "führen die Tests aus",
+            "fr": "lancent les tests",
+            "it": "eseguono i test",
+            "zh": "运行测试",
+            "ja": "テストを実行",
+            "pt": "executam os testes"
+          },
+          "tree_name": "test.sh test.bat"
+        },
+        {
+          "name": "run.sh  run.bat",
+          "desc": {
+            "en": "start the program",
+            "es": "arrancan el programa",
+            "de": "starten das Programm",
+            "fr": "lancent le programme",
+            "it": "avviano il programma",
+            "zh": "启动程序",
+            "ja": "プログラムを起動",
+            "pt": "arrancam o programa"
+          },
+          "tree_name": "run.sh run.bat"
+        },
+        {
+          "name": "urtc.project.json",
+          "desc": {
+            "en": "manifest: version, role, maturity and build command",
+            "es": "manifiesto: versión, papel, madurez y comando de compilación",
+            "de": "Manifest: Version, Rolle, Reifegrad und Build-Befehl",
+            "fr": "manifeste : version, rôle, maturité et commande de compilation",
+            "it": "manifesto: versione, ruolo, maturità e comando di compilazione",
+            "zh": "清单：版本、角色、成熟度和构建命令",
+            "ja": "マニフェスト：バージョン、役割、成熟度、ビルドコマンド",
+            "pt": "manifesto: versão, papel, maturidade e comando de compilação"
+          }
+        },
+        {
+          "name": "CHANGELOG.md",
+          "desc": {
+            "en": "what changed in each version",
+            "es": "qué cambió en cada versión",
+            "de": "was sich in jeder Version geändert hat",
+            "fr": "ce qui a changé à chaque version",
+            "it": "che cosa è cambiato in ogni versione",
+            "zh": "每个版本的变更",
+            "ja": "各バージョンの変更内容",
+            "pt": "o que mudou em cada versão"
+          }
+        },
+        {
+          "name": "SECURITY.md  SUPPORT.md  LICENSE",
+          "desc": {
+            "en": "security policy, support and license",
+            "es": "política de seguridad, soporte y licencia",
+            "de": "Sicherheitsrichtlinie, Support und Lizenz",
+            "fr": "politique de sécurité, assistance et licence",
+            "it": "politica di sicurezza, supporto e licenza",
+            "zh": "安全政策、支持和许可证",
+            "ja": "セキュリティポリシー、サポート、ライセンス",
+            "pt": "política de segurança, suporte e licença"
+          },
+          "tree_name": "SECURITY.md SUPPORT.md LICENSE"
+        },
+        {
+          "name": "CONTRIBUTING.md  CODE_OF_CONDUCT.md",
+          "desc": {
+            "en": "how to contribute and the code of conduct",
+            "es": "cómo contribuir y código de conducta",
+            "de": "wie man mitwirkt, und der Verhaltenskodex",
+            "fr": "comment contribuer et code de conduite",
+            "it": "come contribuire e codice di condotta",
+            "zh": "如何参与贡献和行为准则",
+            "ja": "貢献方法と行動規範",
+            "pt": "como contribuir e código de conduta"
+          },
+          "tree_name": "CONTRIBUTING.md CODE_OF_CONDUCT.md"
+        },
+        {
+          "name": ".gitattributes  .gitignore",
+          "desc": {
+            "en": "Git settings",
+            "es": "ajustes de Git",
+            "de": "Git-Einstellungen",
+            "fr": "réglages Git",
+            "it": "impostazioni di Git",
+            "zh": "Git 设置",
+            "ja": "Git の設定",
+            "pt": "definições do Git"
+          },
+          "tree_name": ".gitattributes .gitignore"
+        },
+        {
+          "name": "bump_version.py  bump_manifest_version.py",
+          "desc": {
+            "en": "scripts that raise the version",
+            "es": "scripts que suben la versión",
+            "de": "Skripte, die die Version erhöhen",
+            "fr": "scripts qui augmentent la version",
+            "it": "script che alzano la versione",
+            "zh": "提升版本号的脚本",
+            "ja": "バージョンを上げるスクリプト",
+            "pt": "scripts que sobem a versão"
+          },
+          "tree_name": "bump_version.py bump_manifest_version.py"
+        },
+        {
+          "name": "pyproject.toml  requirements-dev.lock  ruff.toml",
+          "tree_name": "pyproject.toml requirements-dev.lock ruff.toml",
+          "desc": {
+            "en": "package, locked tools and lint settings",
+            "es": "paquete, herramientas fijadas y ajustes de lint",
+            "de": "Paket, festgelegte Werkzeuge und Lint-Einstellungen",
+            "fr": "paquet, outils figés et réglages de lint",
+            "it": "pacchetto, strumenti bloccati e impostazioni di lint",
+            "zh": "软件包、锁定的工具和 lint 设置",
+            "ja": "パッケージ、固定されたツール、lint 設定",
+            "pt": "pacote, ferramentas fixadas e definições de lint"
+          }
+        }
+      ]
+    }
+  ]
+}
