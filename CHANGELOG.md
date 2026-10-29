@@ -4,11 +4,17 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.0.3] - The nightly CI and the universal README
+
 - **Related Projects lists the URTC family:** the section names the repositories of URTC by group, each with one short line about what it is for, and, in one short line each, the sister projects (independent ecosystems of the same author that share the base and the tools), in the eight languages. It no longer says that URTC is part of another ecosystem.
 - **The README follows the universal layout in the eight languages** and now carries what was only in `docs/POLICY.md`: the command line (`policy`, `ids`, `keygen`, `run`), the line protocol of a session, a table of every protection with how to switch it, and the threats the gateway answers. The Architecture and the Repository Structure are drawn from `docs/architecture.json` and `docs/structure.json`.
 - **The layout of the README is checked in the CI:** the validator runs `tools/universal_readme_check.py` and lists, as a warning, what differs from the universal layout of the README.
 - **Project status is the second section of the README,** right after At a glance, in the eight languages.
 - **The full CI runs every night:** a scheduled workflow runs the complete baseline again on the default branch and opens (or updates) one issue when it fails, so a change in a runner image, a toolchain or a pinned dependency is found the next day instead of with the next unrelated change.
+
+## [0.0.3]
+
+- Build version synchronized with `urtc.project.json` and the repository-native version source.
 
 ## [0.0.2] - The copy of the shared protocol is current and the dev dependencies are closed with hashes and the types are checked
 
