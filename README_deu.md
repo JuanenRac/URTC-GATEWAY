@@ -46,7 +46,7 @@
 | Teil | Status | Was das Repository belegen kann |
 | --- | :---: | --- |
 | Software | 🟡 | Läuft am PC und gegen den Simulator; nie an einer echten Platine ausgeführt. |
-| Tests | 🟢 | Die Testsuite besteht bei jedem Push in der CI. |
+| Tests | 🟡 | Die Testsuite besteht bei jedem Push in der CI. |
 | Echte Hardware | 🟠 | Noch kein Lauf an einer echten Platine: der Bankversuch steht noch aus. |
 | Sicherheit | 🟡 | Lässt nur gelistete Kennungen durch und begrenzt ihre Rate; am PC geprüft, nie vor einem echten Bus. |
 | Dokumentation | 🟡 | README in acht Sprachen und Referenzdokumente; die Übersetzungen wurden nicht von Muttersprachlern geprüft. |

@@ -46,7 +46,7 @@
 | Parte | Estado | Lo que el repositorio puede demostrar |
 | --- | :---: | --- |
 | Software | 🟡 | Funciona en un PC y contra el simulador; nunca se ha usado con una placa real. |
-| Pruebas | 🟢 | La batería de pruebas pasa en la CI en cada subida. |
+| Pruebas | 🟡 | La batería de pruebas pasa en la CI en cada subida. |
 | Hardware real | 🟠 | Aún no se ha ejecutado con una placa real: la prueba de banco sigue pendiente. |
 | Seguridad | 🟡 | Solo deja pasar los identificadores listados y limita su frecuencia; comprobado en un PC, nunca ante un bus real. |
 | Documentación | 🟡 | README en ocho idiomas y documentos de referencia; las traducciones no las ha revisado ningún hablante nativo. |

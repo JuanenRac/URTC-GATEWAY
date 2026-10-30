@@ -46,7 +46,7 @@
 | Part | Status | What the repository can show |
 | --- | :---: | --- |
 | Software | 🟡 | Works on a PC and against the simulator; never run against a real board. |
-| Tests | 🟢 | The test suite passes in the CI on every push. |
+| Tests | 🟡 | The test suite passes in the CI on every push. |
 | Real hardware | 🟠 | No run on a real board yet: the bench test is still pending. |
 | Security | 🟡 | Lets only listed identifiers through and limits their rate; checked on a PC, never in front of a real bus. |
 | Documentation | 🟡 | README in eight languages and reference documents; the translations were not reviewed by native speakers. |

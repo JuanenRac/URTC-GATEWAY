@@ -46,7 +46,7 @@
 | Partie | État | Ce que le dépôt peut démontrer |
 | --- | :---: | --- |
 | Logiciel | 🟡 | Fonctionne sur un PC et face au simulateur ; jamais utilisé avec une vraie carte. |
-| Tests | 🟢 | La suite de tests passe dans la CI à chaque push. |
+| Tests | 🟡 | La suite de tests passe dans la CI à chaque push. |
 | Matériel réel | 🟠 | Pas encore d'essai sur une vraie carte : l'essai au banc reste à faire. |
 | Sécurité | 🟡 | Ne laisse passer que les identifiants listés et limite leur débit ; vérifié sur PC, jamais devant un vrai bus. |
 | Documentation | 🟡 | README en huit langues et documents de référence ; les traductions n'ont pas été relues par des locuteurs natifs. |

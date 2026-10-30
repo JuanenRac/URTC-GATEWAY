@@ -46,7 +46,7 @@
 | Parte | Estado | O que o repositório consegue demonstrar |
 | --- | :---: | --- |
 | Software | 🟡 | Funciona num PC e contra o simulador; nunca foi usado com uma placa real. |
-| Testes | 🟢 | A bateria de testes passa na CI em cada envio. |
+| Testes | 🟡 | A bateria de testes passa na CI em cada envio. |
 | Hardware real | 🟠 | Ainda não correu numa placa real: o ensaio de bancada continua pendente. |
 | Segurança | 🟡 | Deixa passar só os identificadores listados e limita a sua taxa; verificado num PC, nunca diante de um barramento real. |
 | Documentação | 🟡 | README em oito línguas e documentos de referência; as traduções não foram revistas por falantes nativos. |

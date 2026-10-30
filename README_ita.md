@@ -46,7 +46,7 @@
 | Parte | Stato | Ciò che il repository può dimostrare |
 | --- | :---: | --- |
 | Software | 🟡 | Funziona su un PC e contro il simulatore; mai usato con una scheda reale. |
-| Test | 🟢 | La suite di test passa nella CI a ogni push. |
+| Test | 🟡 | La suite di test passa nella CI a ogni push. |
 | Hardware reale | 🟠 | Nessuna esecuzione su una scheda reale: la prova al banco è ancora da fare. |
 | Sicurezza | 🟡 | Lascia passare solo gli identificatori elencati e ne limita la frequenza; verificato su PC, mai davanti a un bus reale. |
 | Documentazione | 🟡 | README in otto lingue e documenti di riferimento; le traduzioni non sono state riviste da madrelingua. |
