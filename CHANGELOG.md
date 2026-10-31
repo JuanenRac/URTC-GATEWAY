@@ -4,8 +4,14 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.0.4] - The reply of the tool rack crosses the gateway in one direction only and the lights of Project status follow the evidence of the manifest
+
 - **The reply of the tool rack crosses the gateway in one direction only:** the specification now has the rack frames apart from the messages of the tool head, and the gateway forwards the reply `0x261` from the bus towards the network and refuses it, and the order `0x260`, from the network towards the bus (the identifier list, `docs/ALLOWED_IDS.md` and the shared protocol copy are updated, and a test fixes both directions).
 - **The lights of Project status follow the evidence of the manifest:** the manifest says how far the repository has been shown to work (`evidence`: `host-test`, `simulator`, `bench` or `field`) and the validator fails when a light is above what that evidence and the maturity allow (`tools/status_lights.py`), so a green that never ran on real hardware cannot come back.
+
+## [0.0.4]
+
+- Build version synchronized with `urtc.project.json` and the repository-native version source.
 
 ## [0.0.3] - The nightly CI and the universal README
 

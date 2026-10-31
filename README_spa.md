@@ -29,7 +29,7 @@
 
 | | |
 |---|---|
-| Versión | `0.0.3` |
+| Versión | `0.0.4` |
 | Madurez | Andamiaje |
 | Tests | 91 |
 | Tecnología | Python / CAN / HMAC |
