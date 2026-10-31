@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-79-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-91-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Versione | `0.0.3` |
 | Maturità | Impalcatura |
-| Test | 79 |
+| Test | 91 |
 | Tecnologia | Python / CAN / HMAC |
 | Destinazione | Il PC di chi lo usa |
 | Su hardware reale | Solo simulato: provato con emulatori, test double o simulatori; per questa versione non risulta alcuna esecuzione su hardware reale |
@@ -146,7 +146,7 @@ Quali versioni dei programmi URTC funzionano insieme, e quale versione del proto
 
 ## 🧪 Test
 
-La suite ha 79 test (`python -m pytest tests -q`): l'elenco degli identificatori, il controllo del payload, il limite di frequenza, la sessione e i suoi rifiuti, le opzioni e il file di configurazione, la riga di comando, un test su un vero socket locale e l'estremità seriale contro una porta finta. Un test viene saltato se manca la sua dipendenza opzionale. `python -m mypy` controlla i tipi del pacchetto e `ruff check .` il codice.
+La suite ha 91 test (`python -m pytest tests -q`): l'elenco degli identificatori, il controllo del payload, il limite di frequenza, la sessione e i suoi rifiuti, le opzioni e il file di configurazione, la riga di comando, un test su un vero socket locale e l'estremità seriale contro una porta finta. Un test viene saltato se manca la sua dipendenza opzionale. `python -m mypy` controlla i tipi del pacchetto e `ruff check .` il codice.
 
 ## 🏗️ Compilazione e rilascio
 

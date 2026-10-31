@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-79-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-91-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | 版本 | `0.0.3` |
 | 成熟度 | 雏形 |
-| 测试 | 79 |
+| 测试 | 91 |
 | 技术栈 | Python / CAN / HMAC |
 | 目标 | 使用者的电脑 |
 | 真实硬件 | 仅模拟：使用模拟器、替身或仿真测试；此版本没有在真实硬件上运行的记录 |
@@ -146,7 +146,7 @@ python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777
 
 ## 🧪 测试
 
-测试套件共有 79 个测试（`python -m pytest tests -q`）：标识符列表、载荷检查、速率限制、会话及其拒绝情形、选项和配置文件、命令行、通过真实本地套接字的测试，以及针对模拟端口的串口端。缺少可选依赖时有一个测试会被跳过。`python -m mypy` 检查软件包的类型，`ruff check .` 检查源码。
+测试套件共有 91 个测试（`python -m pytest tests -q`）：标识符列表、载荷检查、速率限制、会话及其拒绝情形、选项和配置文件、命令行、通过真实本地套接字的测试，以及针对模拟端口的串口端。缺少可选依赖时有一个测试会被跳过。`python -m mypy` 检查软件包的类型，`ruff check .` 检查源码。
 
 ## 🏗️ 构建与发布
 

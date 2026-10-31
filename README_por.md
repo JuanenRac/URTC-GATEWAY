@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-79-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-91-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Versão | `0.0.3` |
 | Maturidade | Estrutura inicial |
-| Testes | 79 |
+| Testes | 91 |
 | Tecnologia | Python / CAN / HMAC |
 | Destino | O PC de quem o usa |
 | Em hardware real | Só simulado: testado com emuladores, dublês de teste ou simuladores; não há registo de execução em hardware real para esta versão |
@@ -146,7 +146,7 @@ As versões dos programas URTC que funcionam em conjunto, e a versão do protoco
 
 ## 🧪 Testes
 
-O conjunto tem 79 testes (`python -m pytest tests -q`): a lista de identificadores, a verificação da carga, o limite de taxa, a sessão e as suas recusas, as opções e o ficheiro de configuração, a linha de comandos, um teste sobre um socket local real e o extremo série contra uma porta simulada. Um teste é ignorado quando falta a sua dependência opcional. `python -m mypy` verifica os tipos do pacote e `ruff check .` o código.
+O conjunto tem 91 testes (`python -m pytest tests -q`): a lista de identificadores, a verificação da carga, o limite de taxa, a sessão e as suas recusas, as opções e o ficheiro de configuração, a linha de comandos, um teste sobre um socket local real e o extremo série contra uma porta simulada. Um teste é ignorado quando falta a sua dependência opcional. `python -m mypy` verifica os tipos do pacote e `ruff check .` o código.
 
 ## 🏗️ Compilação e publicação
 

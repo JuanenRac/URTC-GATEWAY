@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-79-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-91-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | バージョン | `0.0.3` |
 | 成熟度 | 足場段階 |
-| テスト | 79 |
+| テスト | 91 |
 | 技術 | Python / CAN / HMAC |
 | 対象 | 利用者の PC |
 | 実機での確認 | シミュレーションのみ：エミュレーター、模擬部品、シミュレーターで試験済み。このバージョンについて実機での動作記録はありません |
@@ -146,7 +146,7 @@ python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777
 
 ## 🧪 テスト
 
-テストスイートは 79 件です（`python -m pytest tests -q`）。識別子リスト、ペイロード検査、レート制限、セッションとその拒否、オプションと設定ファイル、コマンドライン、実際のローカルソケットでのテスト、模擬ポートに対するシリアル側を検査します。任意の依存関係がない場合、1 件のテストはスキップされます。`python -m mypy` がパッケージの型を、`ruff check .` がソースを検査します。
+テストスイートは 91 件です（`python -m pytest tests -q`）。識別子リスト、ペイロード検査、レート制限、セッションとその拒否、オプションと設定ファイル、コマンドライン、実際のローカルソケットでのテスト、模擬ポートに対するシリアル側を検査します。任意の依存関係がない場合、1 件のテストはスキップされます。`python -m mypy` がパッケージの型を、`ruff check .` がソースを検査します。
 
 ## 🏗️ ビルドとリリース
 
