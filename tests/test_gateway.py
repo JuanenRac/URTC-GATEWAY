@@ -55,8 +55,32 @@ def test_the_sets_come_from_the_specification_and_do_not_overlap():
     inbound, dangerous, outbound = ids.inbound_ids(), ids.dangerous_ids(), ids.outbound_ids()
     assert inbound.isdisjoint(dangerous)
     assert inbound | dangerous == {i for i, m in proto.MESSAGES.items() if m["direction"] in ("host_to_board", "both")}
-    assert outbound == {i for i, m in proto.MESSAGES.items() if m["direction"] in ("board_to_host", "both")}
+    assert outbound == {i for i, m in proto.MESSAGES.items() if m["direction"] in ("board_to_host", "both")} | {proto.RACK_ID_REPLY}
     assert SOLDER in inbound and proto.CAN_ID_ACTIVE_TOOL_RESP in outbound and proto.CAN_ID_ACTIVE_TOOL_RESP not in inbound
+
+
+def test_the_rack_frames_are_kept_apart_from_the_messages_of_the_head():
+    order, reply = proto.RACK_ID_SET_PREHEAT, proto.RACK_ID_REPLY
+    assert (order, reply) == (0x260, 0x261) and not {order, reply} & set(proto.MESSAGES)
+    assert ids.rack_ids() == {order, reply}
+    assert reply in ids.outbound_ids() and order not in ids.outbound_ids()          # the reply goes to the network, the order never does
+    assert not {order, reply} & (ids.inbound_ids() | ids.dangerous_ids())           # neither goes to the bus
+    assert ids.name_of(reply) == "RACK_REPLY" and ids.name_of(order) == "RACK_SET_PREHEAT"
+    assert ids.rack_ids().isdisjoint(set(proto.MESSAGES))
+
+
+def test_the_reply_of_the_rack_is_forwarded_to_the_network_and_refused_to_the_bus():
+    gw, bus, net, _ = make(open_config())
+    data = bytes([1, 3, 3])                                                          # SET_PREHEAT, tool 3, tool absent
+    assert gw.from_bus(proto.RACK_ID_REPLY, data)
+    assert net == [{"type": "frame", "id": 0x261, "data": "010303"}]
+    assert gw.from_bus(proto.RACK_ID_SET_PREHEAT, bytes(8)).code == "not_listed"      # the order is not something a board sends
+    policy = Policy(GatewayConfig())
+    for can_id in (0x260, 0x261):
+        assert policy.check_inbound(can_id, data, 0.0).code == "not_listed"           # a peer on the network cannot put either one on the bus
+    assert bus == []
+    wide = Policy(config_from_dict({"session": {"enabled": False}, "whitelist": {"extra_allow": ["0x261"]}}))
+    assert wide.check_inbound(0x261, data, 0.0)                                       # only an operator who asks for it opens it
 
 
 @pytest.mark.parametrize("name", ["ENTER_BOOTLOADER", "START_UPDATE", "DATA", "END_UPDATE", "ERASE_FRAM", "SET_EXPANSION_TYPE", "SET_FREE_TOOL", "SET_DEVICE_SERIAL",

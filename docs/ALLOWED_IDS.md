@@ -83,6 +83,8 @@
 | 0x253 | THERMAL_RAW_CHUNK | refused | forwarded |
 | 0x254 | THERMAL_CAL_CHUNK_REQ | forwarded | refused |
 | 0x255 | THERMAL_CAL_CHUNK | refused | forwarded |
+| 0x260 | RACK_SET_PREHEAT | refused | refused |
+| 0x261 | RACK_REPLY | refused | forwarded |
 | 0x7E9 | VERSION_PATCH_RESPONSE | refused | forwarded |
 | 0x7F0 | ENTER_BOOTLOADER | refused (dangerous) | refused |
 | 0x7F1 | START_UPDATE | refused (dangerous) | refused |
