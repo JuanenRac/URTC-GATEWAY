@@ -141,7 +141,7 @@ python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777
 <!-- urtc-section:compatibility -->
 ### Requisiti e compatibilità
 
-Quali versioni dei programmi URTC funzionano insieme, e quale versione del protocollo parla ciascuna, è elencato nella tabella di compatibilità generata da URTC-COMMON: [docs/COMPATIBILITY.md](https://github.com/JuanenRac/URTC/blob/main/docs/COMPATIBILITY.md).
+Quali versioni dei programmi URTC funzionano insieme, e quale versione del protocollo parla ciascuna, è elencato nella tabella di compatibilità generata da URTC-COMMON: [docs/COMPATIBILITY.md](https://github.com/JuanenRac/URTC/blob/main/docs/COMPATIBILITY.md). Le note di una versione dei repository che includono `tools/changelog_section.py` (il firmware, il flasher, il tester e l'updater) sono la sezione del CHANGELOG di quella versione seguita da questa tabella: `python tools/changelog_section.py VERSION --compat`.
 <!-- /urtc-section:compatibility -->
 
 ## 🧪 Test
