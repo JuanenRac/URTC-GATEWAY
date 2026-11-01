@@ -49,6 +49,7 @@
 | Tests | 🟡 | Die Testsuite besteht bei jedem Push in der CI. |
 | Echte Hardware | 🟠 | Noch kein Lauf an einer echten Platine: der Bankversuch steht noch aus. |
 | Sicherheit | 🟡 | Lässt nur gelistete Kennungen durch und begrenzt ihre Rate; am PC geprüft, nie vor einem echten Bus. |
+| Schnittstelle und Protokolle | 🟡 | Die angebotenen Routen oder Nachrichten sind dokumentiert und mit einem Client getestet; noch nicht jeder Client hat sie benutzt |
 | Dokumentation | 🟡 | README in acht Sprachen und Referenzdokumente; die Übersetzungen wurden nicht von Muttersprachlern geprüft. |
 
 <!-- /urtc-section:status_gateway -->

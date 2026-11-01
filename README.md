@@ -49,6 +49,7 @@
 | Tests | 🟡 | The test suite passes in the CI on every push. |
 | Real hardware | 🟠 | No run on a real board yet: the bench test is still pending. |
 | Security | 🟡 | Lets only listed identifiers through and limits their rate; checked on a PC, never in front of a real bus. |
+| Interface and protocols | 🟡 | The routes or messages it offers are documented and tested with a client; not every client has used them yet |
 | Documentation | 🟡 | README in eight languages and reference documents; the translations were not reviewed by native speakers. |
 
 <!-- /urtc-section:status_gateway -->

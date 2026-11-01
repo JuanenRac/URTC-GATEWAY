@@ -49,6 +49,7 @@
 | Pruebas | 🟡 | La batería de pruebas pasa en la CI en cada subida. |
 | Hardware real | 🟠 | Aún no se ha ejecutado con una placa real: la prueba de banco sigue pendiente. |
 | Seguridad | 🟡 | Solo deja pasar los identificadores listados y limita su frecuencia; comprobado en un PC, nunca ante un bus real. |
+| Interfaz y protocolos | 🟡 | Las rutas o los mensajes que ofrece están documentados y probados con un cliente; aún no los han usado todos los clientes |
 | Documentación | 🟡 | README en ocho idiomas y documentos de referencia; las traducciones no las ha revisado ningún hablante nativo. |
 
 <!-- /urtc-section:status_gateway -->

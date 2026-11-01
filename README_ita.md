@@ -49,6 +49,7 @@
 | Test | 🟡 | La suite di test passa nella CI a ogni push. |
 | Hardware reale | 🟠 | Nessuna esecuzione su una scheda reale: la prova al banco è ancora da fare. |
 | Sicurezza | 🟡 | Lascia passare solo gli identificatori elencati e ne limita la frequenza; verificato su PC, mai davanti a un bus reale. |
+| Interfaccia e protocolli | 🟡 | Le rotte o i messaggi offerti sono documentati e provati con un client; non tutti i client li hanno ancora usati |
 | Documentazione | 🟡 | README in otto lingue e documenti di riferimento; le traduzioni non sono state riviste da madrelingua. |
 
 <!-- /urtc-section:status_gateway -->

@@ -49,6 +49,7 @@
 | Tests | 🟡 | La suite de tests passe dans la CI à chaque push. |
 | Matériel réel | 🟠 | Pas encore d'essai sur une vraie carte : l'essai au banc reste à faire. |
 | Sécurité | 🟡 | Ne laisse passer que les identifiants listés et limite leur débit ; vérifié sur PC, jamais devant un vrai bus. |
+| Interface et protocoles | 🟡 | Les routes ou les messages proposés sont documentés et testés avec un client ; tous les clients ne les ont pas encore utilisés |
 | Documentation | 🟡 | README en huit langues et documents de référence ; les traductions n'ont pas été relues par des locuteurs natifs. |
 
 <!-- /urtc-section:status_gateway -->

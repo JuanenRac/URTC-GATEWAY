@@ -49,6 +49,7 @@
 | Testes | 🟡 | A bateria de testes passa na CI em cada envio. |
 | Hardware real | 🟠 | Ainda não correu numa placa real: o ensaio de bancada continua pendente. |
 | Segurança | 🟡 | Deixa passar só os identificadores listados e limita a sua taxa; verificado num PC, nunca diante de um barramento real. |
+| Interface e protocolos | 🟡 | As rotas ou mensagens que oferece estão documentadas e testadas com um cliente; ainda nem todos os clientes as usaram |
 | Documentação | 🟡 | README em oito línguas e documentos de referência; as traduções não foram revistas por falantes nativos. |
 
 <!-- /urtc-section:status_gateway -->
