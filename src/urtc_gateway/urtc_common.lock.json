@@ -4,7 +4,7 @@
   "files": {
     "urtc_protocol.py": {
       "from": "src/urtc_common/protocol.py",
-      "sha256": "528281ee27edb18c2b7c586436aab90f7fdd725b16cc0b06607545d97988e164"
+      "sha256": "c19964189921d22176a3433878f61dac766edfcbe1c606165789b7d89dece089"
     }
   }
 }

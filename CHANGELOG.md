@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The copy of the protocol tables knows the new expansion slave and bootloader frames:** the Ed25519 record frames `0x7EC` and `0x21A` and the slave bootloader registers for the rollback counter are in the regenerated tables.
 ## [0.0.4] - The reply of the tool rack crosses the gateway in one direction only and the lights of Project status follow the evidence of the manifest
 
 - **The reply of the tool rack crosses the gateway in one direction only:** the specification now has the rack frames apart from the messages of the tool head, and the gateway forwards the reply `0x261` from the bus towards the network and refuses it, and the order `0x260`, from the network towards the bus (the identifier list, `docs/ALLOWED_IDS.md` and the shared protocol copy are updated, and a test fixes both directions).
