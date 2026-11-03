@@ -68,6 +68,7 @@
 | 0x217 | SLAVE_VERSION_RESP_1 | refused (dangerous) | forwarded |
 | 0x218 | SLAVE_VERSION_RESP_2 | refused | forwarded |
 | 0x219 | SLAVE_VERIFY_FAIL_REASON | refused (dangerous) | forwarded |
+| 0x21A | SLAVE_RECORD_CHUNK | refused (dangerous) | refused |
 | 0x220 | SLAVE_REG_WRITE | refused (dangerous) | refused |
 | 0x221 | SLAVE_REG_READ | refused (dangerous) | forwarded |
 | 0x222 | SLAVE_APP_PATCH | refused | forwarded |
