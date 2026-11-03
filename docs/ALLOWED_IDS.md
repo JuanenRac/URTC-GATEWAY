@@ -86,6 +86,10 @@
 | 0x260 | RACK_SET_PREHEAT | refused | refused |
 | 0x261 | RACK_REPLY | refused | forwarded |
 | 0x7E9 | VERSION_PATCH_RESPONSE | refused | forwarded |
+| 0x7EA | BOOTLOADER_SELECT | refused (dangerous) | refused |
+| 0x7EB | BOOTLOADER_SELECT_RESPONSE | refused | forwarded |
+| 0x7EC | BOOTLOADER_SIGNATURE_CHUNK | refused (dangerous) | refused |
+| 0x7ED | BOOTLOADER_KEY_ID | refused | forwarded |
 | 0x7F0 | ENTER_BOOTLOADER | refused (dangerous) | refused |
 | 0x7F1 | START_UPDATE | refused (dangerous) | refused |
 | 0x7F2 | DATA | refused (dangerous) | refused |
