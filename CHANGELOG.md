@@ -9,10 +9,6 @@ All notable changes to this project are documented here.
 - **The reply of the tool rack crosses the gateway in one direction only:** the specification now has the rack frames apart from the messages of the tool head, and the gateway forwards the reply `0x261` from the bus towards the network and refuses it, and the order `0x260`, from the network towards the bus (the identifier list, `docs/ALLOWED_IDS.md` and the shared protocol copy are updated, and a test fixes both directions).
 - **The lights of Project status follow the evidence of the manifest:** the manifest says how far the repository has been shown to work (`evidence`: `host-test`, `simulator`, `bench` or `field`) and the validator fails when a light is above what that evidence and the maturity allow (`tools/status_lights.py`), so a green that never ran on real hardware cannot come back.
 
-## [0.0.4]
-
-- Build version synchronized with `urtc.project.json` and the repository-native version source.
-
 ## [0.0.3] - The nightly CI and the universal README
 
 - **Related Projects lists the URTC family:** the section names the repositories of URTC by group, each with one short line about what it is for, and, in one short line each, the sister projects (independent ecosystems of the same author that share the base and the tools), in the eight languages. It no longer says that URTC is part of another ecosystem.
@@ -20,10 +16,6 @@ All notable changes to this project are documented here.
 - **The layout of the README is checked in the CI:** the validator runs `tools/universal_readme_check.py` and lists, as a warning, what differs from the universal layout of the README.
 - **Project status is the second section of the README,** right after At a glance, in the eight languages.
 - **The full CI runs every night:** a scheduled workflow runs the complete baseline again on the default branch and opens (or updates) one issue when it fails, so a change in a runner image, a toolchain or a pinned dependency is found the next day instead of with the next unrelated change.
-
-## [0.0.3]
-
-- Build version synchronized with `urtc.project.json` and the repository-native version source.
 
 ## [0.0.2] - The copy of the shared protocol is current and the dev dependencies are closed with hashes and the types are checked
 
