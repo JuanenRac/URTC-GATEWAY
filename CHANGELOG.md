@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The build check of the repository is one text for the whole family, with a light mode that CI runs:** `tools/build_test.py` is the same file in every repository of the family (taken from the shared set); what used to differ between its seven variants is data in an optional `tools/build_test.json`. `python tools/build_test.py --check` looks at the manifest, the stack and the files the full check needs and compiles the Python sources, builds and runs nothing, and the baseline step of the workflow now runs it.
 - **The copy of the protocol tables knows the new expansion slave and bootloader frames:** the Ed25519 record frames `0x7EC` and `0x21A` and the slave bootloader registers for the rollback counter are in the regenerated tables.
 ## [0.0.4] - The reply of the tool rack crosses the gateway in one direction only and the lights of Project status follow the evidence of the manifest
 
