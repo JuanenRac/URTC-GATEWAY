@@ -29,7 +29,7 @@
 
 | | |
 |---|---|
-| Version | `0.0.4` |
+| Version | `0.0.5` |
 | Maturity | Scaffolding |
 | Tests | 93 |
 | Stack | Python / CAN / HMAC |

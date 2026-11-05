@@ -29,7 +29,7 @@
 
 | | |
 |---|---|
-| Versione | `0.0.4` |
+| Versione | `0.0.5` |
 | Maturità | Impalcatura |
 | Test | 93 |
 | Tecnologia | Python / CAN / HMAC |
