@@ -53,6 +53,7 @@
 | 0x1B8 | HEALTH_PROFILE | refused | forwarded |
 | 0x1B9 | PID_CONFIG | refused (dangerous) | refused |
 | 0x1BA | PID_STATE_RESP | forwarded | forwarded |
+| 0x1BB | HEALTH_INFO | refused | forwarded |
 | 0x1C0 | SPOT_WELD_CMD | forwarded | refused |
 | 0x1D0 | UV_CURING_CMD | forwarded | refused |
 | 0x1E0 | HOTAIR_CMD | forwarded | refused |
@@ -60,7 +61,7 @@
 | 0x200 | ULTRASONIC_WELD_CMD | forwarded | refused |
 | 0x210 | SLAVE_ENTER_BOOTLOADER | refused (dangerous) | refused |
 | 0x211 | SLAVE_START_UPDATE | refused (dangerous) | refused |
-| 0x212 | SLAVE_HMAC_CHUNK | refused (dangerous) | refused |
+| 0x212 | SLAVE_DIGEST_CHUNK | refused (dangerous) | refused |
 | 0x213 | SLAVE_DATA | refused (dangerous) | refused |
 | 0x214 | SLAVE_END_UPDATE | refused (dangerous) | refused |
 | 0x215 | SLAVE_STATUS | refused (dangerous) | forwarded |
@@ -91,6 +92,8 @@
 | 0x7EB | BOOTLOADER_SELECT_RESPONSE | refused | forwarded |
 | 0x7EC | BOOTLOADER_SIGNATURE_CHUNK | refused (dangerous) | refused |
 | 0x7ED | BOOTLOADER_KEY_ID | refused | forwarded |
+| 0x7EE | BOOTLOADER_SERIAL_CHUNK | refused (dangerous) | refused |
+| 0x7EF | BOOTLOADER_SERIAL_RESULT | refused | forwarded |
 | 0x7F0 | ENTER_BOOTLOADER | refused (dangerous) | refused |
 | 0x7F1 | START_UPDATE | refused (dangerous) | refused |
 | 0x7F2 | DATA | refused (dangerous) | refused |
