@@ -10,6 +10,7 @@ repository is checked out beside this one, the same bus is also tried against it
 """
 from __future__ import annotations
 
+import os
 import socket
 import sys
 import threading
@@ -117,7 +118,7 @@ def test_a_url_nobody_listens_on_raises():
 
 
 def test_the_bus_reaches_the_virtual_board_of_the_shared_package():
-    common = Path(__file__).resolve().parents[2] / "URTC-COMMON" / "src"
+    common = Path(os.environ.get("URTC_COMMON_SRC") or Path(__file__).resolve().parents[2] / "URTC-COMMON" / "src")
     if not (common / "urtc_common" / "virtual_board.py").exists():
         pytest.skip("URTC-COMMON is not checked out beside this repository")
     sys.path.insert(0, str(common))

@@ -27,7 +27,15 @@ jobs:
         uses: ./.github/actions/urtc-baseline
       - name: Check the generated table of identifiers is current
         run: python tools/make_id_table.py --check
-      - name: Install and run the real Python test suite
+      - name: Check out the virtual board of the shared package (URTC-COMMON)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: JuanenRac/URTC-COMMON
+          path: urtc-common-model
+          persist-credentials: false
+      - name: Install and run the real Python test suite (with the gateway tried end to end against the virtual board)
+        env:
+          URTC_COMMON_SRC: ${{ github.workspace }}/urtc-common-model/src
         run: |
           python -m pip install --require-hashes -r requirements-dev.lock
           python -m pip install --no-deps -e .

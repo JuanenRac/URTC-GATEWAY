@@ -39,6 +39,17 @@ When a peer connects, the gateway sends `{"type": "hello", "nonce": "<hex>", "se
 
 `urtc-gateway keygen FILE PEER [PEER ...]` writes a key file with a new random key for each peer (readable by its owner only, never over an existing file) and does not show the keys. Give each peer only its own line.
 
+## Trying it without a board
+
+The gateway can be run against the virtual board of URTC-COMMON, which answers like the application of a tool head, with no adapter and no board:
+
+```
+python -m urtc_common.virtual_board --port 7777        # in URTC-COMMON/src (add it to PYTHONPATH)
+urtc-gateway run --key-file gateway.keys --bus socket://127.0.0.1:7777
+```
+
+A peer that signs its frames with the session key (`urtc_gateway.gateway.sign_message`) can then send a version query and read the answer. `tests/test_virtual_board_end_to_end.py` does exactly this on every push: a signed query is answered, and a wrong key, a replayed counter and the order to enter the bootloader are refused without reaching the board. The tests find the shared package beside this repository or in the folder named by `URTC_COMMON_SRC`, and are skipped without it. This says nothing about a real adapter, the timing of a real bus or a real board.
+
 ## What it does not do
 
 It does not encrypt: the bus is not a secret. It does not stop a peer that holds the key and misbehaves; the list, the payload check and the rate limit are there for that, and the watchdogs of the tool heads. It does not replace the hardware measures of the CAN threat model (an interlock that no frame can close, a closed bus, a stop that cuts power). It has never been used on a real bus.
