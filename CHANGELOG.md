@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The repository check compares the manifest with what can be computed:** `tools/ci_validate.py` now also runs the shared `tools/sync_manifests.py` offline, which compares the shipped version, the newest released heading of this changelog, the presence of tests and the claimed level of evidence with the manifest. It is part of the shared set of tools, so the copy is pinned by the lock.
 - **The gateway is tried end to end against a virtual board, in the CI:** a test starts the gateway on a local port, connects a peer that signs its frames with a session key, and sends them over an SLCAN bus to the virtual board of URTC-COMMON. A signed version query is answered through the outbound filter; a wrong key, a replayed counter and the order to enter the bootloader are refused and never reach the board, which still answers afterwards; a run of queries is answered or throttled, never lost silently. The CI now checks the shared package out so these tests, and the one that reaches the virtual board directly, no longer skip (`URTC_COMMON_SRC` names the folder anywhere else). The manifest now says `simulator`. No adapter or board has been used.
 
 ## [0.0.5] - The full build check compiles only on CI or when allowed: tools/buildtest.py prints BUILDTEST=SKIPPED (exit status 2) for the stacks that compile unless it runs on a CI runner or ALLOWLOCALBUILD=1 says so; the light check is... (and 4 more changes)
