@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here.
 
-## [Unreleased]
+## [0.0.6] - Refreshed copy of the shared CAN tables: the notes on the signed rotation command in 0x7EC. (and 3 more changes)
 
 - **Refreshed copy of the shared CAN tables:** the notes on the signed rotation command in `0x7EC`.
 
