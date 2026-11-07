@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The manifest says which version of the shared contracts it needs:** `min_common` in `urtc.project.json` is the oldest version of URTC-COMMON among the copies this repository carries, the value the updater compares with what is installed (a warning only). `tools/min_common.py` of URTC-COMMON checks it and a new copy brings it up to date.
+
 - **The copy of the CAN identifiers is refreshed and the table of allowed identifiers lists the crash record:** `0x1BC` (ask for the crash record, read-only) is forwarded to the bus and `0x1BD` (its six frames) is forwarded to the clients; nothing else in the policy changes.
 
 - **More tests for the options file, the length rules, the key file, the serial end and the connection loop:** every refused option and override, the limits of the port and of the identifiers, a configuration that round-trips (with a fixed-seed fuzz), the length and fixed-byte rules, each shape of a bad key file, the serial bus against a fake port (bit rate codes, pieces of a frame, malformed lines, a failing write on close) and the connection loop when the bus or the peer fails. The suite has 127 tests.
