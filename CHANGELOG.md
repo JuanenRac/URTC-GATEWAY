@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## [Unreleased]
+
+- **More tests for the options file, the length rules, the key file, the serial end and the connection loop:** every refused option and override, the limits of the port and of the identifiers, a configuration that round-trips (with a fixed-seed fuzz), the length and fixed-byte rules, each shape of a bad key file, the serial bus against a fake port (bit rate codes, pieces of a frame, malformed lines, a failing write on close) and the connection loop when the bus or the peer fails. The suite has 127 tests.
+
 ## [0.0.6] - Refreshed copy of the shared CAN tables: the notes on the signed rotation command in 0x7EC. (and 3 more changes)
 
 - **Refreshed copy of the shared CAN tables:** the notes on the signed rotation command in `0x7EC`.
