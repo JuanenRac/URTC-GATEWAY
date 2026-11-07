@@ -19,11 +19,11 @@
 
 ---
 
-**诚实性检查 - 今天真正能运行的部分：** 本仓库包含一个以软件形式编写的网关：标识符列表由协议规范生成，每一帧的数据都会与规范对照检查，速率受到限制，对端必须证明自己持有密钥。全部内容都在 CI 中用模拟对象和本地套接字测试。它从未连接过真实的 CAN 总线、适配器或电路板，目前也没有任何安装在使用它。加热、激光和焊接工具头仍然需要威胁模型中的硬件措施：任何帧都无法闭合的联锁、封闭的总线，以及切断电源的停止装置。
+**诚实性检查 - 今天真正能运行的部分：** 本仓库包含一个以软件形式编写的网关：标识符列表由协议规范生成，每一帧的数据都会与规范对照检查，速率受到限制，对端必须证明自己持有密钥。全部内容都在 CI 中用模拟对象和本地套接字测试。它从未连接过真实的 CAN 总线、适配器或板卡，目前也没有任何安装在使用它。加热、激光和焊接工具头仍然需要威胁模型中的硬件措施：任何帧都无法闭合的联锁、封闭的总线，以及切断电源的停止装置。
 
 ---
 
-> **安全与安防现状:**本生态系统不是经认证的安全系统,目前也不存在已组装的 URTC 电路板。引导程序使用 CRC32 和共享密钥的 HMAC-SHA256 校验固件映像,而非非对称签名(计划中);已发布的应用映像使用公开的开发密钥签名(`signing_key_kind: dev`),因此任何人都可以生成引导程序接受的映像;尚未向任何真实电路板发送过任何内容。在依赖此处任何说法来保障人身安全之前,请先阅读[安全基线](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/SECURITY_BASELINE.md)和[威胁模型](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/THREAT_MODEL.md)。
+> **安全与安防现状:**本生态系统不是经认证的安全系统,目前也不存在已组装的 URTC 板卡。引导程序使用 CRC32 和共享密钥的 HMAC-SHA256 校验固件映像,而非非对称签名(计划中);已发布的应用映像使用公开的开发密钥签名(`signing_key_kind: dev`),因此任何人都可以生成引导程序接受的映像;尚未向任何真实板卡发送过任何内容。在依赖此处任何说法来保障人身安全之前,请先阅读[安全基线](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/SECURITY_BASELINE.md)和[威胁模型](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/THREAT_MODEL.md)。
 
 ## 📋 速览
 
@@ -45,9 +45,9 @@
 
 | 部分 | 状态 | 仓库能够证明的内容 |
 | --- | :---: | --- |
-| 软件 | 🟡 | 可在电脑上和模拟器上运行；从未在真实板子上运行过。 |
+| 软件 | 🟡 | 可在电脑上和模拟器上运行；从未在真实板卡上运行过。 |
 | 测试 | 🟡 | 每次推送时测试套件都会在 CI 中通过。 |
-| 真实硬件 | 🟠 | 尚未在真实板子上运行：台架测试仍待进行。 |
+| 真实硬件 | 🟠 | 尚未在真实板卡上运行：台架测试仍待进行。 |
 | 安全 | 🟡 | 只放行列出的标识符并限制其频率；已在电脑上检查，从未面对真实总线。 |
 | 接口与协议 | 🟡 | 提供的路由或消息已有文档，并用客户端测试过；尚未被所有客户端使用 |
 | 文档 | 🟡 | 提供八种语言的 README 和参考文档；翻译未经母语者审阅。 |
@@ -113,7 +113,7 @@ URTC 仓库的威胁模型指出：如果安装环境无法保持总线封闭，
 | 载荷检查 | `payload.enabled` | `--no-payload-check` / `--payload-check` | 长度和数值必须是规范允许的 |
 | 速率限制 | `rate.*` | `--no-rate-limit` / `--rate-limit` | 每个标识符每秒 20 帧、突发 10 帧，整条链路突发 50 帧，已解锁的危险标识符突发 2 帧；`rate.overrides` 可给某个标识符单独的速率和突发 |
 | 会话密钥 | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | 对端证明自己持有密钥 |
-| 出站过滤 | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | 只有板子发出的内容才会流向网络，每秒最多 500 帧 |
+| 出站过滤 | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | 只有板卡发出的内容才会流向网络，每秒最多 500 帧 |
 | 开放网络 | `server.allow_open_network` | `--allow-open-network` | 没有会话密钥时监听非本地地址会被拒绝，除非明确要求 |
 
 ```json
@@ -189,7 +189,7 @@ URTC-GATEWAY/
 
 **目前已知的限制**
 
-* 它从未连接过真实的 CAN 总线、适配器或板子，也没有任何安装在使用它；它在 CI 中用模拟对象和本地套接字测试。
+* 它从未连接过真实的 CAN 总线、适配器或板卡，也没有任何安装在使用它；它在 CI 中用模拟对象和本地套接字测试。
 * 加热、激光和焊接头仍然需要威胁模型中的硬件措施：任何帧都无法闭合的联锁、封闭的总线和切断电源的停止。
 * 它不加密，也无法阻止持有密钥却行为不当的对端。
 
@@ -206,14 +206,14 @@ README 和文本提供英语、西班牙语、法语、意大利语、德语、�
 URTC 由相互独立的仓库组成，每个仓库都有自己的版本、测试和 README。以下是按组划分的家族：
 
 * **URTC Tool Platform:**
-  * [URTC](https://github.com/JuanenRac/URTC) - 工具头电路板的固件(25 个工具配置、CAN 引导程序)以及 CAN 协议参考。
+  * [URTC](https://github.com/JuanenRac/URTC) - 工具头板卡的固件(25 个工具配置、CAN 引导程序)以及 CAN 协议参考。
   * [URTC-COMMON](https://github.com/JuanenRac/URTC-COMMON) - 只写一次的 CAN 协议数据(规范、生成的表格、一致性向量)以及各程序共享的代码。
-  * [URTC-FLASHER](https://github.com/JuanenRac/URTC-FLASHER) - 通过 CAN 或 SWD/JTAG 更新电路板固件的桌面工具。
+  * [URTC-FLASHER](https://github.com/JuanenRac/URTC-FLASHER) - 通过 CAN 或 SWD/JTAG 更新板卡固件的桌面工具。
   * **URTC-GATEWAY** (本仓库) - 位于 CAN 总线前的网关:只放行列表中的标识符,限制其速率,并要求会话密钥。
   * [URTC-SMART-RACK](https://github.com/JuanenRac/URTC-SMART-RACK) - 用于带预热和生命周期跟踪的工具架的、与硬件无关的 C 逻辑和命令协议。
-  * [URTC-TESTER](https://github.com/JuanenRac/URTC-TESTER) - 桌面实时 CAN 总线测试器,显示电路板所报告工具配置的控件和遥测。
+  * [URTC-TESTER](https://github.com/JuanenRac/URTC-TESTER) - 桌面实时 CAN 总线测试器,显示板卡所报告工具配置的控件和遥测。
   * [URTC-VISION-TOOL](https://github.com/JuanenRac/URTC-VISION-TOOL) - C 语言的传感器帧协议,以及用于检测工具头的 Python 热成像/RGB 配套程序。
-  * [URTC-WEB-STUDIO](https://github.com/JuanenRac/URTC-WEB-STUDIO) - 通过 Web Serial 和 SLCAN 烧录并测试电路板的浏览器应用,无需安装。
+  * [URTC-WEB-STUDIO](https://github.com/JuanenRac/URTC-WEB-STUDIO) - 通过 Web Serial 和 SLCAN 烧录并测试板卡的浏览器应用,无需安装。
 * **Ecosystem Operations:**
   * [URTC-DEVTOOLS](https://github.com/JuanenRac/URTC-DEVTOOLS) - 家族共用的仓库工具，作为带版本的整套工具，并用锁文件区分被改动的副本和已过时的副本。
   * [URTC-DOCS](https://github.com/JuanenRac/URTC-DOCS) - 生态系统的架构、接口、安全基线和生成的目录,以及比较所有仓库的工具。
@@ -240,7 +240,7 @@ URTC 由相互独立的仓库组成，每个仓库都有自己的版本、测试
 * 提交 Pull Request 之前请运行 `URTC_CI=1 python tools/ci_validate.py`：必须通过。参见 [CONTRIBUTING.md](CONTRIBUTING.md) 和[行为准则](CODE_OF_CONDUCT.md)。
 * README 有八种语言：修改文字时要同步修改全部八个文件，与其他仓库共用的章节由 URTC-COMMON 的 `tools/readme_sections.py` 写入。
 * 对 CAN 协议的修改从 URTC-COMMON（`spec/can_protocol.json`）开始，并通过经过核对的副本进入本仓库。
-* 不要把仅仅构建过的东西描述为已在板子上运行。
+* 不要把仅仅构建过的东西描述为已在板卡上运行。
 * 请私下报告漏洞：[SECURITY.md](SECURITY.md)。问题、想法和报告：electrohobby3d@gmail.com（[SUPPORT.md](SUPPORT.md)）。
 
 ## 👤 作者

@@ -19,11 +19,11 @@
 
 ---
 
-**正直な現状確認 - 実際に今動くもの：** このリポジトリにはソフトウェアとして書かれたゲートウェイがあります。識別子の一覧はプロトコル仕様から作られ、各フレームの内容はそれと照合され、送信レートは制限され、相手は鍵を持っていることを証明しなければなりません。すべて CI で模擬部品とローカルソケットを使って試験しています。実際の CAN バス、アダプター、基板につないだことは一度もなく、これを使っている設置もまだありません。加熱・レーザー・溶接のヘッドには、脅威モデルにあるハードウェア対策が引き続き必要です。どのフレームでも閉じられないインターロック、閉じたバス、電源を切る停止装置です。
+**正直な現状確認 - 実際に今動くもの：** このリポジトリにはソフトウェアとして書かれたゲートウェイがあります。識別子の一覧はプロトコル仕様から作られ、各フレームの内容はそれと照合され、送信レートは制限され、相手は鍵を持っていることを証明しなければなりません。すべて CI で模擬部品とローカルソケットを使って試験しています。実際の CAN バス、アダプター、ボードにつないだことは一度もなく、これを使っている設置もまだありません。加熱・レーザー・溶接のヘッドには、脅威モデルにあるハードウェア対策が引き続き必要です。どのフレームでも閉じられないインターロック、閉じたバス、電源を切る停止装置です。
 
 ---
 
-> **安全性とセキュリティの現状:** このエコシステムは認証された安全システムではなく、実装済みの URTC 基板もまだ存在しません。ブートローダーはファームウェアイメージを CRC32 と共有鍵の HMAC-SHA256 で検査しており、非対称署名ではありません(予定)。公開されているアプリケーションイメージは公開の開発用鍵(`signing_key_kind: dev`)で署名されているため、誰でもブートローダーが受け入れるイメージを作れます。実際の基板には何も送信されていません。ここに書かれた内容を人の安全のために頼る前に、[セキュリティベースライン](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/SECURITY_BASELINE.md)と[脅威モデル](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/THREAT_MODEL.md)をお読みください。
+> **安全性とセキュリティの現状:** このエコシステムは認証された安全システムではなく、実装済みの URTC ボードもまだ存在しません。ブートローダーはファームウェアイメージを CRC32 と共有鍵の HMAC-SHA256 で検査しており、非対称署名ではありません(予定)。公開されているアプリケーションイメージは公開の開発用鍵(`signing_key_kind: dev`)で署名されているため、誰でもブートローダーが受け入れるイメージを作れます。実際のボードには何も送信されていません。ここに書かれた内容を人の安全のために頼る前に、[セキュリティベースライン](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/SECURITY_BASELINE.md)と[脅威モデル](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/THREAT_MODEL.md)をお読みください。
 
 ## 📋 ひと目で
 
@@ -206,14 +206,14 @@ README とテキストは、英語、スペイン語、フランス語、イタ�
 URTC は独立したリポジトリで構成され、それぞれに固有のバージョン、テスト、README があります。グループ別のファミリーは次のとおりです：
 
 * **URTC Tool Platform:**
-  * [URTC](https://github.com/JuanenRac/URTC) - ツールヘッド基板のファームウェア(25 のツールプロファイル、CAN ブートローダー)と CAN プロトコルのリファレンス。
+  * [URTC](https://github.com/JuanenRac/URTC) - ツールヘッドボードのファームウェア(25 のツールプロファイル、CAN ブートローダー)と CAN プロトコルのリファレンス。
   * [URTC-COMMON](https://github.com/JuanenRac/URTC-COMMON) - 一度だけデータとして書かれた CAN プロトコル(仕様、生成された表、適合ベクトル)と、各プログラムが共有するコード。
-  * [URTC-FLASHER](https://github.com/JuanenRac/URTC-FLASHER) - CAN または SWD/JTAG で基板のファームウェアを更新するデスクトップツール。
+  * [URTC-FLASHER](https://github.com/JuanenRac/URTC-FLASHER) - CAN または SWD/JTAG でボードのファームウェアを更新するデスクトップツール。
   * **URTC-GATEWAY** (このリポジトリ) - CAN バスの手前に置くゲートウェイ。一覧にある識別子だけを通し、レートを制限し、セッション鍵を求めます。
   * [URTC-SMART-RACK](https://github.com/JuanenRac/URTC-SMART-RACK) - 予熱とライフサイクル追跡を備えたツールラック向けの、ハードウェア非依存の C ロジックとコマンドプロトコル。
-  * [URTC-TESTER](https://github.com/JuanenRac/URTC-TESTER) - 基板が報告するツールプロファイルの操作部とテレメトリを表示する、デスクトップ用のライブ CAN バステスター。
+  * [URTC-TESTER](https://github.com/JuanenRac/URTC-TESTER) - ボードが報告するツールプロファイルの操作部とテレメトリを表示する、デスクトップ用のライブ CAN バステスター。
   * [URTC-VISION-TOOL](https://github.com/JuanenRac/URTC-VISION-TOOL) - C のセンサーフレームプロトコルと、検査用ツールヘッド向けの Python サーマル/RGB コンパニオン。
-  * [URTC-WEB-STUDIO](https://github.com/JuanenRac/URTC-WEB-STUDIO) - Web Serial と SLCAN で基板の書き込みとテストを行うブラウザアプリ。インストール不要。
+  * [URTC-WEB-STUDIO](https://github.com/JuanenRac/URTC-WEB-STUDIO) - Web Serial と SLCAN でボードの書き込みとテストを行うブラウザアプリ。インストール不要。
 * **Ecosystem Operations:**
   * [URTC-DEVTOOLS](https://github.com/JuanenRac/URTC-DEVTOOLS) - ファミリー共通のリポジトリツールを、版数付きの一つのセットとして提供します。ロックファイルで、編集されたコピーと古いままのコピーを見分けられます。
   * [URTC-DOCS](https://github.com/JuanenRac/URTC-DOCS) - エコシステムのアーキテクチャ、インターフェース、セキュリティベースライン、生成されたカタログと、全リポジトリを比較するツール。
