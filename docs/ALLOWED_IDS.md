@@ -54,6 +54,8 @@
 | 0x1B9 | PID_CONFIG | refused (dangerous) | refused |
 | 0x1BA | PID_STATE_RESP | forwarded | forwarded |
 | 0x1BB | HEALTH_INFO | refused | forwarded |
+| 0x1BC | CRASH_DUMP_QUERY | forwarded | refused |
+| 0x1BD | CRASH_DUMP_RESP | refused | forwarded |
 | 0x1C0 | SPOT_WELD_CMD | forwarded | refused |
 | 0x1D0 | UV_CURING_CMD | forwarded | refused |
 | 0x1E0 | HOTAIR_CMD | forwarded | refused |
