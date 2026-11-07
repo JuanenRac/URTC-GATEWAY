@@ -60,7 +60,7 @@ Le bus CAN de la tête d'outil n'authentifie pas l'émetteur : tout nœud raccor
 
 * **Liste d'identifiants, produite à partir de la spécification :** seuls les identifiants qu'un hôte envoie traversent vers le bus ; les dangereux (bootloader, mise à jour de l'esclave d'extension, effacement de l'état enregistré, tout réglage persistant) sont refusés sauf si l'opérateur les débloque. [Le tableau des identifiants](docs/ALLOWED_IDS.md) est généré.
 * **Contrôle de la charge utile :** une trame doit avoir la longueur et les valeurs que la spécification permet (une consigne dans sa plage, un sens qui existe, les octets magiques là où ils sont exigés).
-* **Limite de débit :** un seau de jetons par identifiant et pour toute la liaison, et un seau plus strict pour un identifiant dangereux débloqué.
+* **Limite de débit :** un seau à jetons par identifiant et pour toute la liaison, et un seau plus strict pour un identifiant dangereux débloqué.
 * **Clé de session :** un pair prouve qu'il détient une clé avec un HMAC sur un nonce de la connexion, un compteur et la trame, de sorte que rien d'enregistré ne peut être rejoué.
 * **Toute protection peut être désactivée :** depuis le fichier de configuration ou la ligne de commande, et le programme énumère au démarrage chaque protection désactivée. Il ne chiffre pas et ne remplace pas les mesures matérielles du modèle de menaces.
 
@@ -80,9 +80,9 @@ Comment les parties de ce dépôt s'articulent : qui l'utilise, ce qu'il contien
 
 | Menace | Défense |
 |---|---|
-| Un nœud sur les fils envoie une commande dangereuse (chargeur d'amorçage, mise à jour de l'esclave d'extension, effacement de l'état sauvegardé, un réglage persistant) | La liste d'identifiants les refuse tant que l'opérateur ne les déverrouille pas avec `--unlock-dangerous` |
+| Un nœud sur les fils envoie une commande dangereuse (bootloader, mise à jour de l'esclave d'extension, effacement de l'état sauvegardé, un réglage persistant) | La liste d'identifiants les refuse tant que l'opérateur ne les déverrouille pas avec `--unlock-dangerous` |
 | Une valeur hors de ce que le protocole permet (une consigne hors plage, un sens qui n'existe pas, de mauvais octets magiques) | Le contrôle de la charge refuse la trame |
-| Un émetteur emballé ou hostile inonde le bus | Un seau à jetons par identifiant et pour toute la liaison, et un plus strict pour un identifiant dangereux déverrouillé |
+| Un émetteur incontrôlé ou hostile inonde le bus | Un seau à jetons par identifiant et pour toute la liaison, et un plus strict pour un identifiant dangereux déverrouillé |
 | Un message enregistré est renvoyé | La clé de session : un HMAC sur un nonce de la connexion, un compteur qui doit croître et la trame, de sorte qu'un enregistrement est inutile plus tard et ailleurs |
 | La passerelle est joignable depuis un réseau sans clé | Écouter sur une adresse non locale sans clé de session est refusé sauf si `--allow-open-network` est donné |
 
@@ -108,7 +108,7 @@ Chaque protection est activée par défaut et chacune peut être désactivée, d
 | Protection | Section du fichier | Désactiver / activer | Ce qu'elle fait |
 |---|---|---|---|
 | Liste d'identifiants | `whitelist.enabled` | `--no-whitelist` / `--whitelist` | seuls les identifiants qu'envoie un hôte passent vers le bus |
-| Identifiants dangereux | `whitelist.unlock_dangerous` | `--unlock-dangerous` | le chargeur d'amorçage, la mise à jour de l'esclave d'extension, l'effacement de l'état sauvegardé et tout réglage persistant restent refusés jusqu'au déverrouillage |
+| Identifiants dangereux | `whitelist.unlock_dangerous` | `--unlock-dangerous` | le bootloader, la mise à jour de l'esclave d'extension, l'effacement de l'état sauvegardé et tout réglage persistant restent refusés jusqu'au déverrouillage |
 | Identifiants ajoutés / retirés | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | ajouter un identifiant à la main ou en retirer un quoi que dise le reste |
 | Contrôle de la charge | `payload.enabled` | `--no-payload-check` / `--payload-check` | la longueur et les valeurs doivent être celles que la spécification permet |
 | Limite de débit | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 trames par seconde et une rafale de 10 par identifiant, une rafale de 50 pour la liaison, une de 2 pour un identifiant dangereux déverrouillé ; `rate.overrides` donne à un identifiant son propre débit et sa propre rafale |
@@ -147,7 +147,7 @@ Les versions des programmes URTC qui fonctionnent ensemble, et la version du pro
 
 ## 🧪 Tests
 
-La suite compte 127 tests (`python -m pytest tests -q`) : la liste d'identifiants, le contrôle de la charge, la limite de débit, la session et ses refus, les options et le fichier de configuration, la ligne de commande, un test sur une vraie socket locale et l'extrémité série face à un faux port. Un test est ignoré quand sa dépendance optionnelle manque. `python -m mypy` vérifie les types du paquet et `ruff check .` le code.
+La suite compte 127 tests (`python -m pytest tests -q`) : la liste d'identifiants, le contrôle de la charge, la limite de débit, la session et ses refus, les options et le fichier de configuration, la ligne de commande, un test sur un vrai socket local et l'extrémité série face à un port simulé. Un test est ignoré quand sa dépendance optionnelle manque. `python -m mypy` vérifie les types du paquet et `ruff check .` le code.
 
 ## 🏗️ Compilation et publication
 
@@ -166,7 +166,7 @@ La suite compte 127 tests (`python -m pytest tests -q`) : la liste d'identifiant
 URTC-GATEWAY/
 ├── src/urtc_gateway/                                la passerelle : liste d'identifiants, politique, limite de débit, clés de session, options, extrémités TCP et série, ligne de commande
 ├── docs/                                            les options (POLICY.md) et le tableau généré des identifiants
-├── tests/                                           tests unitaires de chaque protection et un test sur une vraie socket locale
+├── tests/                                           tests unitaires de chaque protection et un test sur un vrai socket local
 ├── tools/                                           make_id_table.py et les outils partagés de CI et d'images
 ├── images/                                          bannière et images de ce README
 ├── .github/                                         workflow de CI et modèles d'issues et de pull requests
@@ -189,8 +189,8 @@ URTC-GATEWAY/
 
 **Limites connues aujourd'hui**
 
-* Elle n'a jamais été connectée à un vrai bus CAN, un adaptateur ou une carte, et aucune installation ne l'utilise encore ; elle est testée en CI avec des faux et une socket locale.
-* Les têtes chauffantes, laser et de soudure exigent toujours les mesures matérielles du modèle de menaces : un verrouillage qu'aucune trame ne peut fermer, un bus fermé et un arrêt qui coupe l'alimentation.
+* Elle n'a jamais été connectée à un vrai bus CAN, un adaptateur ou une carte, et aucune installation ne l'utilise encore ; elle est testée en CI avec des simulations et un socket local.
+* Les têtes de chauffage, de laser et de soudure exigent toujours les mesures matérielles du modèle de menaces : un verrouillage qu'aucune trame ne peut fermer, un bus fermé et un arrêt qui coupe l'alimentation.
 * Elle ne chiffre pas et n'arrête pas un pair qui détient la clé et se comporte mal.
 
 **Ensuite**

@@ -62,7 +62,7 @@ El bus CAN del cabezal de herramienta no autentica al emisor: se obedece a cualq
 * **Comprobación de la carga:** una trama debe tener la longitud y los valores que permite la especificación (una consigna dentro de su rango, una dirección que existe, los bytes mágicos donde se exigen).
 * **Límite de tasa:** un cubo de fichas por identificador y para todo el enlace, y uno más estricto para un identificador peligroso desbloqueado.
 * **Clave de sesión:** un interlocutor demuestra que posee una clave con un HMAC sobre un nonce de la conexión, un contador y la trama, de modo que nada grabado puede repetirse.
-* **Toda protección se puede desactivar:** desde el fichero de configuración o la línea de comandos, y el programa enumera al arrancar cada protección que está apagada. No cifra, y no sustituye las medidas de hardware del modelo de amenazas.
+* **Toda protección se puede desactivar:** desde el archivo de configuración o la línea de comandos, y el programa enumera al arrancar cada protección que está apagada. No cifra, y no sustituye las medidas de hardware del modelo de amenazas.
 
 ## 🧩 Papel en URTC
 
@@ -80,13 +80,13 @@ Cómo encajan las partes de este repositorio: quién lo usa, qué contiene y de 
 
 | Amenaza | Defensa |
 |---|---|
-| Un nodo en los cables envía una orden peligrosa (cargador de arranque, actualización del esclavo de expansión, borrado del estado guardado, un ajuste persistente) | La lista de identificadores las rechaza hasta que el operador las desbloquea con `--unlock-dangerous` |
+| Un nodo en los cables envía una orden peligrosa (bootloader, actualización del esclavo de expansión, borrado del estado guardado, un ajuste persistente) | La lista de identificadores las rechaza hasta que el operador las desbloquea con `--unlock-dangerous` |
 | Un valor fuera de lo que permite el protocolo (una consigna fuera de rango, una dirección que no existe, bytes mágicos incorrectos) | La comprobación de la carga rechaza la trama |
 | Un emisor descontrolado u hostil inunda el bus | Un cubo de fichas por identificador y para todo el enlace, y uno más estricto para un identificador peligroso desbloqueado |
 | Se vuelve a enviar un mensaje grabado | La clave de sesión: un HMAC sobre un nonce de la conexión, un contador que debe crecer y la trama, de modo que una grabación no sirve después ni en otro sitio |
 | La pasarela es accesible desde una red sin clave | Escuchar en una dirección no local sin clave de sesión se rechaza salvo que se indique `--allow-open-network` |
 
-No cifra: el bus no es un secreto. No detiene a un par que tenga la clave y se porte mal; para eso están la lista, la comprobación de la carga y el límite de tasa, y los perros guardianes de los cabezales. No sustituye las medidas de hardware del modelo de amenazas del CAN (un interbloqueo que ninguna trama pueda cerrar, un bus cerrado, una parada que corte la alimentación). Nunca se ha usado en un bus real.
+No cifra: el bus no es un secreto. No detiene a un interlocutor que tenga la clave y se porte mal; para eso están la lista, la comprobación de la carga y el límite de tasa, y los perros guardianes de los cabezales. No sustituye las medidas de hardware del modelo de amenazas del CAN (un interbloqueo que ninguna trama pueda cerrar, un bus cerrado, una parada que corte la alimentación). Nunca se ha usado en un bus real.
 
 ## 🔌 Interfaces
 
@@ -96,10 +96,10 @@ La línea de comandos es `urtc-gateway` (o `python -m urtc_gateway.cli`):
 |---|---|
 | `policy` | muestra las opciones efectivas y un aviso por cada protección desactivada |
 | `ids` | lista cada identificador y lo que hace la pasarela con él |
-| `keygen FILE PEER [PEER ...]` | escribe un archivo de claves con una clave aleatoria nueva para cada par (solo legible por su dueño, nunca sobre uno existente, las claves no se muestran); da a cada par solo su línea |
+| `keygen FILE PEER [PEER ...]` | escribe un archivo de claves con una clave aleatoria nueva para cada interlocutor (solo legible por su propietario, nunca sobre uno existente, las claves no se muestran); da a cada interlocutor solo su línea |
 | `run` | escucha en un puerto TCP (`--host`, por defecto `127.0.0.1`; `--port`, por defecto `8765`) y reenvía a un bus (`--bus loopback`, una URL de pyserial como `socket://127.0.0.1:7777` o el puerto serie de un adaptador SLCAN; `--bitrate`, por defecto 500000) |
 
-**El protocolo de líneas.** Al conectar, la pasarela envía `{"type": "hello", "nonce": "<hex>", "session": true}`. Cada mensaje del par es un objeto JSON por línea: `{"id": 304, "data": "012C", "peer": "controller", "counter": 1, "mac": "<32 dígitos hex>"}`. `mac` son los 16 primeros bytes de HMAC-SHA256, con la clave del par, sobre `urtc-gw/1|<nonce>|<contador>|<id en tres dígitos hex>|<datos en hex>`; el contador debe crecer con cada mensaje de la conexión y el nonce es nuevo en cada conexión. Un mensaje rechazado se responde con `{"type": "refused", "code": "<motivo>"}`, y las tramas del bus vuelven como `{"type": "frame", "id": ..., "data": "<hex>"}`. Consulta [la política](docs/POLICY.md).
+**El protocolo de líneas.** Al conectar, la pasarela envía `{"type": "hello", "nonce": "<hex>", "session": true}`. Cada mensaje del interlocutor es un objeto JSON por línea: `{"id": 304, "data": "012C", "peer": "controller", "counter": 1, "mac": "<32 dígitos hex>"}`. `mac` son los 16 primeros bytes de HMAC-SHA256, con la clave del interlocutor, sobre `urtc-gw/1|<nonce>|<contador>|<id en tres dígitos hex>|<datos en hex>`; el contador debe crecer con cada mensaje de la conexión y el nonce es nuevo en cada conexión. Un mensaje rechazado se responde con `{"type": "refused", "code": "<motivo>"}`, y las tramas del bus vuelven como `{"type": "frame", "id": ..., "data": "<hex>"}`. Consulta [la política](docs/POLICY.md).
 
 ## ⚙️ Configuración
 
@@ -108,11 +108,11 @@ Cada protección está activada por defecto y cualquiera puede desactivarse, en 
 | Protección | Sección del archivo | Desactivar / activar | Qué hace |
 |---|---|---|---|
 | Lista de identificadores | `whitelist.enabled` | `--no-whitelist` / `--whitelist` | solo cruzan hacia el bus los identificadores que envía un host |
-| Identificadores peligrosos | `whitelist.unlock_dangerous` | `--unlock-dangerous` | el cargador de arranque, la actualización del esclavo de expansión, el borrado del estado guardado y todo ajuste persistente siguen rechazados hasta desbloquearlos |
+| Identificadores peligrosos | `whitelist.unlock_dangerous` | `--unlock-dangerous` | el bootloader, la actualización del esclavo de expansión, el borrado del estado guardado y todo ajuste persistente siguen rechazados hasta desbloquearlos |
 | Identificadores añadidos / quitados | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | añadir un identificador a mano o quitar uno diga lo que diga el resto |
 | Comprobación de la carga | `payload.enabled` | `--no-payload-check` / `--payload-check` | la longitud y los valores deben ser los que permite la especificación |
 | Límite de tasa | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 tramas por segundo y una ráfaga de 10 por identificador, una ráfaga de 50 para el enlace, una de 2 para un identificador peligroso desbloqueado; `rate.overrides` da a un identificador su propia tasa y ráfaga |
-| Clave de sesión | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | un par demuestra que tiene una clave |
+| Clave de sesión | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | un interlocutor demuestra que tiene una clave |
 | Filtro de salida | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | solo lo que envía una placa va hacia la red, hasta 500 tramas por segundo |
 | Red abierta | `server.allow_open_network` | `--allow-open-network` | escuchar en una dirección no local sin clave de sesión se rechaza salvo que se pida |
 
@@ -134,7 +134,7 @@ Cada protección está activada por defecto y cualquiera puede desactivarse, en 
 python tools/make_id_table.py --check                              # la tabla de identificadores está al día
 python -m pytest tests -q                                          # las pruebas
 python -m urtc_gateway.cli policy                                  # las opciones efectivas y un aviso por cada protección apagada
-python -m urtc_gateway.cli keygen keys.txt controller              # un fichero de claves nuevo (solo para el propietario, nunca se sobrescribe)
+python -m urtc_gateway.cli keygen keys.txt controller              # un archivo de claves nuevo (solo para su propietario, nunca se sobrescribe)
 python -m urtc_gateway.cli run --key-file keys.txt --bus loopback  # escuchar en 127.0.0.1:8765 sin nada en el bus
 python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777# la placa virtual de URTC-COMMON (o cualquier URL de pyserial) en lugar de un adaptador
 ```
@@ -189,9 +189,9 @@ URTC-GATEWAY/
 
 **Límites conocidos hoy**
 
-* Nunca se ha conectado a un bus CAN real, un adaptador o una placa, y ninguna instalación lo usa todavía; se prueba en CI con simulados y un socket local.
-* Los cabezales de calor, láser y soldadura siguen necesitando las medidas de hardware del modelo de amenazas: un interbloqueo que ninguna trama pueda cerrar, un bus cerrado y una parada que corte la alimentación.
-* No cifra ni detiene a un par que tenga la clave y se porte mal.
+* Nunca se ha conectado a un bus CAN real, un adaptador o una placa, y ninguna instalación lo usa todavía; se prueba en CI con simulaciones y un socket local.
+* Los cabezales de calefacción, láser y soldadura siguen necesitando las medidas de hardware del modelo de amenazas: un interbloqueo que ninguna trama pueda cerrar, un bus cerrado y una parada que corte la alimentación.
+* No cifra ni detiene a un interlocutor que tenga la clave y se porte mal.
 
 **Siguiente**
 

@@ -6,7 +6,7 @@
 
 <p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 简体中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | 🇵🇹 <b>Português</b></p>
 
-### Uma gateway à frente do barramento CAN: os identificadores que um anfitrião pode enviar, um limite de taxa e uma chave de sessão
+### Um gateway à frente do barramento CAN: os identificadores que um anfitrião pode enviar, um limite de taxa e uma chave de sessão
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -19,7 +19,7 @@
 
 ---
 
-**Verificação de honestidade - o que realmente funciona hoje:** este repositório contém uma gateway escrita como software: a lista de identificadores é feita a partir da especificação do protocolo, o conteúdo de cada trama é verificado contra ela, a taxa é limitada e um interlocutor tem de provar que possui uma chave. Tudo é testado na CI com simulações e um socket local. Nunca foi ligada a um barramento CAN real, a um adaptador nem a uma placa, e nenhuma instalação a usa ainda. As cabeças de aquecimento, laser e soldadura continuam a precisar das medidas de hardware do modelo de ameaças: um bloqueio que nenhuma trama possa fechar, um barramento fechado e uma paragem que corte a alimentação.
+**Verificação de honestidade - o que realmente funciona hoje:** este repositório contém um gateway escrito como software: a lista de identificadores é feita a partir da especificação do protocolo, o conteúdo de cada trama é verificado contra ela, a taxa é limitada e um interlocutor tem de provar que possui uma chave. Tudo é testado na CI com simulações e um socket local. Nunca foi ligado a um barramento CAN real, a um adaptador nem a uma placa, e nenhuma instalação o usa ainda. As cabeças de aquecimento, laser e soldadura continuam a precisar das medidas de hardware do modelo de ameaças: um bloqueio que nenhuma trama possa fechar, um barramento fechado e uma paragem que corte a alimentação.
 
 ---
 
@@ -56,17 +56,17 @@
 
 ## 🎯 Visão geral
 
-O barramento CAN da cabeça de ferramenta não autentica o emissor: qualquer nó ligado aos fios é obedecido. Quando uma instalação não consegue manter o barramento fechado, esta gateway coloca-se à frente:
+O barramento CAN da cabeça de ferramenta não autentica o emissor: qualquer nó ligado aos fios é obedecido. Quando uma instalação não consegue manter o barramento fechado, este gateway coloca-se à frente:
 
 * **Lista de identificadores, feita a partir da especificação:** só atravessam para o barramento os identificadores que um anfitrião envia; os perigosos (bootloader, atualização do escravo de expansão, apagamento do estado guardado, qualquer definição persistente) são recusados, a menos que o operador os desbloqueie. [A tabela de identificadores](docs/ALLOWED_IDS.md) é gerada.
-* **Verificação do conteúdo:** uma trama tem de ter o comprimento e os valores que a especificação permite (um valor pretendido dentro do intervalo, um sentido que existe, os bytes mágicos onde são exigidos).
+* **Verificação da carga:** uma trama tem de ter o comprimento e os valores que a especificação permite (um valor pretendido dentro do intervalo, um sentido que existe, os bytes mágicos onde são exigidos).
 * **Limite de taxa:** um balde de fichas por identificador e para toda a ligação, e outro mais apertado para um identificador perigoso desbloqueado.
 * **Chave de sessão:** um interlocutor prova que possui uma chave com um HMAC sobre um nonce da ligação, um contador e a trama, de modo que nada gravado pode ser repetido.
 * **Qualquer proteção pode ser desligada:** no ficheiro de configuração ou na linha de comandos, e o programa enumera ao arrancar cada proteção que está desligada. Não cifra e não substitui as medidas de hardware do modelo de ameaças.
 
 ## 🧩 Papel no URTC
 
-O modelo de ameaças do repositório URTC diz que, se uma instalação não consegue manter o barramento fechado ou não pode evitar ligá-lo a uma rede, a proteção deve estar numa gateway à frente do barramento e não em cada cabeça de ferramenta. Este repositório é essa gateway: útil para um túnel entre o controlador do robô e as cabeças de ferramenta e para expor o barramento a uma rede. Usa a especificação do protocolo do URTC-COMMON como única fonte de identificadores e formatos.
+O modelo de ameaças do repositório URTC diz que, se uma instalação não consegue manter o barramento fechado ou não pode evitar ligá-lo a uma rede, a proteção deve estar num gateway à frente do barramento e não em cada cabeça de ferramenta. Este repositório é esse gateway: útil para um túnel entre o controlador do robô e as cabeças de ferramenta e para expor o barramento a uma rede. Usa a especificação do protocolo do URTC-COMMON como única fonte de identificadores e formatos.
 
 ## 🏛️ Arquitetura
 
@@ -133,7 +133,7 @@ Cada proteção está ativada por omissão e qualquer uma pode ser desativada, n
 ```bash
 python tools/make_id_table.py --check                              # a tabela de identificadores está atualizada
 python -m pytest tests -q                                          # os testes
-python -m urtc_gateway.cli policy                                  # as opções efetivas e um aviso por cada proteção desligada
+python -m urtc_gateway.cli policy                                  # as opções efetivas e um aviso por cada proteção desativada
 python -m urtc_gateway.cli keygen keys.txt controller              # um novo ficheiro de chaves (só para o proprietário, nunca é substituído)
 python -m urtc_gateway.cli run --key-file keys.txt --bus loopback  # escutar em 127.0.0.1:8765 sem nada no barramento
 python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777# a placa virtual do URTC-COMMON (ou qualquer URL do pyserial) em vez de um adaptador
@@ -164,7 +164,7 @@ O conjunto tem 127 testes (`python -m pytest tests -q`): a lista de identificado
 
 ```text
 URTC-GATEWAY/
-├── src/urtc_gateway/                                a gateway: lista de identificadores, política, limite de taxa, chaves de sessão, opções, extremos TCP e série e linha de comandos
+├── src/urtc_gateway/                                o gateway: lista de identificadores, política, limite de taxa, chaves de sessão, opções, extremos TCP e série e linha de comandos
 ├── docs/                                            as opções (POLICY.md) e a tabela gerada de identificadores
 ├── tests/                                           testes unitários de cada proteção e um teste sobre um socket local real
 ├── tools/                                           make_id_table.py e as ferramentas partilhadas de CI e imagens

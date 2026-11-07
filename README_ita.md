@@ -19,7 +19,7 @@
 
 ---
 
-**Verifica di onestà - cosa funziona davvero oggi:** questo repository contiene un gateway scritto come software: l'elenco degli identificatori è ricavato dalla specifica del protocollo, il contenuto di ogni frame è controllato rispetto ad essa, la frequenza è limitata e un interlocutore deve dimostrare di possedere una chiave. Tutto è testato in CI con simulazioni e un socket locale. Non è mai stato collegato a un vero bus CAN, a un adattatore o a una scheda, e nessuna installazione lo usa ancora. Le teste di riscaldamento, laser e saldatura richiedono ancora le misure hardware del modello di minaccia: un interblocco che nessun frame possa chiudere, un bus chiuso e un arresto che tolga l'alimentazione.
+**Verifica di onestà - cosa funziona davvero oggi:** questo repository contiene un gateway scritto come software: l'elenco degli identificatori è ricavato dalla specifica del protocollo, il contenuto di ogni frame è controllato rispetto ad essa, la frequenza è limitata e un peer deve dimostrare di possedere una chiave. Tutto è testato in CI con simulazioni e un socket locale. Non è mai stato collegato a un vero bus CAN, a un adattatore o a una scheda, e nessuna installazione lo usa ancora. Le teste di riscaldamento, laser e saldatura richiedono ancora le misure hardware del modello di minaccia: un interblocco che nessun frame possa chiudere, un bus chiuso e un arresto che tolga l'alimentazione.
 
 ---
 
@@ -61,7 +61,7 @@ Il bus CAN della testa utensile non autentica il mittente: qualsiasi nodo colleg
 * **Elenco di identificatori, ricavato dalla specifica:** verso il bus passano solo gli identificatori che un host invia; quelli pericolosi (bootloader, aggiornamento dello slave di espansione, cancellazione dello stato salvato, ogni impostazione persistente) sono rifiutati a meno che l'operatore li sblocchi. [La tabella degli identificatori](docs/ALLOWED_IDS.md) è generata.
 * **Controllo del contenuto:** un frame deve avere la lunghezza e i valori che la specifica consente (un setpoint nel suo intervallo, una direzione esistente, i byte magici dove sono richiesti).
 * **Limite di frequenza:** un secchio di gettoni per identificatore e per l'intero collegamento, e uno più rigido per un identificatore pericoloso sbloccato.
-* **Chiave di sessione:** un interlocutore dimostra di possedere una chiave con un HMAC su un nonce della connessione, un contatore e il frame, così nulla di registrato può essere riproposto.
+* **Chiave di sessione:** un peer dimostra di possedere una chiave con un HMAC su un nonce della connessione, un contatore e il frame, così nulla di registrato può essere riproposto.
 * **Ogni protezione si può disattivare:** dal file di configurazione o dalla riga di comando, e il programma elenca all'avvio ogni protezione spenta. Non cifra e non sostituisce le misure hardware del modello di minaccia.
 
 ## 🧩 Ruolo in URTC
@@ -86,7 +86,7 @@ Come si incastrano le parti di questo repository: chi lo usa, che cosa contiene 
 | Un messaggio registrato viene inviato di nuovo | La chiave di sessione: un HMAC su un nonce della connessione, un contatore che deve crescere e il frame, così una registrazione è inutile dopo e altrove |
 | Il gateway è raggiungibile da una rete senza chiave | L'ascolto su un indirizzo non locale senza chiave di sessione viene rifiutato salvo `--allow-open-network` |
 
-Non cifra: il bus non è un segreto. Non ferma un peer che possiede la chiave e si comporta male; per questo ci sono l'elenco, il controllo del payload, il limite di frequenza e i watchdog delle teste utensile. Non sostituisce le misure hardware del modello di minacce del CAN (un interblocco che nessun frame può chiudere, un bus chiuso, un arresto che taglia l'alimentazione). Non è mai stato usato su un bus reale.
+Non cifra: il bus non è un segreto. Non ferma un peer che possiede la chiave e si comporta male; per questo ci sono l'elenco, il controllo del payload, il limite di frequenza e i watchdog delle teste utensile. Non sostituisce le misure hardware del modello di minaccia del CAN (un interblocco che nessun frame può chiudere, un bus chiuso, un arresto che taglia l'alimentazione). Non è mai stato usato su un bus reale.
 
 ## 🔌 Interfacce
 
@@ -147,7 +147,7 @@ Quali versioni dei programmi URTC funzionano insieme, e quale versione del proto
 
 ## 🧪 Test
 
-La suite ha 127 test (`python -m pytest tests -q`): l'elenco degli identificatori, il controllo del payload, il limite di frequenza, la sessione e i suoi rifiuti, le opzioni e il file di configurazione, la riga di comando, un test su un vero socket locale e l'estremità seriale contro una porta finta. Un test viene saltato se manca la sua dipendenza opzionale. `python -m mypy` controlla i tipi del pacchetto e `ruff check .` il codice.
+La suite ha 127 test (`python -m pytest tests -q`): l'elenco degli identificatori, il controllo del payload, il limite di frequenza, la sessione e i suoi rifiuti, le opzioni e il file di configurazione, la riga di comando, un test su un vero socket locale e l'estremità seriale contro una porta simulata. Un test viene saltato se manca la sua dipendenza opzionale. `python -m mypy` controlla i tipi del pacchetto e `ruff check .` il codice.
 
 ## 🏗️ Compilazione e rilascio
 
@@ -189,8 +189,8 @@ URTC-GATEWAY/
 
 **Limiti noti oggi**
 
-* Non è mai stato collegato a un vero bus CAN, a un adattatore o a una scheda, e nessuna installazione lo usa ancora; è testato in CI con finti e un socket locale.
-* Le teste di riscaldamento, laser e saldatura richiedono ancora le misure hardware del modello di minacce: un interblocco che nessun frame può chiudere, un bus chiuso e un arresto che taglia l'alimentazione.
+* Non è mai stato collegato a un vero bus CAN, a un adattatore o a una scheda, e nessuna installazione lo usa ancora; è testato in CI con simulazioni e un socket locale.
+* Le teste di riscaldamento, laser e saldatura richiedono ancora le misure hardware del modello di minaccia: un interblocco che nessun frame può chiudere, un bus chiuso e un arresto che taglia l'alimentazione.
 * Non cifra e non ferma un peer che possiede la chiave e si comporta male.
 
 **Prossimi passi**

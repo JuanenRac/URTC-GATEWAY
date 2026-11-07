@@ -19,7 +19,7 @@
 
 ---
 
-**Ehrlichkeitscheck - was heute tatsächlich läuft:** Dieses Repository enthält ein Gateway als Software: Die Liste der Kennungen wird aus der Protokollspezifikation erzeugt, die Nutzdaten jedes Frames werden dagegen geprüft, die Rate ist begrenzt, und eine Gegenstelle muss nachweisen, dass sie einen Schlüssel besitzt. Alles wird in der CI mit Attrappen und einem lokalen Socket getestet. Es war nie an einen echten CAN-Bus, einen Adapter oder eine Platine angeschlossen, und keine Installation nutzt es bisher. Heiz-, Laser- und Schweißköpfe brauchen weiterhin die Hardware-Maßnahmen des Bedrohungsmodells: eine Verriegelung, die kein Frame schließen kann, einen geschlossenen Bus und einen Stopp, der die Energie abschaltet.
+**Ehrlichkeitscheck - was heute tatsächlich läuft:** Dieses Repository enthält ein Gateway als Software: Die Liste der Kennungen wird aus der Protokollspezifikation erzeugt, die Nutzdaten jedes Frames werden dagegen geprüft, die Rate ist begrenzt, und ein Teilnehmer muss nachweisen, dass sie einen Schlüssel besitzt. Alles wird in der CI mit Attrappen und einem lokalen Socket getestet. Es war nie an einen echten CAN-Bus, einen Adapter oder eine Platine angeschlossen, und keine Installation nutzt es bisher. Heiz-, Laser- und Schweißköpfe brauchen weiterhin die Hardware-Maßnahmen des Bedrohungsmodells: eine Verriegelung, die kein Frame schließen kann, einen geschlossenen Bus und einen Stopp, der die Energie abschaltet.
 
 ---
 
@@ -61,8 +61,8 @@ Der CAN-Bus des Werkzeugkopfs authentifiziert den Absender nicht: Jedem Knoten a
 * **Kennungsliste, aus der Spezifikation erzeugt:** Nur die Kennungen, die ein Host sendet, gehen zum Bus; die gefährlichen (Bootloader, Update des Erweiterungs-Slaves, Löschen des gespeicherten Zustands, jede dauerhafte Einstellung) werden abgelehnt, solange der Betreiber sie nicht freigibt. [Die Kennungstabelle](docs/ALLOWED_IDS.md) wird erzeugt.
 * **Prüfung der Nutzdaten:** Ein Frame muss die Länge und die Werte haben, die die Spezifikation erlaubt (ein Sollwert in seinem Bereich, eine existierende Richtung, die Magic-Bytes dort, wo sie verlangt werden).
 * **Ratenbegrenzung:** ein Token-Bucket je Kennung und für die ganze Verbindung, und ein strengerer für eine freigegebene gefährliche Kennung.
-* **Sitzungsschlüssel:** Eine Gegenstelle weist den Besitz eines Schlüssels mit einem HMAC über eine Nonce der Verbindung, einen Zähler und den Frame nach, sodass nichts Aufgezeichnetes wiedereingespielt werden kann.
-* **Jeder Schutz lässt sich abschalten:** in der Konfigurationsdatei oder auf der Kommandozeile, und das Programm listet beim Start jeden abgeschalteten Schutz auf. Es verschlüsselt nicht und ersetzt nicht die Hardware-Maßnahmen des Bedrohungsmodells.
+* **Sitzungsschlüssel:** Ein Teilnehmer weist den Besitz eines Schlüssels mit einem HMAC über eine Nonce der Verbindung, einen Zähler und den Frame nach, sodass nichts Aufgezeichnetes wiedereingespielt werden kann.
+* **Jeder Schutz lässt sich abschalten:** in der Konfigurationsdatei oder auf der Befehlszeile, und das Programm listet beim Start jeden abgeschalteten Schutz auf. Es verschlüsselt nicht und ersetzt nicht die Hardware-Maßnahmen des Bedrohungsmodells.
 
 ## 🧩 Rolle in URTC
 
@@ -80,10 +80,10 @@ Wie die Teile dieses Repositorys zusammenpassen: wer es nutzt, was es enthält u
 
 | Bedrohung | Abwehr |
 |---|---|
-| Ein Knoten an den Leitungen sendet einen gefährlichen Befehl (Bootloader, Aktualisierung des Erweiterungs-Slaves, Löschen des gespeicherten Zustands, eine dauerhafte Einstellung) | Die Bezeichnerliste lehnt sie ab, bis der Betreiber sie mit `--unlock-dangerous` freigibt |
+| Ein Knoten an den Leitungen sendet einen gefährlichen Befehl (Bootloader, Aktualisierung des Erweiterungs-Slaves, Löschen des gespeicherten Zustands, eine dauerhafte Einstellung) | Die Kennungsliste lehnt sie ab, bis der Betreiber sie mit `--unlock-dangerous` freigibt |
 | Ein Wert außerhalb dessen, was das Protokoll erlaubt (ein Sollwert außerhalb des Bereichs, eine nicht existierende Richtung, falsche Magic Bytes) | Die Nutzdatenprüfung lehnt den Frame ab |
-| Ein außer Kontrolle geratener oder feindlicher Sender überflutet den Bus | Ein Token-Bucket je Bezeichner und für die ganze Verbindung sowie ein strengerer für einen freigegebenen gefährlichen Bezeichner |
-| Eine aufgezeichnete Nachricht wird erneut gesendet | Der Sitzungsschlüssel: ein HMAC über einen Nonce der Verbindung, einen wachsenden Zähler und den Frame, sodass eine Aufzeichnung später und anderswo nutzlos ist |
+| Ein außer Kontrolle geratener oder feindlicher Sender überflutet den Bus | Ein Token-Bucket je Kennung und für die ganze Verbindung sowie ein strengerer für eine freigegebene gefährliche Kennung |
+| Eine aufgezeichnete Nachricht wird erneut gesendet | Der Sitzungsschlüssel: ein HMAC über eine Nonce der Verbindung, einen wachsenden Zähler und den Frame, sodass eine Aufzeichnung später und anderswo nutzlos ist |
 | Das Gateway ist ohne Schlüssel aus einem Netz erreichbar | Das Lauschen auf einer nicht lokalen Adresse ohne Sitzungsschlüssel wird abgelehnt, außer `--allow-open-network` wird angegeben |
 
 Es verschlüsselt nicht: Der Bus ist kein Geheimnis. Es hält keinen Teilnehmer auf, der den Schlüssel besitzt und sich schlecht benimmt; dafür sind die Liste, die Nutzdatenprüfung, die Ratenbegrenzung und die Watchdogs der Werkzeugköpfe da. Es ersetzt nicht die Hardware-Maßnahmen des CAN-Bedrohungsmodells (eine Verriegelung, die kein Frame schließen kann, ein geschlossener Bus, ein Stopp, der die Stromversorgung trennt). Es wurde nie an einem echten Bus verwendet.
@@ -95,11 +95,11 @@ Die Befehlszeile heißt `urtc-gateway` (oder `python -m urtc_gateway.cli`):
 | Befehl | Was er tut |
 |---|---|
 | `policy` | zeigt die wirksamen Optionen und eine Warnung für jede abgeschaltete Schutzfunktion |
-| `ids` | listet jeden Bezeichner und was das Gateway mit ihm tut |
+| `ids` | listet jede Kennung und was das Gateway mit ihr tut |
 | `keygen FILE PEER [PEER ...]` | schreibt eine Schlüsseldatei mit einem neuen Zufallsschlüssel je Teilnehmer (nur für den Besitzer lesbar, nie über eine vorhandene, Schlüssel werden nicht angezeigt); jedem Teilnehmer nur seine eigene Zeile geben |
 | `run` | lauscht auf einem TCP-Port (`--host`, Standard `127.0.0.1`; `--port`, Standard `8765`) und leitet an einen Bus weiter (`--bus loopback`, eine pyserial-URL wie `socket://127.0.0.1:7777` oder der serielle Port eines SLCAN-Adapters; `--bitrate`, Standard 500000) |
 
-**Das Zeilenprotokoll.** Beim Verbinden sendet das Gateway `{"type": "hello", "nonce": "<hex>", "session": true}`. Jede Nachricht des Teilnehmers ist ein JSON-Objekt pro Zeile: `{"id": 304, "data": "012C", "peer": "controller", "counter": 1, "mac": "<32 Hex-Ziffern>"}`. `mac` sind die ersten 16 Bytes von HMAC-SHA256 mit dem Schlüssel des Teilnehmers über `urtc-gw/1|<nonce>|<counter>|<id als drei Hex-Ziffern>|<Daten als Hex>`; der Zähler muss mit jeder Nachricht der Verbindung wachsen, und der Nonce ist bei jeder Verbindung neu. Eine abgelehnte Nachricht wird mit `{"type": "refused", "code": "<Grund>"}` beantwortet, die Frames des Busses kommen als `{"type": "frame", "id": ..., "data": "<hex>"}` zurück. Siehe [die Richtlinie](docs/POLICY.md).
+**Das Zeilenprotokoll.** Beim Verbinden sendet das Gateway `{"type": "hello", "nonce": "<hex>", "session": true}`. Jede Nachricht des Teilnehmers ist ein JSON-Objekt pro Zeile: `{"id": 304, "data": "012C", "peer": "controller", "counter": 1, "mac": "<32 Hex-Ziffern>"}`. `mac` sind die ersten 16 Bytes von HMAC-SHA256 mit dem Schlüssel des Teilnehmers über `urtc-gw/1|<nonce>|<counter>|<id als drei Hex-Ziffern>|<Daten als Hex>`; der Zähler muss mit jeder Nachricht der Verbindung wachsen, und die Nonce ist bei jeder Verbindung neu. Eine abgelehnte Nachricht wird mit `{"type": "refused", "code": "<Grund>"}` beantwortet, die Frames des Busses kommen als `{"type": "frame", "id": ..., "data": "<hex>"}` zurück. Siehe [die Richtlinie](docs/POLICY.md).
 
 ## ⚙️ Konfiguration
 
@@ -107,11 +107,11 @@ Jede Schutzfunktion ist standardmäßig aktiv und jede lässt sich abschalten, i
 
 | Schutzfunktion | Abschnitt der Datei | Aus / an | Was sie tut |
 |---|---|---|---|
-| Bezeichnerliste | `whitelist.enabled` | `--no-whitelist` / `--whitelist` | nur die Bezeichner, die ein Host sendet, gelangen zum Bus |
-| Gefährliche Bezeichner | `whitelist.unlock_dangerous` | `--unlock-dangerous` | Bootloader, Aktualisierung des Erweiterungs-Slaves, Löschen des gespeicherten Zustands und jede dauerhafte Einstellung bleiben abgelehnt, bis sie freigegeben werden |
-| Hinzugefügte / entfernte Bezeichner | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | einen Bezeichner von Hand hinzufügen oder einen entfernen, was auch immer der Rest sagt |
+| Kennungsliste | `whitelist.enabled` | `--no-whitelist` / `--whitelist` | nur die Kennungen, die ein Host sendet, gelangen zum Bus |
+| Gefährliche Kennungen | `whitelist.unlock_dangerous` | `--unlock-dangerous` | Bootloader, Aktualisierung des Erweiterungs-Slaves, Löschen des gespeicherten Zustands und jede dauerhafte Einstellung bleiben abgelehnt, bis sie freigegeben werden |
+| Hinzugefügte / entfernte Kennungen | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | eine Kennung von Hand hinzufügen oder eine entfernen, was auch immer der Rest sagt |
 | Nutzdatenprüfung | `payload.enabled` | `--no-payload-check` / `--payload-check` | Länge und Werte müssen die sein, die die Spezifikation erlaubt |
-| Ratenbegrenzung | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 Frames pro Sekunde und ein Burst von 10 je Bezeichner, ein Burst von 50 für die Verbindung, ein Burst von 2 für einen freigegebenen gefährlichen Bezeichner; `rate.overrides` gibt einem Bezeichner eine eigene Rate und einen eigenen Burst |
+| Ratenbegrenzung | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 Frames pro Sekunde und ein Burst von 10 je Kennung, ein Burst von 50 für die Verbindung, ein Burst von 2 für eine freigegebene gefährliche Kennung; `rate.overrides` gibt einer Kennung eine eigene Rate und einen eigenen Burst |
 | Sitzungsschlüssel | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | ein Teilnehmer beweist, dass er einen Schlüssel besitzt |
 | Ausgangsfilter | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | nur was eine Platine sendet, geht Richtung Netz, mit bis zu 500 Frames pro Sekunde |
 | Offenes Netz | `server.allow_open_network` | `--allow-open-network` | das Lauschen auf einer nicht lokalen Adresse ohne Sitzungsschlüssel wird abgelehnt, außer es wird verlangt |
@@ -147,11 +147,11 @@ Welche Versionen der URTC-Programme zusammenarbeiten und welche Protokollversion
 
 ## 🧪 Tests
 
-Die Suite hat 127 Tests (`python -m pytest tests -q`): die Bezeichnerliste, die Nutzdatenprüfung, die Ratenbegrenzung, die Sitzung und ihre Ablehnungen, die Optionen und die Konfigurationsdatei, die Befehlszeile, ein Test über einen echten lokalen Socket und das serielle Ende gegen einen Schein-Port. Ein Test wird übersprungen, wenn seine optionale Abhängigkeit fehlt. `python -m mypy` prüft die Typen des Pakets und `ruff check .` den Quelltext.
+Die Suite hat 127 Tests (`python -m pytest tests -q`): die Kennungsliste, die Nutzdatenprüfung, die Ratenbegrenzung, die Sitzung und ihre Ablehnungen, die Optionen und die Konfigurationsdatei, die Befehlszeile, ein Test über einen echten lokalen Socket und das serielle Ende gegen einen Schein-Port. Ein Test wird übersprungen, wenn seine optionale Abhängigkeit fehlt. `python -m mypy` prüft die Typen des Pakets und `ruff check .` den Quelltext.
 
 ## 🏗️ Build und Veröffentlichung
 
-`build.sh` / `build.bat` installieren das Paket und führen die Tests aus; `build-test.sh` / `build-test.bat` prüfen, ohne eine Version zu ändern; `run.sh` / `run.bat` starten die Befehlszeile (`policy`, `ids`, `keygen`, `run`). `python tools/make_id_table.py` schreibt die Bezeichnertabelle von [docs/ALLOWED_IDS.md](docs/ALLOWED_IDS.md) aus der Spezifikation (`--check` vergleicht).
+`build.sh` / `build.bat` installieren das Paket und führen die Tests aus; `build-test.sh` / `build-test.bat` prüfen, ohne eine Version zu ändern; `run.sh` / `run.bat` starten die Befehlszeile (`policy`, `ids`, `keygen`, `run`). `python tools/make_id_table.py` schreibt die Kennungstabelle von [docs/ALLOWED_IDS.md](docs/ALLOWED_IDS.md) aus der Spezifikation (`--check` vergleicht).
 
 ## 📂 Struktur des Repositorys
 
@@ -164,8 +164,8 @@ Die Suite hat 127 Tests (`python -m pytest tests -q`): die Bezeichnerliste, die 
 
 ```text
 URTC-GATEWAY/
-├── src/urtc_gateway/                                das Gateway: Bezeichnerliste, Richtlinie, Ratenbegrenzung, Sitzungsschlüssel, Optionen, TCP- und serielle Enden, Befehlszeile
-├── docs/                                            die Optionen (POLICY.md) und die erzeugte Bezeichnertabelle
+├── src/urtc_gateway/                                das Gateway: Kennungsliste, Richtlinie, Ratenbegrenzung, Sitzungsschlüssel, Optionen, TCP- und serielle Enden, Befehlszeile
+├── docs/                                            die Optionen (POLICY.md) und die erzeugte Kennungstabelle
 ├── tests/                                           Unit-Tests jeder Schutzfunktion und ein Test über einen echten lokalen Socket
 ├── tools/                                           make_id_table.py und die gemeinsamen CI- und Bild-Werkzeuge
 ├── images/                                          Banner und Bilder dieses READMEs
