@@ -71,7 +71,7 @@ Le modèle de menaces du dépôt URTC dit que, si une installation ne peut pas g
 ## 🏛️ Architecture
 
 <p align="center">
-  <img src="images/architecture.svg" alt="Architecture de URTC-GATEWAY : qui l'utilise, ce qu'il contient et de quoi il dépend" width="100%">
+  <img src="images/architecture.svg" alt="Architecture d'URTC-GATEWAY : qui l'utilise, ce qu'il contient et de quoi il dépend" width="100%">
 </p>
 
 Comment les parties de ce dépôt s'articulent : qui l'utilise, ce qu'il contient et de quoi il dépend. L'image est dessinée à partir de `docs/architecture.json` et vérifiée par rapport au code.
@@ -241,7 +241,7 @@ Pour en savoir plus :
 * Le README existe en huit langues : une modification du texte se fait dans les huit fichiers, et les sections partagées avec d'autres dépôts sont écrites par `tools/readme_sections.py` d'URTC-COMMON.
 * Un changement du protocole CAN commence dans URTC-COMMON (`spec/can_protocol.json`) et arrive dans ce dépôt par la copie vérifiée.
 * Ne décrivez pas comme fonctionnant sur une carte ce qui a seulement été compilé.
-* Signalez une vulnérabilité en privé : [SECURITY.md](SECURITY.md). Questions, idées et rapports : electrohobby3d@gmail.com ([SUPPORT.md](SUPPORT.md)).
+* Signalez une vulnérabilité en privé : [SECURITY.md](SECURITY.md). Questions, idées et signalements : electrohobby3d@gmail.com ([SUPPORT.md](SUPPORT.md)).
 
 ## 👤 AUTEUR
 

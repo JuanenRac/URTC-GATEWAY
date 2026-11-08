@@ -60,7 +60,7 @@ Il bus CAN della testa utensile non autentica il mittente: qualsiasi nodo colleg
 
 * **Elenco di identificatori, ricavato dalla specifica:** verso il bus passano solo gli identificatori che un host invia; quelli pericolosi (bootloader, aggiornamento dello slave di espansione, cancellazione dello stato salvato, ogni impostazione persistente) sono rifiutati a meno che l'operatore li sblocchi. [La tabella degli identificatori](docs/ALLOWED_IDS.md) è generata.
 * **Controllo del contenuto:** un frame deve avere la lunghezza e i valori che la specifica consente (un setpoint nel suo intervallo, una direzione esistente, i byte magici dove sono richiesti).
-* **Limite di frequenza:** un secchio di gettoni per identificatore e per l'intero collegamento, e uno più rigido per un identificatore pericoloso sbloccato.
+* **Limite di frequenza:** un token bucket per identificatore e per l'intero collegamento, e uno più rigido per un identificatore pericoloso sbloccato.
 * **Chiave di sessione:** un peer dimostra di possedere una chiave con un HMAC su un nonce della connessione, un contatore e il frame, così nulla di registrato può essere riproposto.
 * **Ogni protezione si può disattivare:** dal file di configurazione o dalla riga di comando, e il programma elenca all'avvio ogni protezione spenta. Non cifra e non sostituisce le misure hardware del modello di minaccia.
 

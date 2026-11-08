@@ -19,7 +19,7 @@
 
 ---
 
-**Ehrlichkeitscheck - was heute tatsächlich läuft:** Dieses Repository enthält ein Gateway als Software: Die Liste der Kennungen wird aus der Protokollspezifikation erzeugt, die Nutzdaten jedes Frames werden dagegen geprüft, die Rate ist begrenzt, und ein Teilnehmer muss nachweisen, dass sie einen Schlüssel besitzt. Alles wird in der CI mit Attrappen und einem lokalen Socket getestet. Es war nie an einen echten CAN-Bus, einen Adapter oder eine Platine angeschlossen, und keine Installation nutzt es bisher. Heiz-, Laser- und Schweißköpfe brauchen weiterhin die Hardware-Maßnahmen des Bedrohungsmodells: eine Verriegelung, die kein Frame schließen kann, einen geschlossenen Bus und einen Stopp, der die Energie abschaltet.
+**Ehrlichkeitscheck - was heute tatsächlich läuft:** Dieses Repository enthält ein Gateway als Software: Die Liste der Kennungen wird aus der Protokollspezifikation erzeugt, die Nutzdaten jedes Frames werden dagegen geprüft, die Rate ist begrenzt, und ein Teilnehmer muss nachweisen, dass er einen Schlüssel besitzt. Alles wird in der CI mit Attrappen und einem lokalen Socket getestet. Es war nie an einen echten CAN-Bus, einen Adapter oder eine Platine angeschlossen, und keine Installation nutzt es bisher. Heiz-, Laser- und Schweißköpfe brauchen weiterhin die Hardware-Maßnahmen des Bedrohungsmodells: eine Verriegelung, die kein Frame schließen kann, einen geschlossenen Bus und einen Stopp, der die Energie abschaltet.
 
 ---
 
@@ -36,7 +36,7 @@
 | Ziel | Der PC der Person, die es benutzt |
 | Auf echter Hardware | Nur simuliert: gegen Emulatoren, Attrappen oder Simulatoren getestet; für diese Version ist kein Lauf auf echter Hardware vermerkt |
 
-**Springe zu:** [Überblick](#-überblick) · [Architektur](#-architektur) · [Sicherheit](#-sicherheit-und-schutz) · [Schnittstellen](#-schnittstellen) · [Konfiguration](#-konfiguration) · [Schnellstart](#-schnellstart) · [Tests](#-tests) · [Struktur](#-struktur-des-repositorys) · [Verwandte](#-verwandte-projekte)
+**Springen Sie zu:** [Überblick](#-überblick) · [Architektur](#-architektur) · [Sicherheit](#-sicherheit-und-schutz) · [Schnittstellen](#-schnittstellen) · [Konfiguration](#-konfiguration) · [Schnellstart](#-schnellstart) · [Tests](#-tests) · [Struktur](#-struktur-des-repositorys) · [Verwandte](#-verwandte-projekte)
 
 <!-- urtc-section:status_gateway -->
 ## 🚦 Projektstatus
@@ -59,7 +59,7 @@
 Der CAN-Bus des Werkzeugkopfs authentifiziert den Absender nicht: Jedem Knoten an den Leitungen wird gehorcht. Wenn eine Installation den Bus nicht geschlossen halten kann, sitzt dieses Gateway davor:
 
 * **Kennungsliste, aus der Spezifikation erzeugt:** Nur die Kennungen, die ein Host sendet, gehen zum Bus; die gefährlichen (Bootloader, Update des Erweiterungs-Slaves, Löschen des gespeicherten Zustands, jede dauerhafte Einstellung) werden abgelehnt, solange der Betreiber sie nicht freigibt. [Die Kennungstabelle](docs/ALLOWED_IDS.md) wird erzeugt.
-* **Prüfung der Nutzdaten:** Ein Frame muss die Länge und die Werte haben, die die Spezifikation erlaubt (ein Sollwert in seinem Bereich, eine existierende Richtung, die Magic-Bytes dort, wo sie verlangt werden).
+* **Prüfung der Nutzdaten:** Ein Frame muss die Länge und die Werte haben, die die Spezifikation erlaubt (ein Sollwert in seinem Bereich, eine existierende Richtung, die Magic Bytes dort, wo sie verlangt werden).
 * **Ratenbegrenzung:** ein Token-Bucket je Kennung und für die ganze Verbindung, und ein strengerer für eine freigegebene gefährliche Kennung.
 * **Sitzungsschlüssel:** Ein Teilnehmer weist den Besitz eines Schlüssels mit einem HMAC über eine Nonce der Verbindung, einen Zähler und den Frame nach, sodass nichts Aufgezeichnetes wiedereingespielt werden kann.
 * **Jeder Schutz lässt sich abschalten:** in der Konfigurationsdatei oder auf der Befehlszeile, und das Programm listet beim Start jeden abgeschalteten Schutz auf. Es verschlüsselt nicht und ersetzt nicht die Hardware-Maßnahmen des Bedrohungsmodells.
@@ -237,11 +237,11 @@ Mehr zum Lesen:
 
 ## 🤝 Mitwirken und Community
 
-* Führe vor einem Pull Request `URTC_CI=1 python tools/ci_validate.py` aus: es muss bestehen. Siehe [CONTRIBUTING.md](CONTRIBUTING.md) und den [Verhaltenskodex](CODE_OF_CONDUCT.md).
+* Führen Sie vor einem Pull Request `URTC_CI=1 python tools/ci_validate.py` aus: es muss bestehen. Siehe [CONTRIBUTING.md](CONTRIBUTING.md) und den [Verhaltenskodex](CODE_OF_CONDUCT.md).
 * Das README gibt es in acht Sprachen: Eine Textänderung wird in allen acht Dateien vorgenommen, und die mit anderen Repositorys geteilten Abschnitte schreibt `tools/readme_sections.py` von URTC-COMMON.
 * Eine Änderung am CAN-Protokoll beginnt in URTC-COMMON (`spec/can_protocol.json`) und gelangt über die geprüfte Kopie in dieses Repository.
-* Beschreibe nichts als auf einer Platine funktionierend, was nur gebaut wurde.
-* Melde eine Schwachstelle privat: [SECURITY.md](SECURITY.md). Fragen, Ideen und Meldungen: electrohobby3d@gmail.com ([SUPPORT.md](SUPPORT.md)).
+* Beschreiben Sie nichts als auf einer Platine funktionierend, was nur gebaut wurde.
+* Melden Sie eine Schwachstelle privat: [SECURITY.md](SECURITY.md). Fragen, Ideen und Meldungen: electrohobby3d@gmail.com ([SUPPORT.md](SUPPORT.md)).
 
 ## 👤 AUTOR
 

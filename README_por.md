@@ -19,7 +19,7 @@
 
 ---
 
-**Verificação de honestidade - o que realmente funciona hoje:** este repositório contém um gateway escrito como software: a lista de identificadores é feita a partir da especificação do protocolo, o conteúdo de cada trama é verificado contra ela, a taxa é limitada e um interlocutor tem de provar que possui uma chave. Tudo é testado na CI com simulações e um socket local. Nunca foi ligado a um barramento CAN real, a um adaptador nem a uma placa, e nenhuma instalação o usa ainda. As cabeças de aquecimento, laser e soldadura continuam a precisar das medidas de hardware do modelo de ameaças: um bloqueio que nenhuma trama possa fechar, um barramento fechado e uma paragem que corte a alimentação.
+**Verificação de honestidade - o que realmente funciona hoje:** este repositório contém um gateway escrito como software: a lista de identificadores é feita a partir da especificação do protocolo, o conteúdo de cada trama é verificado contra ela, a taxa é limitada e um par tem de provar que possui uma chave. Tudo é testado na CI com simulações e um socket local. Nunca foi ligado a um barramento CAN real, a um adaptador nem a uma placa, e nenhuma instalação o usa ainda. As cabeças de aquecimento, laser e soldadura continuam a precisar das medidas de hardware do modelo de ameaças: um interbloqueio que nenhuma trama possa fechar, um barramento fechado e uma paragem que corte a alimentação.
 
 ---
 
@@ -61,7 +61,7 @@ O barramento CAN da cabeça de ferramenta não autentica o emissor: qualquer nó
 * **Lista de identificadores, feita a partir da especificação:** só atravessam para o barramento os identificadores que um anfitrião envia; os perigosos (bootloader, atualização do escravo de expansão, apagamento do estado guardado, qualquer definição persistente) são recusados, a menos que o operador os desbloqueie. [A tabela de identificadores](docs/ALLOWED_IDS.md) é gerada.
 * **Verificação da carga:** uma trama tem de ter o comprimento e os valores que a especificação permite (um valor pretendido dentro do intervalo, um sentido que existe, os bytes mágicos onde são exigidos).
 * **Limite de taxa:** um balde de fichas por identificador e para toda a ligação, e outro mais apertado para um identificador perigoso desbloqueado.
-* **Chave de sessão:** um interlocutor prova que possui uma chave com um HMAC sobre um nonce da ligação, um contador e a trama, de modo que nada gravado pode ser repetido.
+* **Chave de sessão:** um par prova que possui uma chave com um HMAC sobre um nonce da ligação, um contador e a trama, de modo que nada gravado pode ser repetido.
 * **Qualquer proteção pode ser desligada:** no ficheiro de configuração ou na linha de comandos, e o programa enumera ao arrancar cada proteção que está desligada. Não cifra e não substitui as medidas de hardware do modelo de ameaças.
 
 ## 🧩 Papel no URTC
@@ -81,7 +81,7 @@ Como as partes deste repositório se encaixam: quem o usa, o que contém e de qu
 | Ameaça | Defesa |
 |---|---|
 | Um nó nos fios envia um comando perigoso (bootloader, atualização do escravo de expansão, apagamento do estado guardado, uma definição persistente) | A lista de identificadores recusa-os até o operador os desbloquear com `--unlock-dangerous` |
-| Um valor fora do que o protocolo permite (um valor de referência fora do intervalo, uma direção que não existe, bytes mágicos errados) | A verificação da carga recusa a trama |
+| Um valor fora do que o protocolo permite (um valor pretendido fora do intervalo, uma direção que não existe, bytes mágicos errados) | A verificação da carga recusa a trama |
 | Um emissor descontrolado ou hostil inunda o barramento | Um balde de fichas por identificador e para toda a ligação, e um mais rigoroso para um identificador perigoso desbloqueado |
 | Uma mensagem gravada é enviada outra vez | A chave de sessão: um HMAC sobre um nonce da ligação, um contador que tem de crescer e a trama, pelo que uma gravação é inútil mais tarde e noutro sítio |
 | O gateway é acessível a partir de uma rede sem chave | Escutar num endereço não local sem chave de sessão é recusado, salvo se `--allow-open-network` for indicado |
@@ -229,8 +229,8 @@ O URTC é feito de repositórios independentes, cada um com a sua versão, os se
 
 Onde ler mais:
 
-* [Política: cada opção, o seu valor predefinido e como a desligar](docs/POLICY.md)
-* [Identificadores: o que a gateway faz com cada um](docs/ALLOWED_IDS.md)
+* [Política: cada opção, o seu valor por omissão e como a desligar](docs/POLICY.md)
+* [Identificadores: o que o gateway faz com cada um](docs/ALLOWED_IDS.md)
 * [Registo de alterações deste repositório](CHANGELOG.md)
 * [Licença (GPL-3.0-or-later)](LICENSE)
 * Perguntas, ideias e relatos: electrohobby3d@gmail.com

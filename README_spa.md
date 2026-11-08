@@ -61,7 +61,7 @@ El bus CAN del cabezal de herramienta no autentica al emisor: se obedece a cualq
 * **Lista de identificadores, hecha a partir de la especificación:** solo cruzan hacia el bus los identificadores que envía un host; los peligrosos (bootloader, actualización del esclavo de expansión, borrado del estado guardado, cualquier ajuste persistente) se rechazan salvo que el operador los desbloquee. [La tabla de identificadores](docs/ALLOWED_IDS.md) se genera.
 * **Comprobación de la carga:** una trama debe tener la longitud y los valores que permite la especificación (una consigna dentro de su rango, una dirección que existe, los bytes mágicos donde se exigen).
 * **Límite de tasa:** un cubo de fichas por identificador y para todo el enlace, y uno más estricto para un identificador peligroso desbloqueado.
-* **Clave de sesión:** un interlocutor demuestra que posee una clave con un HMAC sobre un nonce de la conexión, un contador y la trama, de modo que nada grabado puede repetirse.
+* **Clave de sesión:** un interlocutor demuestra que posee una clave con un HMAC sobre un nonce de la conexión, un contador y la trama, de modo que nada capturado puede repetirse.
 * **Toda protección se puede desactivar:** desde el archivo de configuración o la línea de comandos, y el programa enumera al arrancar cada protección que está apagada. No cifra, y no sustituye las medidas de hardware del modelo de amenazas.
 
 ## 🧩 Papel en URTC
@@ -83,10 +83,10 @@ Cómo encajan las partes de este repositorio: quién lo usa, qué contiene y de 
 | Un nodo en los cables envía una orden peligrosa (bootloader, actualización del esclavo de expansión, borrado del estado guardado, un ajuste persistente) | La lista de identificadores las rechaza hasta que el operador las desbloquea con `--unlock-dangerous` |
 | Un valor fuera de lo que permite el protocolo (una consigna fuera de rango, una dirección que no existe, bytes mágicos incorrectos) | La comprobación de la carga rechaza la trama |
 | Un emisor descontrolado u hostil inunda el bus | Un cubo de fichas por identificador y para todo el enlace, y uno más estricto para un identificador peligroso desbloqueado |
-| Se vuelve a enviar un mensaje grabado | La clave de sesión: un HMAC sobre un nonce de la conexión, un contador que debe crecer y la trama, de modo que una grabación no sirve después ni en otro sitio |
+| Se vuelve a enviar un mensaje capturado | La clave de sesión: un HMAC sobre un nonce de la conexión, un contador que debe crecer y la trama, de modo que una captura no sirve después ni en otro sitio |
 | La pasarela es accesible desde una red sin clave | Escuchar en una dirección no local sin clave de sesión se rechaza salvo que se indique `--allow-open-network` |
 
-No cifra: el bus no es un secreto. No detiene a un interlocutor que tenga la clave y se porte mal; para eso están la lista, la comprobación de la carga y el límite de tasa, y los perros guardianes de los cabezales. No sustituye las medidas de hardware del modelo de amenazas del CAN (un interbloqueo que ninguna trama pueda cerrar, un bus cerrado, una parada que corte la alimentación). Nunca se ha usado en un bus real.
+No cifra: el bus no es un secreto. No detiene a un interlocutor que tenga la clave y se porte mal; para eso están la lista, la comprobación de la carga y el límite de tasa, y los perros guardianes de los cabezales. No sustituye las medidas de hardware del modelo de amenazas del CAN (un enclavamiento que ninguna trama pueda cerrar, un bus cerrado, una parada que corte la alimentación). Nunca se ha usado en un bus real.
 
 ## 🔌 Interfaces
 
@@ -190,7 +190,7 @@ URTC-GATEWAY/
 **Límites conocidos hoy**
 
 * Nunca se ha conectado a un bus CAN real, un adaptador o una placa, y ninguna instalación lo usa todavía; se prueba en CI con simulaciones y un socket local.
-* Los cabezales de calefacción, láser y soldadura siguen necesitando las medidas de hardware del modelo de amenazas: un interbloqueo que ninguna trama pueda cerrar, un bus cerrado y una parada que corte la alimentación.
+* Los cabezales de calefacción, láser y soldadura siguen necesitando las medidas de hardware del modelo de amenazas: un enclavamiento que ninguna trama pueda cerrar, un bus cerrado y una parada que corte la alimentación.
 * No cifra ni detiene a un interlocutor que tenga la clave y se porte mal.
 
 **Siguiente**
