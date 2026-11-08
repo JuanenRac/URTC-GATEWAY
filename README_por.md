@@ -29,7 +29,7 @@
 
 | | |
 |---|---|
-| Versão | `0.0.6` |
+| Versão | `0.0.7` |
 | Maturidade | Estrutura inicial |
 | Testes | 127 |
 | Tecnologia | Python / CAN / HMAC |
