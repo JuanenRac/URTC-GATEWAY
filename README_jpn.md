@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-159-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-162-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | バージョン | `0.0.7` |
 | 成熟度 | 足場段階 |
-| テスト | 159 |
+| テスト | 162 |
 | 技術 | Python / CAN / HMAC |
 | 対象 | 利用者の PC |
 | 実機での確認 | シミュレーションのみ：エミュレーター、模擬部品、シミュレーターで試験済み。このバージョンについて実機での動作記録はありません |
@@ -97,7 +97,7 @@ URTC リポジトリの脅威モデルは、設置環境でバスを閉じてお
 | `policy` | 有効なオプションと、無効にした保護ごとの警告を表示します |
 | `ids` | すべての識別子と、ゲートウェイがそれをどう扱うかを一覧します |
 | `keygen FILE PEER [PEER ...]` | ピアごとに新しいランダムな鍵を持つ鍵ファイルを書き出します（所有者のみ読み取り可、既存ファイルは上書きせず、鍵は表示しません）。各ピアには自分の行だけを渡します |
-| `run` | TCP ポートで待ち受け（`--host` 既定 `127.0.0.1`、`--port` 既定 `8765`）、バスへ転送します（`--bus loopback`、`socket://127.0.0.1:7777` のような pyserial URL、または SLCAN アダプターのシリアルポート。`--bitrate` 既定 500000） |
+| `run` | TCP ポートで待ち受け（`--host` 既定 `127.0.0.1`、`--port` 既定 `8765`）、バスへ転送します（`--bus loopback`、`socket://127.0.0.1:7777` のような pyserial URL、または SLCAN アダプターのシリアルポート。`--bitrate` 既定 1000000） |
 
 **行プロトコル。** 接続時、ゲートウェイは `{"type": "hello", "nonce": "<hex>", "session": true}` を送ります。ピアが送る各メッセージは 1 行に 1 つの JSON オブジェクトです：`{"id": 304, "data": "012C", "peer": "controller", "counter": 1, "mac": "<16進32桁>"}`。`mac` は、ピアの鍵による `urtc-gw/1|<nonce>|<counter>|<3桁16進のid>|<16進データ>` の HMAC-SHA256 の先頭 16 バイトです。カウンターは接続中のメッセージごとに増える必要があり、ナンスは接続ごとに新しくなります。拒否されたメッセージには `{"type": "refused", "code": "<理由>"}` が返り、バスのフレームは `{"type": "frame", "id": ..., "data": "<hex>"}` として戻ります。[ポリシー](docs/POLICY.md)を参照してください。
 
@@ -148,7 +148,7 @@ python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777
 
 ## 🧪 テスト
 
-テストスイートは 159 件です（`python -m pytest tests -q`）。識別子リスト、ペイロード検査、レート制限、セッションとその拒否、オプションと設定ファイル、コマンドライン、実際のローカルソケットでのテスト、模擬ポートに対するシリアル側を検査します。任意の依存関係がない場合、1 件のテストはスキップされます。`python -m mypy` がパッケージの型を、`ruff check .` がソースを検査します。
+テストスイートは 162 件です（`python -m pytest tests -q`）。識別子リスト、ペイロード検査、レート制限、セッションとその拒否、オプションと設定ファイル、コマンドライン、実際のローカルソケットでのテスト、模擬ポートに対するシリアル側を検査します。任意の依存関係がない場合、1 件のテストはスキップされます。`python -m mypy` がパッケージの型を、`ruff check .` がソースを検査します。
 
 ## 🏗️ ビルドとリリース
 

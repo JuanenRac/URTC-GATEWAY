@@ -24,6 +24,7 @@ import threading
 from . import __version__, ids, session
 from .config import ConfigError, GatewayConfig, config_to_dict, load_config, warnings
 from .policy import Policy
+from .urtc_protocol import BITRATE as BUS_BITRATE
 
 
 def _id(text: str) -> int:
@@ -160,7 +161,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--host", default=None, help="address to listen on (default 127.0.0.1)")
     p.add_argument("--port", type=int, default=None, help="port to listen on (default 8765)")
     p.add_argument("--bus", default="loopback", help="'loopback' (nothing on it) or the serial port of an SLCAN adapter")
-    p.add_argument("--bitrate", type=int, default=500000)
+    p.add_argument("--bitrate", type=int, default=BUS_BITRATE, help="bus bit rate in bit/s (default 1000000, the speed of the bus of the tool heads; 500000 for early boards)")
     p.add_argument("--allow-open-network", action="store_true", help="listen on a non-local address even without session authentication")
     p.set_defaults(func=cmd_run)
     return parser

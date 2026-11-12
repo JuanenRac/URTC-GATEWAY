@@ -19,6 +19,7 @@ from typing import Any, Protocol
 
 from .config import GatewayConfig
 from .gateway import Gateway
+from .urtc_protocol import BITRATE as BUS_BITRATE
 
 MAX_LINE = 4096
 
@@ -57,7 +58,7 @@ class SerialSlcanBus:
 
     BITRATE_CODES = {10000: "S0", 20000: "S1", 50000: "S2", 100000: "S3", 125000: "S4", 250000: "S5", 500000: "S6", 800000: "S7", 1000000: "S8"}
 
-    def __init__(self, port: str, bitrate: int = 500000, baudrate: int = 115200) -> None:
+    def __init__(self, port: str, bitrate: int = BUS_BITRATE, baudrate: int = 115200) -> None:
         try:
             import serial  # noqa: PLC0415
         except ImportError as error:

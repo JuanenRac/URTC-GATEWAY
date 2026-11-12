@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The gateway opens an SLCAN adapter at 1 Mbit/s by default:** `--bitrate` and the adapter class default to the `BITRATE` of the shared specification (the speed of the bus of the tool heads); `--bitrate 500000` stays for early boards. **Compatibility note:** every board and adapter of one bus must run at the same speed (the default is now 1 Mbit/s; early boards run at 500 kbit/s), the trunk should stay under about 25 m at 1 Mbit/s with short stubs and a 120 ohm termination at each end.
+
 - **The copy of the image header module has tests of its own:** every refusal reason of the flat, signed and embedded forms, the seal step, a flipped bit anywhere in a sealed image (fixed seed) and the compatibility switch, so the guard no longer relies on the tests of the repository the copy comes from.
 
 - **The shared document policy check is refreshed:** `tools/_doc_policy.py` and `tools/ci_validate.py` are the current copies, which also fail when a build script changes a version and when a script switches into a virtual environment instead of running its python directly. The build script only reads the project version (raise it with `bump_version.py`), and the build and run scripts run the python of the virtual environment directly.

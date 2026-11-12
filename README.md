@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-159-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-162-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.7` |
 | Maturity | Scaffolding |
-| Tests | 159 |
+| Tests | 162 |
 | Stack | Python / CAN / HMAC |
 | Target | The PC of the person using it |
 | On real hardware | Simulated only: tested against emulators, fakes or simulators; no run on real hardware is recorded for this version |
@@ -97,7 +97,7 @@ The command line is `urtc-gateway` (or `python -m urtc_gateway.cli`):
 | `policy` | shows the effective options and a warning for each protection that is off |
 | `ids` | lists every identifier and what the gateway does with it |
 | `keygen FILE PEER [PEER ...]` | writes a key file with a new random key for each peer (owner-only, never over an existing file, keys are not shown); give each peer only its own line |
-| `run` | listens on a TCP port (`--host`, default `127.0.0.1`; `--port`, default `8765`) and forwards to a bus (`--bus loopback`, a pyserial URL such as `socket://127.0.0.1:7777`, or the serial port of an SLCAN adapter; `--bitrate`, default 500000) |
+| `run` | listens on a TCP port (`--host`, default `127.0.0.1`; `--port`, default `8765`) and forwards to a bus (`--bus loopback`, a pyserial URL such as `socket://127.0.0.1:7777`, or the serial port of an SLCAN adapter; `--bitrate`, default 1000000) |
 
 **The line protocol.** On connection the gateway sends `{"type": "hello", "nonce": "<hex>", "session": true}`. Every message the peer sends is one JSON object per line: `{"id": 304, "data": "012C", "peer": "controller", "counter": 1, "mac": "<32 hex digits>"}`. `mac` is the first 16 bytes of HMAC-SHA256, with the key of the peer, over `urtc-gw/1|<nonce>|<counter>|<id as three hex digits>|<data as hex>`; the counter has to grow with every message of the connection and the nonce is new for every connection. A refused message is answered with `{"type": "refused", "code": "<reason>"}`, and the frames of the bus come back as `{"type": "frame", "id": ..., "data": "<hex>"}`. See [the policy](docs/POLICY.md).
 
@@ -148,7 +148,7 @@ Which versions of the URTC programs work together, and which protocol version ea
 
 ## 🧪 Testing
 
-The suite has 159 tests (`python -m pytest tests -q`): the identifier list, the payload check, the rate limit, the session and its refusals, the options and the configuration file, the command line, a test over a real local socket and the serial end against a fake port. One test skips where its optional dependency is missing. `python -m mypy` type-checks the package and `ruff check .` the sources.
+The suite has 162 tests (`python -m pytest tests -q`): the identifier list, the payload check, the rate limit, the session and its refusals, the options and the configuration file, the command line, a test over a real local socket and the serial end against a fake port. One test skips where its optional dependency is missing. `python -m mypy` type-checks the package and `ruff check .` the sources.
 
 ## 🏗️ Build & Release
 
