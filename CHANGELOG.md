@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The shared document policy check is refreshed:** `tools/_doc_policy.py` and `tools/ci_validate.py` are the current copies, which also fail when a build script changes a version and when a script switches into a virtual environment instead of running its python directly. The build script only reads the project version (raise it with `bump_version.py`), and the build and run scripts run the python of the virtual environment directly.
+
 - **An update that crosses the gateway is checked against the header inside its image:** the gateway follows the start frame (size and hardware) and the first data of a main-board or expansion-slave update, reads the 32-byte header at the fixed offset, and refuses the rest of the update when the header does not hold, states another length than the start frame announced or names another hardware.
 
 - **`update_image.header` (`--image-header`) is the compatibility switch for an image without the header:** `warn` (the default) forwards it and leaves a note in the audit, `accept` forwards it, `require` refuses it; a header that is there is always checked.

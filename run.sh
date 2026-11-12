@@ -43,12 +43,13 @@ trap 'hydra_umc_pause_on_exit' EXIT
 set -euo pipefail
 cd "$(dirname "$0")"
 
-if [ -f .venv/bin/activate ]; then
-    # shellcheck disable=SC1091
-    source .venv/bin/activate
-elif [ -f .venv/Scripts/activate ]; then
-    # shellcheck disable=SC1091
-    source .venv/Scripts/activate
+# Run the python of the virtual environment directly: the first python on the PATH can be a stripped one whose venv has no script to switch into it.
+if [ -x .venv/bin/python ]; then
+    VENV_PYTHON=".venv/bin/python"
+elif [ -x .venv/Scripts/python.exe ]; then
+    VENV_PYTHON=".venv/Scripts/python.exe"
+else
+    VENV_PYTHON="python"
 fi
 
-python -m urtc_gateway.cli "$@"
+"$VENV_PYTHON" -m urtc_gateway.cli "$@"
