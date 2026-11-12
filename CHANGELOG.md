@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The rate limit and the lists of identifiers are tested at the ends of their ranges:** the burst and the refill of the token buckets, a clock that goes back, a flood of one identifier that must not use the tokens of the others, overrides, the sets of identifiers that cross the gateway never overlapping and being the ones the specification gives, and the table of the documents being the one the code makes.
+
 - **The gateway recognises a bus that mixes speeds by its symptoms:** it keeps the health frames (`0x1B8`) it reads from the bus, and `summary` lists `bus_warnings` (error counters or bus-offs of the heads that are heard, a head named in `bus_health.legacy_heads` as built for 500 kbit/s). The new `bus_health` section of the configuration sets the thresholds (`tec_warn`, `rec_warn`, `bus_off_warn`, whole numbers from 1 to 255) and the list; a bad value is refused like every other option. No change of the protocol.
 
 - **The gateway opens an SLCAN adapter at 1 Mbit/s by default:** `--bitrate` and the adapter class default to the `BITRATE` of the shared specification (the speed of the bus of the tool heads); `--bitrate 500000` stays for early boards. **Compatibility note:** every board and adapter of one bus must run at the same speed (the default is now 1 Mbit/s; early boards run at 500 kbit/s), the trunk should stay under about 25 m at 1 Mbit/s with short stubs and a 120 ohm termination at each end.
