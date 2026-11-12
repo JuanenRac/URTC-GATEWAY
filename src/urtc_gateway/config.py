@@ -65,6 +65,14 @@ class UpdateImageOptions:
 
 
 @dataclass
+class BusHealthOptions:
+    tec_warn: int = 96                        # a transmit error counter of a head at or above this is a symptom of a bus in trouble (1 to 255)
+    rec_warn: int = 96                        # the same for the receive error counter
+    bus_off_warn: int = 1                     # the number of bus-offs of a head from which the bus is said to be in trouble
+    legacy_heads: list[str] = field(default_factory=list)   # names or serial numbers of the heads built for 500 kbit/s
+
+
+@dataclass
 class ServerOptions:
     host: str = "127.0.0.1"
     port: int = 8765
@@ -80,11 +88,12 @@ class GatewayConfig:
     outbound: OutboundOptions = field(default_factory=OutboundOptions)
     server: ServerOptions = field(default_factory=ServerOptions)
     update_image: UpdateImageOptions = field(default_factory=UpdateImageOptions)
+    bus_health: BusHealthOptions = field(default_factory=BusHealthOptions)
 
 
 _SECTIONS = {f.name: f.type for f in fields(GatewayConfig)}
 _CLASSES = {"whitelist": WhitelistOptions, "payload": PayloadOptions, "rate": RateOptions, "session": SessionOptions, "outbound": OutboundOptions, "server": ServerOptions,
-            "update_image": UpdateImageOptions}
+            "update_image": UpdateImageOptions, "bus_health": BusHealthOptions}
 
 
 def _id(value: Any, where: str) -> int:
@@ -130,11 +139,17 @@ def config_from_dict(data: Any) -> GatewayConfig:
                     raise ConfigError(f"{name}.{key} must not be negative")
                 if key == "port" and not 0 <= value <= 65535:
                     raise ConfigError("server.port must be 0 (the system chooses) to 65535")
+                if name == "bus_health" and (isinstance(value, float) or not 1 <= value <= 255):
+                    raise ConfigError(f"bus_health.{key} must be a whole number from 1 to 255")
             elif isinstance(default, str):
                 if not isinstance(value, str):
                     raise ConfigError(f"{name}.{key} must be text")
                 if name == "update_image" and value not in ("accept", "warn", "require"):
                     raise ConfigError("update_image.header must be accept, warn or require")
+            elif key == "legacy_heads":
+                if not isinstance(value, list) or not all(isinstance(v, (str, int)) and not isinstance(v, bool) for v in value):
+                    raise ConfigError("bus_health.legacy_heads must be a list of names or serial numbers")
+                value = [str(v) for v in value]
             elif key in ("extra_allow", "deny"):
                 if not isinstance(value, list):
                     raise ConfigError(f"{name}.{key} must be a list of identifiers")

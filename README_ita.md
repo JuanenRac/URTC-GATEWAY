@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-162-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-177-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Versione | `0.0.7` |
 | Maturità | Impalcatura |
-| Test | 162 |
+| Test | 177 |
 | Tecnologia | Python / CAN / HMAC |
 | Destinazione | Il PC di chi lo usa |
 | Su hardware reale | Solo simulato: provato con emulatori, test double o simulatori; per questa versione non risulta alcuna esecuzione su hardware reale |
@@ -110,6 +110,7 @@ Ogni protezione è attiva per impostazione predefinita e ognuna può essere disa
 | Elenco degli identificatori | `whitelist.enabled` | `--no-whitelist` / `--whitelist` | verso il bus passano solo gli identificatori che invia un host |
 | Identificatori pericolosi | `whitelist.unlock_dangerous` | `--unlock-dangerous` | il bootloader, l'aggiornamento dello slave di espansione, la cancellazione dello stato salvato e ogni impostazione persistente restano rifiutati finché non vengono sbloccati |
 | Intestazione dell'immagine di un aggiornamento | `update_image.header` | `--image-header` | un aggiornamento la cui immagine non contiene un'intestazione viene inoltrato con una nota nell'audit (`warn`, il valore predefinito), inoltrato così com'è (`accept`) o rifiutato (`require`); un'intestazione presente viene sempre verificata e il resto di un aggiornamento con intestazione errata viene rifiutato |
+| Bus che mescola le velocità | `bus_health.tec_warn`, `.rec_warn`, `.bus_off_warn`, `.legacy_heads` | - | il gateway conserva le trame di salute (`0x1B8`) che legge dal bus e il `summary` elenca `bus_warnings`: contatori di errore (96 per impostazione predefinita) o bus-off (1) delle teste ascoltate, e una testa indicata in `legacy_heads` (fatta per 500 kbit/s); una testa a un'altra velocità non si sente, quindi il bus si riconosce dai suoi sintomi |
 | Identificatori aggiunti / tolti | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | aggiungere un identificatore a mano o toglierne uno qualunque cosa dica il resto |
 | Controllo del payload | `payload.enabled` | `--no-payload-check` / `--payload-check` | lunghezza e valori devono essere quelli che la specifica consente |
 | Limite di frequenza | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 frame al secondo e una raffica di 10 per identificatore, una raffica di 50 per il collegamento, una di 2 per un identificatore pericoloso sbloccato; `rate.overrides` dà a un identificatore la propria frequenza e raffica |
@@ -148,7 +149,7 @@ Quali versioni dei programmi URTC funzionano insieme, e quale versione del proto
 
 ## 🧪 Test
 
-La suite ha 162 test (`python -m pytest tests -q`): l'elenco degli identificatori, il controllo del payload, il limite di frequenza, la sessione e i suoi rifiuti, le opzioni e il file di configurazione, la riga di comando, un test su un vero socket locale e l'estremità seriale contro una porta simulata. Un test viene saltato se manca la sua dipendenza opzionale. `python -m mypy` controlla i tipi del pacchetto e `ruff check .` il codice.
+La suite ha 177 test (`python -m pytest tests -q`): l'elenco degli identificatori, il controllo del payload, il limite di frequenza, la sessione e i suoi rifiuti, le opzioni e il file di configurazione, la riga di comando, un test su un vero socket locale e l'estremità seriale contro una porta simulata. Un test viene saltato se manca la sua dipendenza opzionale. `python -m mypy` controlla i tipi del pacchetto e `ruff check .` il codice.
 
 ## 🏗️ Compilazione e rilascio
 

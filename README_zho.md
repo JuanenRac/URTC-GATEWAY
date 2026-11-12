@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-162-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-177-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | 版本 | `0.0.7` |
 | 成熟度 | 雏形 |
-| 测试 | 162 |
+| 测试 | 177 |
 | 技术栈 | Python / CAN / HMAC |
 | 目标 | 使用者的电脑 |
 | 真实硬件 | 仅模拟：使用模拟器、替身或仿真测试；此版本没有在真实硬件上运行的记录 |
@@ -110,6 +110,7 @@ URTC 仓库的威胁模型指出：如果安装环境无法保持总线封闭，
 | 标识符列表 | `whitelist.enabled` | `--no-whitelist` / `--whitelist` | 只有主机会发送的标识符才能通往总线 |
 | 危险标识符 | `whitelist.unlock_dangerous` | `--unlock-dangerous` | 引导程序、扩展从机的更新、擦除已保存状态和所有持久设置在解锁前一直被拒绝 |
 | 更新镜像的头 | `update_image.header` | `--image-header` | 镜像内部没有头的更新会被转发并在审计中留下注记（`warn`，默认）、原样转发（`accept`）或被拒绝（`require`）；存在的头总会被校验，头不正确的更新其余部分会被拒绝 |
+| 混用速度的总线 | `bus_health.tec_warn`、`.rec_warn`、`.bus_off_warn`、`.legacy_heads` | - | 网关保留从总线读到的健康帧（`0x1B8`），`summary` 会列出 `bus_warnings`：能听到的工具头的错误计数器（默认 96）或总线关闭（1），以及 `legacy_heads` 中列出的工具头（为 500 kbit/s 制作）；速度不同的工具头无法被听到，因此根据症状识别总线 |
 | 添加 / 移除的标识符 | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | 手动添加一个标识符，或不管其余规则如何都移除一个 |
 | 载荷检查 | `payload.enabled` | `--no-payload-check` / `--payload-check` | 长度和数值必须是规范允许的 |
 | 速率限制 | `rate.*` | `--no-rate-limit` / `--rate-limit` | 每个标识符每秒 20 帧、突发 10 帧，整条链路突发 50 帧，已解锁的危险标识符突发 2 帧；`rate.overrides` 可给某个标识符单独的速率和突发 |
@@ -148,7 +149,7 @@ python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777
 
 ## 🧪 测试
 
-测试套件共有 162 个测试（`python -m pytest tests -q`）：标识符列表、载荷检查、速率限制、会话及其拒绝情形、选项和配置文件、命令行、通过真实本地套接字的测试，以及针对模拟端口的串口端。缺少可选依赖时有一个测试会被跳过。`python -m mypy` 检查软件包的类型，`ruff check .` 检查源码。
+测试套件共有 177 个测试（`python -m pytest tests -q`）：标识符列表、载荷检查、速率限制、会话及其拒绝情形、选项和配置文件、命令行、通过真实本地套接字的测试，以及针对模拟端口的串口端。缺少可选依赖时有一个测试会被跳过。`python -m mypy` 检查软件包的类型，`ruff check .` 检查源码。
 
 ## 🏗️ 构建与发布
 
