@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-127-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-139-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Versão | `0.0.7` |
 | Maturidade | Estrutura inicial |
-| Testes | 127 |
+| Testes | 139 |
 | Tecnologia | Python / CAN / HMAC |
 | Destino | O PC de quem o usa |
 | Em hardware real | Só simulado: testado com emuladores, dublês de teste ou simuladores; não há registo de execução em hardware real para esta versão |
@@ -109,6 +109,7 @@ Cada proteção está ativada por omissão e qualquer uma pode ser desativada, n
 |---|---|---|---|
 | Lista de identificadores | `whitelist.enabled` | `--no-whitelist` / `--whitelist` | só os identificadores que um anfitrião envia passam para o barramento |
 | Identificadores perigosos | `whitelist.unlock_dangerous` | `--unlock-dangerous` | o bootloader, a atualização do escravo de expansão, o apagamento do estado guardado e qualquer definição persistente continuam recusados até serem desbloqueados |
+| Cabeçalho da imagem de uma atualização | `update_image.header` | `--image-header` | uma atualização cuja imagem não tem cabeçalho no interior é reencaminhada com uma nota na auditoria (`warn`, o valor por omissão), reencaminhada tal como está (`accept`) ou recusada (`require`); um cabeçalho presente é sempre verificado e o resto de uma atualização com cabeçalho incorreto é recusado |
 | Identificadores adicionados / removidos | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | adicionar um identificador à mão ou retirar um, diga o que disser o resto |
 | Verificação da carga | `payload.enabled` | `--no-payload-check` / `--payload-check` | o comprimento e os valores têm de ser os que a especificação permite |
 | Limite de taxa | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 tramas por segundo e uma rajada de 10 por identificador, uma rajada de 50 para a ligação, uma de 2 para um identificador perigoso desbloqueado; `rate.overrides` dá a um identificador a sua própria taxa e rajada |
@@ -147,7 +148,7 @@ As versões dos programas URTC que funcionam em conjunto, e a versão do protoco
 
 ## 🧪 Testes
 
-O conjunto tem 127 testes (`python -m pytest tests -q`): a lista de identificadores, a verificação da carga, o limite de taxa, a sessão e as suas recusas, as opções e o ficheiro de configuração, a linha de comandos, um teste sobre um socket local real e o extremo série contra uma porta simulada. Um teste é ignorado quando falta a sua dependência opcional. `python -m mypy` verifica os tipos do pacote e `ruff check .` o código.
+O conjunto tem 139 testes (`python -m pytest tests -q`): a lista de identificadores, a verificação da carga, o limite de taxa, a sessão e as suas recusas, as opções e o ficheiro de configuração, a linha de comandos, um teste sobre um socket local real e o extremo série contra uma porta simulada. Um teste é ignorado quando falta a sua dependência opcional. `python -m mypy` verifica os tipos do pacote e `ruff check .` o código.
 
 ## 🏗️ Compilação e publicação
 

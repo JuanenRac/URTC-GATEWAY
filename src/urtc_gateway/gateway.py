@@ -84,6 +84,8 @@ class Gateway:
             return self._refuse(decision, who)
         self.to_bus(can_id, data)
         self.stats.forwarded_to_bus += 1
+        if decision.code != "ok":   # forwarded, with a note for the operator (an image with no header)
+            self.audit.append(f"note {decision.code}{' ' + who if who else ''}: {decision.detail}")
         return decision
 
     def from_bus(self, can_id: int, data: bytes) -> Decision:

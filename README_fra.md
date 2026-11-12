@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-127-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-139-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.7` |
 | Maturité | Ébauche |
-| Tests | 127 |
+| Tests | 139 |
 | Technologie | Python / CAN / HMAC |
 | Cible | Le PC de la personne qui l'utilise |
 | Sur matériel réel | Simulé seulement : testé avec des émulateurs, des doubles de test ou des simulateurs ; aucune exécution sur du matériel réel n'est consignée pour cette version |
@@ -109,6 +109,7 @@ Chaque protection est activée par défaut et chacune peut être désactivée, d
 |---|---|---|---|
 | Liste d'identifiants | `whitelist.enabled` | `--no-whitelist` / `--whitelist` | seuls les identifiants qu'envoie un hôte passent vers le bus |
 | Identifiants dangereux | `whitelist.unlock_dangerous` | `--unlock-dangerous` | le bootloader, la mise à jour de l'esclave d'extension, l'effacement de l'état sauvegardé et tout réglage persistant restent refusés jusqu'au déverrouillage |
+| En-tête de l'image d'une mise à jour | `update_image.header` | `--image-header` | une mise à jour dont l'image ne contient pas d'en-tête est transmise avec une note dans l'audit (`warn`, la valeur par défaut), transmise telle quelle (`accept`) ou refusée (`require`) ; un en-tête présent est toujours vérifié, et le reste d'une mise à jour dont l'en-tête est incorrect est refusé |
 | Identifiants ajoutés / retirés | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | ajouter un identifiant à la main ou en retirer un quoi que dise le reste |
 | Contrôle de la charge | `payload.enabled` | `--no-payload-check` / `--payload-check` | la longueur et les valeurs doivent être celles que la spécification permet |
 | Limite de débit | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 trames par seconde et une rafale de 10 par identifiant, une rafale de 50 pour la liaison, une de 2 pour un identifiant dangereux déverrouillé ; `rate.overrides` donne à un identifiant son propre débit et sa propre rafale |
@@ -147,7 +148,7 @@ Les versions des programmes URTC qui fonctionnent ensemble, et la version du pro
 
 ## 🧪 Tests
 
-La suite compte 127 tests (`python -m pytest tests -q`) : la liste d'identifiants, le contrôle de la charge, la limite de débit, la session et ses refus, les options et le fichier de configuration, la ligne de commande, un test sur un vrai socket local et l'extrémité série face à un port simulé. Un test est ignoré quand sa dépendance optionnelle manque. `python -m mypy` vérifie les types du paquet et `ruff check .` le code.
+La suite compte 139 tests (`python -m pytest tests -q`) : la liste d'identifiants, le contrôle de la charge, la limite de débit, la session et ses refus, les options et le fichier de configuration, la ligne de commande, un test sur un vrai socket local et l'extrémité série face à un port simulé. Un test est ignoré quand sa dépendance optionnelle manque. `python -m mypy` vérifie les types du paquet et `ruff check .` le code.
 
 ## 🏗️ Compilation et publication
 

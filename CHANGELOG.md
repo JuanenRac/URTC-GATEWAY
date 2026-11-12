@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [Unreleased]
+
+- **An update that crosses the gateway is checked against the header inside its image:** the gateway follows the start frame (size and hardware) and the first data of a main-board or expansion-slave update, reads the 32-byte header at the fixed offset, and refuses the rest of the update when the header does not hold, states another length than the start frame announced or names another hardware.
+
+- **`update_image.header` (`--image-header`) is the compatibility switch for an image without the header:** `warn` (the default) forwards it and leaves a note in the audit, `accept` forwards it, `require` refuses it; a header that is there is always checked.
+
 ## [0.0.7] - Refreshed copy of the shared CAN tables and the manifest names the shared contracts it needs
 
 - **The manifest says which version of the shared contracts it needs:** `min_common` in `urtc.project.json` is the oldest version of URTC-COMMON among the copies this repository carries, the value the updater compares with what is installed (a warning only). `tools/min_common.py` of URTC-COMMON checks it and a new copy brings it up to date.

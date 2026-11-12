@@ -23,9 +23,18 @@ A JSON object with the sections above; `schema` is 1. An unknown section or opti
   "session": {"enabled": true, "key_file": "keys.txt"},
   "rate": {"per_id_hz": 20, "per_id_burst": 10, "overrides": {"0x160": [5, 2]}},
   "whitelist": {"extra_allow": ["0x1B0"], "deny": []},
-  "server": {"host": "127.0.0.1", "port": 8765}
+  "server": {"host": "127.0.0.1", "port": 8765},
+  "update_image": {"header": "warn"}
 }
 ```
+
+## The header inside a firmware image
+
+The identifiers of a firmware update (the main board `0x7F1`/`0x7F2`/`0x7F4`, the expansion slave `0x211`/`0x213`/`0x214`) are dangerous ones, so they cross only with `whitelist.unlock_dangerous`. When they do, the gateway follows each update: the start frame says the size and the hardware, and the first bytes of the data show the 32-byte header that an image built with the header slot sealed carries inside it, at the fixed offset `0x200` (`IMAGE_HEADER.md` of URTC-COMMON). The header must hold (its CRC-32, the form that sits inside the image, no signature trailer), state the size the start frame announced and name the hardware of the start frame. If not, the rest of that update, and its end frame, are refused with the code `bad_image_header`.
+
+An image with no header follows `update_image.header` (or `--image-header`): `accept` forwards it, `warn` (the default) forwards it and leaves a note in the audit, `require` refuses it. A header that is there is always checked, whatever the switch says.
+
+It is a cut, not a prevention: the bytes before the decision (the first `0x220`) have already crossed, so a refused update starts and never ends; the board installs nothing, and its own verification of the image is what decides what runs. The CRC-32 of the whole image is the board's to check.
 
 ## The session
 

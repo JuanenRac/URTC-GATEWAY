@@ -13,6 +13,7 @@ from . import ids
 from . import urtc_protocol as proto
 from .config import GatewayConfig
 from .ratelimit import RateLimiter, TokenBucket
+from .update_guard import UpdateGuard
 
 LAYOUTS_BY_ID: dict[int, list[dict]] = {}
 for _layout in cast("dict[str, dict[str, Any]]", proto.LAYOUTS).values():
@@ -93,6 +94,7 @@ class Policy:
         for can_id in self.dangerous:
             overrides.setdefault(can_id, (r.dangerous_hz, r.dangerous_burst))
         self.limiter = RateLimiter(r.global_hz, r.global_burst, r.per_id_hz, r.per_id_burst, overrides) if r.enabled and r.global_hz > 0 and r.per_id_hz > 0 else None
+        self.guard = UpdateGuard(config.update_image.header)
         self.outbound_bucket = TokenBucket(config.outbound.rate_hz, max(1.0, config.outbound.rate_hz / 10)) if config.outbound.enabled and config.outbound.rate_hz > 0 else None
 
     def check_inbound(self, can_id: int, data: bytes, now_s: float) -> Decision:
@@ -113,7 +115,11 @@ class Policy:
                 return Decision(False, "bad_payload", f"0x{can_id:03X}: {problem}")
         if self.limiter is not None and not self.limiter.allow(can_id, now_s):
             return Decision(False, "rate_limited", f"0x{can_id:03X} is sent too often")
-        return OK
+        # the frames of a firmware update: the header inside the image (see update_guard.py); only a frame that is going to cross is looked at
+        verdict = self.guard.check(can_id, data)
+        if verdict.refused:
+            return Decision(False, verdict.code, verdict.detail)
+        return OK if verdict.code == "ok" else Decision(True, verdict.code, verdict.detail)
 
     def check_outbound(self, can_id: int, now_s: float) -> Decision:
         if self.config.outbound.enabled:

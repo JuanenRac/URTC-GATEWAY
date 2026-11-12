@@ -60,6 +60,11 @@ class OutboundOptions:
 
 
 @dataclass
+class UpdateImageOptions:
+    header: str = "warn"                      # what to do with an update whose image has no header inside it: accept, warn (the default) or require. A header that is there is always checked
+
+
+@dataclass
 class ServerOptions:
     host: str = "127.0.0.1"
     port: int = 8765
@@ -74,10 +79,12 @@ class GatewayConfig:
     session: SessionOptions = field(default_factory=SessionOptions)
     outbound: OutboundOptions = field(default_factory=OutboundOptions)
     server: ServerOptions = field(default_factory=ServerOptions)
+    update_image: UpdateImageOptions = field(default_factory=UpdateImageOptions)
 
 
 _SECTIONS = {f.name: f.type for f in fields(GatewayConfig)}
-_CLASSES = {"whitelist": WhitelistOptions, "payload": PayloadOptions, "rate": RateOptions, "session": SessionOptions, "outbound": OutboundOptions, "server": ServerOptions}
+_CLASSES = {"whitelist": WhitelistOptions, "payload": PayloadOptions, "rate": RateOptions, "session": SessionOptions, "outbound": OutboundOptions, "server": ServerOptions,
+            "update_image": UpdateImageOptions}
 
 
 def _id(value: Any, where: str) -> int:
@@ -126,6 +133,8 @@ def config_from_dict(data: Any) -> GatewayConfig:
             elif isinstance(default, str):
                 if not isinstance(value, str):
                     raise ConfigError(f"{name}.{key} must be text")
+                if name == "update_image" and value not in ("accept", "warn", "require"):
+                    raise ConfigError("update_image.header must be accept, warn or require")
             elif key in ("extra_allow", "deny"):
                 if not isinstance(value, list):
                     raise ConfigError(f"{name}.{key} must be a list of identifiers")
@@ -179,6 +188,8 @@ def warnings(config: GatewayConfig) -> list[str]:
         out.append("the rate limit is OFF: a peer can flood the bus")
     if not config.outbound.enabled:
         out.append("the outbound filter is OFF: every frame of the bus goes to the network")
+    if config.update_image.header == "accept":
+        out.append("the image header check is lenient: an update whose image has no header inside it is forwarded without a note")
     if config.server.host not in ("127.0.0.1", "::1", "localhost") and not config.session.enabled:
         out.append(f"listening on {config.server.host} without session authentication")
     return out

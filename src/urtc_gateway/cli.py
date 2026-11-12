@@ -12,7 +12,7 @@
 
 Every protection is on by default and has a flag to switch it off (and a flag to switch it back on, so a file can be overridden):
 --no-session / --session, --no-whitelist / --whitelist, --unlock-dangerous, --no-payload-check / --payload-check,
---no-rate-limit / --rate-limit, --no-outbound-filter / --outbound-filter, --allow-id, --deny-id.
+--no-rate-limit / --rate-limit, --no-outbound-filter / --outbound-filter, --allow-id, --deny-id, --image-header accept|warn|require.
 """
 from __future__ import annotations
 
@@ -46,6 +46,8 @@ def add_protection_flags(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--allow-id", type=_id, action="append", default=[], metavar="ID", help="add an identifier to the list (repeatable)")
     parser.add_argument("--deny-id", type=_id, action="append", default=[], metavar="ID", help="remove an identifier from the list (repeatable)")
     parser.add_argument("--key-file", metavar="FILE", help="the session key file")
+    parser.add_argument("--image-header", choices=("accept", "warn", "require"), default=None,
+                        help="what to do with an update whose image has no header inside it (default warn); a header that is there is always checked")
 
 
 def config_from_args(args: argparse.Namespace) -> GatewayConfig:
@@ -61,6 +63,8 @@ def config_from_args(args: argparse.Namespace) -> GatewayConfig:
     config.whitelist.deny = sorted(set(config.whitelist.deny) | set(getattr(args, "deny_id", [])))
     if getattr(args, "key_file", None):
         config.session.key_file = args.key_file
+    if getattr(args, "image_header", None):
+        config.update_image.header = args.image_header
     for attr in ("host", "port"):
         value = getattr(args, attr, None)
         if value is not None:

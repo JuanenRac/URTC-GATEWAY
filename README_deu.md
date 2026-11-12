@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-127-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-139-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.7` |
 | Reifegrad | Gerüst |
-| Tests | 127 |
+| Tests | 139 |
 | Technik | Python / CAN / HMAC |
 | Ziel | Der PC der Person, die es benutzt |
 | Auf echter Hardware | Nur simuliert: gegen Emulatoren, Attrappen oder Simulatoren getestet; für diese Version ist kein Lauf auf echter Hardware vermerkt |
@@ -109,6 +109,7 @@ Jede Schutzfunktion ist standardmäßig aktiv und jede lässt sich abschalten, i
 |---|---|---|---|
 | Kennungsliste | `whitelist.enabled` | `--no-whitelist` / `--whitelist` | nur die Kennungen, die ein Host sendet, gelangen zum Bus |
 | Gefährliche Kennungen | `whitelist.unlock_dangerous` | `--unlock-dangerous` | Bootloader, Aktualisierung des Erweiterungs-Slaves, Löschen des gespeicherten Zustands und jede dauerhafte Einstellung bleiben abgelehnt, bis sie freigegeben werden |
+| Header im Image eines Updates | `update_image.header` | `--image-header` | ein Update, dessen Image keinen Header enthält, wird mit einem Vermerk im Audit weitergeleitet (`warn`, der Standard), unverändert weitergeleitet (`accept`) oder abgelehnt (`require`); ein vorhandener Header wird immer geprüft, und der Rest eines Updates mit fehlerhaftem Header wird abgelehnt |
 | Hinzugefügte / entfernte Kennungen | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | eine Kennung von Hand hinzufügen oder eine entfernen, was auch immer der Rest sagt |
 | Nutzdatenprüfung | `payload.enabled` | `--no-payload-check` / `--payload-check` | Länge und Werte müssen die sein, die die Spezifikation erlaubt |
 | Ratenbegrenzung | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 Frames pro Sekunde und ein Burst von 10 je Kennung, ein Burst von 50 für die Verbindung, ein Burst von 2 für eine freigegebene gefährliche Kennung; `rate.overrides` gibt einer Kennung eine eigene Rate und einen eigenen Burst |
@@ -147,7 +148,7 @@ Welche Versionen der URTC-Programme zusammenarbeiten und welche Protokollversion
 
 ## 🧪 Tests
 
-Die Suite hat 127 Tests (`python -m pytest tests -q`): die Kennungsliste, die Nutzdatenprüfung, die Ratenbegrenzung, die Sitzung und ihre Ablehnungen, die Optionen und die Konfigurationsdatei, die Befehlszeile, ein Test über einen echten lokalen Socket und das serielle Ende gegen einen Schein-Port. Ein Test wird übersprungen, wenn seine optionale Abhängigkeit fehlt. `python -m mypy` prüft die Typen des Pakets und `ruff check .` den Quelltext.
+Die Suite hat 139 Tests (`python -m pytest tests -q`): die Kennungsliste, die Nutzdatenprüfung, die Ratenbegrenzung, die Sitzung und ihre Ablehnungen, die Optionen und die Konfigurationsdatei, die Befehlszeile, ein Test über einen echten lokalen Socket und das serielle Ende gegen einen Schein-Port. Ein Test wird übersprungen, wenn seine optionale Abhängigkeit fehlt. `python -m mypy` prüft die Typen des Pakets und `ruff check .` den Quelltext.
 
 ## 🏗️ Build und Veröffentlichung
 
