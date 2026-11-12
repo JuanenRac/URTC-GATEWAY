@@ -15,3 +15,4 @@ This repository is the gateway of the URTC CAN threat model: it decides which fr
 5. **Eight languages.** The README exists in English, Spanish, French, Italian, German, Chinese, Japanese and European Portuguese, with the same sections and links; `tools/ci_validate.py` compares them.
 6. **Nothing private in public files.** No dates, no names of private notes, no tracking codes, no secrets, no addresses of a real installation.
 7. **Tests.** `python -m pytest tests -q` must pass. Use `build-test.sh` / `build-test.bat` to check without changing the version; `build.sh` / `build.bat` raise it.
+8. **Documentation language.** The files in `docs/` are written in English only, on purpose: they are technical reference for developers, kept in one language so that a change is made once and cannot drift between eight copies. The README of each repository is the part that is translated into the eight languages.
