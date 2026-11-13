@@ -31,7 +31,7 @@
 |---|---|
 | Versión | `0.0.8` |
 | Madurez | Andamiaje |
-| Tests | 200 |
+| Tests | 204 |
 | Tecnología | Python / CAN / HMAC |
 | Destino | El PC de quien lo usa |
 | En hardware real | Solo simulado: probado con emuladores, dobles de prueba o simuladores; no consta ninguna ejecución en hardware real para esta versión |

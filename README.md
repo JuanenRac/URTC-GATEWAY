@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.8` |
 | Maturity | Scaffolding |
-| Tests | 200 |
+| Tests | 204 |
 | Stack | Python / CAN / HMAC |
 | Target | The PC of the person using it |
 | On real hardware | Simulated only: tested against emulators, fakes or simulators; no run on real hardware is recorded for this version |

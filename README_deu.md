@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.8` |
 | Reifegrad | Gerüst |
-| Tests | 200 |
+| Tests | 204 |
 | Technik | Python / CAN / HMAC |
 | Ziel | Der PC der Person, die es benutzt |
 | Auf echter Hardware | Nur simuliert: gegen Emulatoren, Attrappen oder Simulatoren getestet; für diese Version ist kein Lauf auf echter Hardware vermerkt |

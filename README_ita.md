@@ -31,7 +31,7 @@
 |---|---|
 | Versione | `0.0.8` |
 | Maturità | Impalcatura |
-| Test | 200 |
+| Test | 204 |
 | Tecnologia | Python / CAN / HMAC |
 | Destinazione | Il PC di chi lo usa |
 | Su hardware reale | Solo simulato: provato con emulatori, test double o simulatori; per questa versione non risulta alcuna esecuzione su hardware reale |
