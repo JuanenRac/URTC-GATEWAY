@@ -60,7 +60,7 @@ El bus CAN del cabezal de herramienta no autentica al emisor: se obedece a cualq
 
 * **Lista de identificadores, hecha a partir de la especificación:** solo cruzan hacia el bus los identificadores que envía un host; los peligrosos (bootloader, actualización del esclavo de expansión, borrado del estado guardado, cualquier ajuste persistente) se rechazan salvo que el operador los desbloquee. [La tabla de identificadores](docs/ALLOWED_IDS.md) se genera.
 * **Comprobación de la carga:** una trama debe tener la longitud y los valores que permite la especificación (una consigna dentro de su rango, una dirección que existe, los bytes mágicos donde se exigen).
-* **Límite de tasa:** un cubo de fichas por identificador y para todo el enlace, y uno más estricto para un identificador peligroso desbloqueado.
+* **Límite de frecuencia:** un cubo de fichas por identificador y para todo el enlace, y uno más estricto para un identificador peligroso desbloqueado.
 * **Clave de sesión:** un interlocutor demuestra que posee una clave con un HMAC sobre un nonce de la conexión, un contador y la trama, de modo que nada capturado puede repetirse.
 * **Toda protección se puede desactivar:** desde el archivo de configuración o la línea de comandos, y el programa enumera al arrancar cada protección que está apagada. No cifra, y no sustituye las medidas de hardware del modelo de amenazas.
 
@@ -113,7 +113,7 @@ Cada protección está activada por defecto y cualquiera puede desactivarse, en 
 | Bus que mezcla velocidades | `bus_health.tec_warn`, `.rec_warn`, `.bus_off_warn`, `.legacy_heads` | - | la pasarela guarda las tramas de salud (`0x1B8`) que lee del bus y el `summary` lista `bus_warnings`: contadores de error (96 por defecto) o bus-off (1) de los cabezales que se oyen, y un cabezal nombrado en `legacy_heads` (hecho para 500 kbit/s); un cabezal a otra velocidad no se oye, así que el bus se reconoce por sus síntomas |
 | Identificadores añadidos / quitados | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | añadir un identificador a mano o quitar uno diga lo que diga el resto |
 | Comprobación de la carga | `payload.enabled` | `--no-payload-check` / `--payload-check` | la longitud y los valores deben ser los que permite la especificación |
-| Límite de tasa | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 tramas por segundo y una ráfaga de 10 por identificador, una ráfaga de 50 para el enlace, una de 2 para un identificador peligroso desbloqueado; `rate.overrides` da a un identificador su propia frecuencia y ráfaga |
+| Límite de frecuencia | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 tramas por segundo y una ráfaga de 10 por identificador, una ráfaga de 50 para el enlace, una de 2 para un identificador peligroso desbloqueado; `rate.overrides` da a un identificador su propia frecuencia y ráfaga |
 | Clave de sesión | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | un interlocutor demuestra que tiene una clave |
 | Filtro de salida | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | solo lo que envía una placa va hacia la red, hasta 500 tramas por segundo |
 | Red abierta | `server.allow_open_network` | `--allow-open-network` | escuchar en una dirección no local sin clave de sesión se rechaza salvo que se pida |
