@@ -4,7 +4,11 @@
   "files": {
     "bus_health.py": {
       "from": "src/urtc_common/bus_health.py",
-      "sha256": "80fede3e0c8e7a0d64a6704f00a2f1aed2d134464749def7f69f4cf0f18cd637"
+      "sha256": "618b6a3deaeab2eec8090e6332edefb691c9195c896c6882b6c1b9a7e2658826"
+    },
+    "health_info.py": {
+      "from": "src/urtc_common/health_info.py",
+      "sha256": "16d65c2c97d5e7a487d06c63d17050fa5fe28fb18641698d5209a43f8ced185b"
     },
     "image_header.py": {
       "from": "src/urtc_common/image_header.py",
@@ -12,7 +16,7 @@
     },
     "urtc_protocol.py": {
       "from": "src/urtc_common/protocol.py",
-      "sha256": "8ca082503681084b8479b9ddba2071b361df2eba67775537b84c9872de5ac0bb"
+      "sha256": "71f922068bb3dea9a0bd860368fb5707b94aa97d4e5458a7bf6eed95d4c6768a"
     }
   }
 }

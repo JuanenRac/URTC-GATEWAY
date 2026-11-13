@@ -20,6 +20,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The gateway reports the bus speed that the heads declare:** heads of protocol version 2 state in their identity frame (`0x1BB`) the bit rate they were built for. The gateway keeps the last identity frames that it reads from the bus (whatever the policy forwards), lists the distinct declared speeds in `summary()['declared_bus_rates']` and adds the warning `rates_declared_differ`, first of all, when two heads declare different speeds. Heads of older firmware declare nothing and the judgement by symptoms is unchanged. The shared copies of the protocol tables and of the bus-health module are refreshed, with the new `health_info` module. Tested with virtual frames; not tried against a bus with real heads.
+
 ## [0.0.7] - Refreshed copy of the shared CAN tables and the manifest names the shared contracts it needs
 
 - **The manifest says which version of the shared contracts it needs:** `min_common` in `urtc.project.json` is the oldest version of URTC-COMMON among the copies this repository carries, the value the updater compares with what is installed (a warning only). `tools/min_common.py` of URTC-COMMON checks it and a new copy brings it up to date.
