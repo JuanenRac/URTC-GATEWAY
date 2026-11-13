@@ -3,7 +3,7 @@
   "ecosystem": "URTC",
   "name": "URTC-GATEWAY",
   "version": "0.0.8",
-  "min_common": "0.2.5",
+  "min_common": "0.2.6",
   "role": "tool",
   "stack": "python",
   "technologies": [
