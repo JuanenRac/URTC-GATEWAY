@@ -83,3 +83,41 @@ def test_only_the_last_frames_are_kept():
     for _ in range(200):
         gateway.from_bus(HEALTH, health(tec=100))
     assert len(gateway.health_frames) == 64
+
+
+# ---- the speed the heads declare in their identity frames (0x1BB, protocol version 2) -----------------------------------------------------------------
+from urtc_gateway import health_info  # noqa: E402
+
+INFO = bus_health.CAN_ID_HEALTH_INFO
+
+
+def test_the_gateway_keeps_the_identity_frames_and_reports_the_declared_speeds():
+    gateway, _ = make()
+    assert gateway.declared_rates() == [] and gateway.summary()["declared_bus_rates"] == []
+    gateway.from_bus(INFO, health_info.encode(2, 8, 4, 4, 0, 60, 1_000_000))
+    assert gateway.declared_rates() == [1_000_000] and gateway.bus_warnings() == []
+    assert gateway.summary()["declared_bus_rates"] == [1_000_000]
+
+
+def test_two_different_declared_speeds_are_a_warning_that_comes_first_and_stays_while_the_frames_are_recent():
+    gateway, _ = make()
+    gateway.from_bus(INFO, health_info.encode(2, 8, 4, 4, 0, 60, 1_000_000))
+    gateway.from_bus(INFO, health_info.encode(2, 8, 4, 4, 0, 61, 500_000))
+    gateway.from_bus(HEALTH, health(tec=120))
+    assert gateway.bus_warnings() == [bus_health.RATES_DECLARED_DIFFER, bus_health.BUS_ERRORS]
+    assert gateway.bus_warnings() == [bus_health.RATES_DECLARED_DIFFER]          # the health frames were handed over; the identity frames are state, not events
+    assert gateway.declared_rates() == [1_000_000, 500_000]
+
+
+def test_a_head_of_protocol_version_one_declares_nothing_and_the_old_judgement_stands():
+    gateway, _ = make()
+    gateway.from_bus(INFO, health_info.encode(1, 8, 4, 4, 0, 60, None))
+    gateway.from_bus(INFO, b"\x02\x00")
+    assert gateway.declared_rates() == [] and gateway.bus_warnings() == []
+
+
+def test_the_identity_frames_are_kept_even_when_the_policy_does_not_forward_them_and_only_the_last_ones():
+    gateway, _ = make()
+    for index in range(20):
+        gateway.from_bus(INFO, health_info.encode(2, 0, 0, 0, 0, index, 500_000 if index < 12 else 1_000_000))
+    assert len(gateway.info_frames) == 8 and gateway.declared_rates() == [1_000_000]

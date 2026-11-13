@@ -14,13 +14,14 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
-from . import bus_health
+from . import bus_health, health_info
 from . import session as sessions
 from .config import GatewayConfig
 from .policy import Decision, Policy
 
 MAX_AUDIT = 500
 HEALTH_FRAMES_KEPT = 64       # the health frames (0x1B8) of the heads that were heard, the last ones
+INFO_FRAMES_KEPT = 8          # the identity frames (0x1BB, one every ten seconds per head) that declare the speed of the bus, the last ones
 
 
 @dataclass
@@ -46,6 +47,7 @@ class Gateway:
         self.stats = Stats()
         self.audit: collections.deque[str] = collections.deque(maxlen=MAX_AUDIT)
         self.health_frames: collections.deque[bytes] = collections.deque(maxlen=HEALTH_FRAMES_KEPT)
+        self.info_frames: collections.deque[bytes] = collections.deque(maxlen=INFO_FRAMES_KEPT)
         self.session = sessions.Session(self.keys)
 
     def hello(self) -> dict[str, Any]:
@@ -95,6 +97,8 @@ class Gateway:
         """Handle one frame read from the bus: filter it and send it to the peer."""
         if can_id == bus_health.CAN_ID_HEALTH_PROFILE:
             self.health_frames.append(bytes(data))          # kept whatever the policy says about forwarding it: the gateway itself judges the bus by them
+        elif can_id == bus_health.CAN_ID_HEALTH_INFO:
+            self.info_frames.append(bytes(data))            # the speed the heads declare (protocol version 2); kept like the health frames
         decision = self.policy.check_outbound(can_id, self.clock())
         if not decision:
             self.stats.refused["out_" + decision.code] += 1
@@ -110,10 +114,15 @@ class Gateway:
         limits = bus_health.Thresholds(options.tec_warn, options.rec_warn, options.bus_off_warn, tuple(options.legacy_heads))
         frames = list(self.health_frames)
         self.health_frames.clear()
-        return bus_health.warnings(bus_health.profiles_from_frames(frames), False, heads_on_bus, limits)
+        return bus_health.warnings(bus_health.profiles_from_frames(frames), False, heads_on_bus, limits, self.declared_rates())
+
+    def declared_rates(self) -> list[int]:
+        """The distinct bit rates (bit/s, the highest first) that the heads declare in the identity frames heard lately; empty when none declares one (older firmware).
+        Two or more are a mixed bus, and ``bus_warnings`` says so with ``rates_declared_differ``."""
+        return sorted(set(health_info.declared_rates(self.info_frames)), reverse=True)
 
     def summary(self) -> dict[str, Any]:
-        return {"to_bus": self.stats.forwarded_to_bus, "to_network": self.stats.forwarded_to_network, "refused": dict(self.stats.refused), "bus_warnings": self.bus_warnings()}
+        return {"to_bus": self.stats.forwarded_to_bus, "to_network": self.stats.forwarded_to_network, "refused": dict(self.stats.refused), "bus_warnings": self.bus_warnings(), "declared_bus_rates": self.declared_rates()}
 
 
 def sign_message(key: bytes, nonce: bytes, peer: str, counter: int, can_id: int, data: bytes) -> dict[str, Any]:
