@@ -29,7 +29,7 @@
 
 | | |
 |---|---|
-| Version | `0.0.7` |
+| Version | `0.0.8` |
 | Reifegrad | Gerüst |
 | Tests | 200 |
 | Technik | Python / CAN / HMAC |
