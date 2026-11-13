@@ -50,6 +50,7 @@
 | 0x1AE | SET_FEATURES | refused (dangerous) | refused |
 | 0x1AF | FEATURES_RESP | forwarded | forwarded |
 | 0x1B0 | ELECTROMAGNET_CMD | forwarded | refused |
+| 0x1B2 | CLEAR_ERROR | refused (dangerous) | refused |
 | 0x1B8 | HEALTH_PROFILE | refused | forwarded |
 | 0x1B9 | PID_CONFIG | refused (dangerous) | refused |
 | 0x1BA | PID_STATE_RESP | forwarded | forwarded |
