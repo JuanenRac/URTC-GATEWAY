@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-204-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-222-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.8` |
 | Reifegrad | Gerüst |
-| Tests | 204 |
+| Tests | 222 |
 | Technik | Python / CAN / HMAC |
 | Ziel | Der PC der Person, die es benutzt |
 | Auf echter Hardware | Nur simuliert: gegen Emulatoren, Attrappen oder Simulatoren getestet; für diese Version ist kein Lauf auf echter Hardware vermerkt |
@@ -149,7 +149,7 @@ Welche Versionen der URTC-Programme zusammenarbeiten und welche Protokollversion
 
 ## 🧪 Tests
 
-Die Suite hat 204 Tests (`python -m pytest tests -q`): die Kennungsliste, die Nutzdatenprüfung, die Ratenbegrenzung, die Sitzung und ihre Ablehnungen, die Optionen und die Konfigurationsdatei, die Befehlszeile, ein Test über einen echten lokalen Socket und das serielle Ende gegen einen Schein-Port. Ein Test wird übersprungen, wenn seine optionale Abhängigkeit fehlt. `python -m mypy` prüft die Typen des Pakets und `ruff check .` den Quelltext.
+Die Suite hat 222 Tests (`python -m pytest tests -q`): die Kennungsliste, die Nutzdatenprüfung, die Ratenbegrenzung, die Sitzung und ihre Ablehnungen, die Optionen und die Konfigurationsdatei, die Befehlszeile, ein Test über einen echten lokalen Socket und das serielle Ende gegen einen Schein-Port. Ein Test wird übersprungen, wenn seine optionale Abhängigkeit fehlt. `python -m mypy` prüft die Typen des Pakets und `ruff check .` den Quelltext.
 
 ## 🏗️ Build und Veröffentlichung
 
