@@ -6,7 +6,7 @@
 
 <p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 简体中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | 🇵🇹 <b>Português</b></p>
 
-### Um gateway à frente do barramento CAN: os identificadores que um anfitrião pode enviar, um limite de taxa e uma chave de sessão
+### Um gateway à frente do barramento CAN: os identificadores que um anfitrião pode enviar, um limite de frequência e uma chave de sessão
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -19,11 +19,11 @@
 
 ---
 
-**Verificação de honestidade - o que realmente funciona hoje:** este repositório contém um gateway escrito como software: a lista de identificadores é feita a partir da especificação do protocolo, o conteúdo de cada trama é verificado contra ela, a taxa é limitada e um par tem de provar que possui uma chave. Tudo é testado na CI com simulações e um socket local. Nunca foi ligado a um barramento CAN real, a um adaptador nem a uma placa, e nenhuma instalação o usa ainda. As cabeças de aquecimento, laser e soldadura continuam a precisar das medidas de hardware do modelo de ameaças: um interbloqueio que nenhuma trama possa fechar, um barramento fechado e uma paragem que corte a alimentação.
+**Ponto de honestidade: o que realmente funciona hoje:** este repositório contém um gateway escrito como software: a lista de identificadores é feita a partir da especificação do protocolo, o conteúdo de cada trama é verificado contra ela, a frequência é limitada e um par tem de provar que possui uma chave. Tudo é testado na CI com simulações e um socket local. Nunca foi ligado a um barramento CAN real, a um adaptador nem a uma placa, e nenhuma instalação o usa ainda. As cabeças de aquecimento, laser e soldadura continuam a precisar das medidas de hardware do modelo de ameaças: um interbloqueio que nenhuma trama possa fechar, um barramento fechado e uma paragem que corte a alimentação.
 
 ---
 
-> **Estado de segurança (safety e security):** este ecossistema não é um sistema de segurança certificado e ainda não existe nenhuma placa URTC montada. Os bootloaders verificam as imagens de firmware com CRC32 e um HMAC-SHA256 de chave partilhada, não com uma assinatura assimétrica (prevista); as imagens de aplicação publicadas estão assinadas com a chave pública de desenvolvimento (`signing_key_kind: dev`), pelo que qualquer pessoa pode produzir uma imagem que o bootloader aceita; nada foi transmitido a uma placa real. Leia a [base de segurança](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/SECURITY_BASELINE.md) e o [modelo de ameaças](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/THREAT_MODEL.md) antes de confiar em qualquer afirmação aqui para a segurança de uma pessoa.
+> **Estado de segurança (safety e security):** este ecossistema não é um sistema de segurança certificado e ainda não existe nenhuma placa URTC montada. Os bootloaders verificam as imagens de firmware com CRC32 e um HMAC-SHA256 de chave partilhada, não com uma assinatura assimétrica (prevista); as imagens de aplicação publicadas estão assinadas com a chave pública de desenvolvimento (`signing_key_kind: dev`), pelo que qualquer pessoa pode produzir uma imagem que o bootloader aceita; nada foi transmitido a uma placa real. Leia a [base de segurança](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/SECURITY_BASELINE.md) e o [modelo de ameaças](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/THREAT_MODEL.md) antes de confiar em qualquer afirmação deste repositório sobre a segurança de uma pessoa.
 
 ## 📋 Num relance
 
@@ -48,7 +48,7 @@
 | Software | 🟡 | Funciona num PC e contra o simulador; nunca foi usado com uma placa real. |
 | Testes | 🟡 | A bateria de testes passa na CI em cada envio. |
 | Hardware real | 🟠 | Ainda não correu numa placa real: o ensaio de bancada continua pendente. |
-| Segurança | 🟡 | Deixa passar só os identificadores listados e limita a sua taxa; verificado num PC, nunca diante de um barramento real. |
+| Segurança | 🟡 | Deixa passar só os identificadores listados e limita a sua frequência; verificado num PC, nunca diante de um barramento real. |
 | Interface e protocolos | 🟡 | As rotas ou mensagens que oferece estão documentadas e testadas com um cliente; ainda nem todos os clientes as usaram |
 | Documentação | 🟡 | README em oito línguas e documentos de referência; as traduções não foram revistas por falantes nativos. |
 
@@ -59,9 +59,9 @@
 O barramento CAN da cabeça de ferramenta não autentica o emissor: qualquer nó ligado aos fios é obedecido. Quando uma instalação não consegue manter o barramento fechado, este gateway coloca-se à frente:
 
 * **Lista de identificadores, feita a partir da especificação:** só atravessam para o barramento os identificadores que um anfitrião envia; os perigosos (bootloader, atualização do escravo de expansão, apagamento do estado guardado, qualquer definição persistente) são recusados, a menos que o operador os desbloqueie. [A tabela de identificadores](docs/ALLOWED_IDS.md) é gerada.
-* **Verificação da carga:** uma trama tem de ter o comprimento e os valores que a especificação permite (um valor pretendido dentro do intervalo, um sentido que existe, os bytes mágicos onde são exigidos).
-* **Limite de taxa:** um balde de fichas por identificador e para toda a ligação, e outro mais apertado para um identificador perigoso desbloqueado.
-* **Chave de sessão:** um par prova que possui uma chave com um HMAC sobre um nonce da ligação, um contador e a trama, de modo que nada gravado pode ser repetido.
+* **Verificação da carga:** uma trama tem de ter o comprimento e os valores que a especificação permite (um valor pretendido dentro do intervalo, um endereço que existe, os bytes mágicos onde são exigidos).
+* **Limite de frequência:** um balde de fichas por identificador e para toda a ligação, e outro mais apertado para um identificador perigoso desbloqueado.
+* **Chave de sessão:** um par prova que possui uma chave com um HMAC sobre um nonce da ligação, um contador e a trama, de modo que nada capturado pode ser repetido.
 * **Qualquer proteção pode ser desligada:** no ficheiro de configuração ou na linha de comandos, e o programa enumera ao arrancar cada proteção que está desligada. Não cifra e não substitui as medidas de hardware do modelo de ameaças.
 
 ## 🧩 Papel no URTC
@@ -81,12 +81,12 @@ Como as partes deste repositório se encaixam: quem o usa, o que contém e de qu
 | Ameaça | Defesa |
 |---|---|
 | Um nó nos fios envia um comando perigoso (bootloader, atualização do escravo de expansão, apagamento do estado guardado, uma definição persistente) | A lista de identificadores recusa-os até o operador os desbloquear com `--unlock-dangerous` |
-| Um valor fora do que o protocolo permite (um valor pretendido fora do intervalo, uma direção que não existe, bytes mágicos errados) | A verificação da carga recusa a trama |
+| Um valor fora do que o protocolo permite (um valor pretendido fora do intervalo, um endereço que não existe, bytes mágicos errados) | A verificação da carga recusa a trama |
 | Um emissor descontrolado ou hostil inunda o barramento | Um balde de fichas por identificador e para toda a ligação, e um mais rigoroso para um identificador perigoso desbloqueado |
-| Uma mensagem gravada é enviada outra vez | A chave de sessão: um HMAC sobre um nonce da ligação, um contador que tem de crescer e a trama, pelo que uma gravação é inútil mais tarde e noutro sítio |
+| Uma mensagem capturada é enviada outra vez | A chave de sessão: um HMAC sobre um nonce da ligação, um contador que tem de crescer e a trama, pelo que uma captura é inútil mais tarde e noutro sítio |
 | O gateway é acessível a partir de uma rede sem chave | Escutar num endereço não local sem chave de sessão é recusado, salvo se `--allow-open-network` for indicado |
 
-Não cifra: o barramento não é um segredo. Não trava um par que tenha a chave e se comporte mal; a lista, a verificação da carga, o limite de taxa e os cães de guarda das cabeças de ferramenta servem para isso. Não substitui as medidas de hardware do modelo de ameaças do CAN (um interbloqueio que nenhuma trama possa fechar, um barramento fechado, uma paragem que corte a alimentação). Nunca foi usado num barramento real.
+Não cifra: o barramento não é um segredo. Não trava um par que tenha a chave e se comporte mal; a lista, a verificação da carga, o limite de frequência e os cães de guarda das cabeças de ferramenta servem para isso. Não substitui as medidas de hardware do modelo de ameaças do CAN (um interbloqueio que nenhuma trama possa fechar, um barramento fechado, uma paragem que corte a alimentação). Nunca foi usado num barramento real.
 
 ## 🔌 Interfaces
 
@@ -103,7 +103,7 @@ A linha de comandos é `urtc-gateway` (ou `python -m urtc_gateway.cli`):
 
 ## ⚙️ Configuração
 
-Cada proteção está ativada por omissão e qualquer uma pode ser desativada, num ficheiro de configuração JSON (`--config FILE`, `"schema": 1`; uma secção ou opção desconhecida, um tipo errado ou uma taxa negativa é um erro que diz o que está mal) e na linha de comandos, que prevalece sobre o ficheiro. Uma proteção desativada ou relaxada é listada como aviso quando o programa arranca.
+Cada proteção está ativada por omissão e qualquer uma pode ser desativada, num ficheiro de configuração JSON (`--config FILE`, `"schema": 1`; uma secção ou opção desconhecida, um tipo errado ou uma frequência negativa é um erro que diz o que está mal) e na linha de comandos, que prevalece sobre o ficheiro. Uma proteção desativada ou relaxada é listada como aviso quando o programa arranca.
 
 | Proteção | Secção do ficheiro | Desativar / ativar | O que faz |
 |---|---|---|---|
@@ -113,7 +113,7 @@ Cada proteção está ativada por omissão e qualquer uma pode ser desativada, n
 | Barramento que mistura velocidades | `bus_health.tec_warn`, `.rec_warn`, `.bus_off_warn`, `.legacy_heads` | - | a gateway guarda as tramas de saúde (`0x1B8`) que lê do barramento e o `summary` lista `bus_warnings`: contadores de erros (96 por omissão) ou bus-offs (1) das cabeças que se ouvem, e uma cabeça indicada em `legacy_heads` (feita para 500 kbit/s); uma cabeça a outra velocidade não se ouve, por isso o barramento reconhece-se pelos sintomas |
 | Identificadores adicionados / removidos | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | adicionar um identificador à mão ou retirar um, diga o que disser o resto |
 | Verificação da carga | `payload.enabled` | `--no-payload-check` / `--payload-check` | o comprimento e os valores têm de ser os que a especificação permite |
-| Limite de taxa | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 tramas por segundo e uma rajada de 10 por identificador, uma rajada de 50 para a ligação, uma de 2 para um identificador perigoso desbloqueado; `rate.overrides` dá a um identificador a sua própria taxa e rajada |
+| Limite de frequência | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 tramas por segundo e uma rajada de 10 por identificador, uma rajada de 50 para a ligação, uma de 2 para um identificador perigoso desbloqueado; `rate.overrides` dá a um identificador a sua própria taxa e rajada |
 | Chave de sessão | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | um par prova que tem uma chave |
 | Filtro de saída | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | só o que uma placa envia vai para a rede, até 500 tramas por segundo |
 | Rede aberta | `server.allow_open_network` | `--allow-open-network` | escutar num endereço não local sem chave de sessão é recusado, salvo se for pedido |
@@ -149,7 +149,7 @@ As versões dos programas URTC que funcionam em conjunto, e a versão do protoco
 
 ## 🧪 Testes
 
-O conjunto tem 204 testes (`python -m pytest tests -q`): a lista de identificadores, a verificação da carga, o limite de taxa, a sessão e as suas recusas, as opções e o ficheiro de configuração, a linha de comandos, um teste sobre um socket local real e o extremo série contra uma porta simulada. Um teste é ignorado quando falta a sua dependência opcional. `python -m mypy` verifica os tipos do pacote e `ruff check .` o código.
+O conjunto tem 204 testes (`python -m pytest tests -q`): a lista de identificadores, a verificação da carga, o limite de frequência, a sessão e as suas recusas, as opções e o ficheiro de configuração, a linha de comandos, um teste sobre um socket local real e o extremo série contra uma porta simulada. Um teste é ignorado quando falta a sua dependência opcional. `python -m mypy` verifica os tipos do pacote e `ruff check .` o código.
 
 ## 🏗️ Compilação e publicação
 
@@ -166,7 +166,7 @@ O conjunto tem 204 testes (`python -m pytest tests -q`): a lista de identificado
 
 ```text
 URTC-GATEWAY/
-├── src/urtc_gateway/                                o gateway: lista de identificadores, política, limite de taxa, chaves de sessão, opções, extremos TCP e série e linha de comandos
+├── src/urtc_gateway/                                o gateway: lista de identificadores, política, limite de frequência, chaves de sessão, opções, extremos TCP e série e linha de comandos
 ├── docs/                                            as opções (POLICY.md) e a tabela gerada de identificadores
 ├── tests/                                           testes unitários de cada proteção e um teste sobre um socket local real
 ├── tools/                                           make_id_table.py e as ferramentas partilhadas de CI e imagens
@@ -211,10 +211,10 @@ O URTC é feito de repositórios independentes, cada um com a sua versão, os se
   * [URTC](https://github.com/JuanenRac/URTC) - firmware da placa da cabeça de ferramenta (25 perfis de ferramenta, bootloader CAN) e a referência do protocolo CAN.
   * [URTC-COMMON](https://github.com/JuanenRac/URTC-COMMON) - o protocolo CAN escrito uma só vez como dados (especificação, tabelas geradas, vetores de conformidade) e o código que os programas partilham.
   * [URTC-FLASHER](https://github.com/JuanenRac/URTC-FLASHER) - ferramenta de ambiente de trabalho que atualiza o firmware da placa por CAN ou por SWD/JTAG.
-  * **URTC-GATEWAY** (este repositório) - gateway à frente do barramento CAN: só deixa passar os identificadores de uma lista, limita a sua taxa e pede uma chave de sessão.
+  * **URTC-GATEWAY** (este repositório) - gateway à frente do barramento CAN: só deixa passar os identificadores de uma lista, limita a sua frequência e pede uma chave de sessão.
   * [URTC-SMART-RACK](https://github.com/JuanenRac/URTC-SMART-RACK) - lógica em C independente do hardware e protocolo de comandos para um suporte de ferramentas com pré-aquecimento e acompanhamento do ciclo de vida.
-  * [URTC-TESTER](https://github.com/JuanenRac/URTC-TESTER) - testador de ambiente de trabalho do barramento CAN em direto que mostra os controlos e a telemetria do perfil de ferramenta que uma placa reporta.
-  * [URTC-VISION-TOOL](https://github.com/JuanenRac/URTC-VISION-TOOL) - protocolo de tramas de sensor em C e um companheiro em Python térmico/RGB para uma cabeça de ferramenta de inspeção.
+  * [URTC-TESTER](https://github.com/JuanenRac/URTC-TESTER) - tester de ambiente de trabalho do barramento CAN em direto que mostra os controlos e a telemetria do perfil de ferramenta que uma placa reporta.
+  * [URTC-VISION-TOOL](https://github.com/JuanenRac/URTC-VISION-TOOL) - protocolo de tramas de sensor em C e um acompanhante em Python térmico/RGB para uma cabeça de ferramenta de inspeção.
   * [URTC-WEB-STUDIO](https://github.com/JuanenRac/URTC-WEB-STUDIO) - aplicação de navegador que grava e testa a placa por Web Serial e SLCAN, sem instalar nada.
 * **Ecosystem Operations:**
   * [URTC-DEVTOOLS](https://github.com/JuanenRac/URTC-DEVTOOLS) - as ferramentas de repositório partilhadas da família como um conjunto com versão e um ficheiro de bloqueio que distingue uma cópia editada de uma desatualizada.
