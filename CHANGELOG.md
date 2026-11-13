@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here.
 
-## [Unreleased]
+## [0.0.8] - The gateway opens adapters at 1 Mbit/s, warns of a bus that mixes speeds and checks an update against the header inside its image
 
 - **The rate limit and the lists of identifiers are tested at the ends of their ranges:** the burst and the refill of the token buckets, a clock that goes back, a flood of one identifier that must not use the tokens of the others, overrides, the sets of identifiers that cross the gateway never overlapping and being the ones the specification gives, and the table of the documents being the one the code makes.
 
@@ -17,6 +17,8 @@ All notable changes to this project are documented here.
 - **An update that crosses the gateway is checked against the header inside its image:** the gateway follows the start frame (size and hardware) and the first data of a main-board or expansion-slave update, reads the 32-byte header at the fixed offset, and refuses the rest of the update when the header does not hold, states another length than the start frame announced or names another hardware.
 
 - **`update_image.header` (`--image-header`) is the compatibility switch for an image without the header:** `warn` (the default) forwards it and leaves a note in the audit, `accept` forwards it, `require` refuses it; a header that is there is always checked.
+
+## [Unreleased]
 
 ## [0.0.7] - Refreshed copy of the shared CAN tables and the manifest names the shared contracts it needs
 

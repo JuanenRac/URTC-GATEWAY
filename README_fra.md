@@ -29,7 +29,7 @@
 
 | | |
 |---|---|
-| Version | `0.0.7` |
+| Version | `0.0.8` |
 | Maturité | Ébauche |
 | Tests | 200 |
 | Technologie | Python / CAN / HMAC |
