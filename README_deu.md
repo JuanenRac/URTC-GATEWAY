@@ -19,11 +19,11 @@
 
 ---
 
-**Ehrlichkeitscheck - was heute tatsächlich läuft:** Dieses Repository enthält ein Gateway als Software: Die Liste der Kennungen wird aus der Protokollspezifikation erzeugt, die Nutzdaten jedes Frames werden dagegen geprüft, die Rate ist begrenzt, und ein Teilnehmer muss nachweisen, dass er einen Schlüssel besitzt. Alles wird in der CI mit Attrappen und einem lokalen Socket getestet. Es war nie an einen echten CAN-Bus, einen Adapter oder eine Platine angeschlossen, und keine Installation nutzt es bisher. Heiz-, Laser- und Schweißköpfe brauchen weiterhin die Hardware-Maßnahmen des Bedrohungsmodells: eine Verriegelung, die kein Frame schließen kann, einen geschlossenen Bus und einen Stopp, der die Energie abschaltet.
+**Ehrlicher Zwischenstand: Was heute tatsächlich läuft:** Dieses Repository enthält ein Gateway als Software: Die Liste der Kennungen wird aus der Protokollspezifikation erzeugt, die Nutzdaten jedes Frames werden dagegen geprüft, die Rate ist begrenzt, und ein Teilnehmer muss nachweisen, dass er einen Schlüssel besitzt. Alles wird in der CI mit Attrappen und einem lokalen Socket getestet. Es war nie an einen echten CAN-Bus, einen Adapter oder eine Platine angeschlossen, und keine Installation nutzt es bisher. Heiz-, Laser- und Schweißköpfe brauchen weiterhin die Hardware-Maßnahmen des Bedrohungsmodells: eine Verriegelung, die kein Frame schließen kann, einen geschlossenen Bus und einen Stopp, der die Energie abschaltet.
 
 ---
 
-> **Stand von Sicherheit (Safety) und Security:** Dieses Ökosystem ist kein zertifiziertes Sicherheitssystem, und es existiert noch keine bestückte URTC-Platine. Die Bootloader prüfen Firmware-Images mit CRC32 und einem HMAC-SHA256 mit gemeinsamem Schlüssel, nicht mit einer asymmetrischen Signatur (geplant); die veröffentlichten Anwendungs-Images sind mit dem öffentlichen Entwicklungsschlüssel signiert (`signing_key_kind: dev`), sodass jeder ein vom Bootloader akzeptiertes Image erzeugen kann; an eine echte Platine wurde noch nichts gesendet. Lesen Sie die [Sicherheitsbasis](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/SECURITY_BASELINE.md) und das [Bedrohungsmodell](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/THREAT_MODEL.md), bevor Sie sich für die Sicherheit einer Person auf eine Aussage hier verlassen.
+> **Stand von Sicherheit (Safety) und Security:** Dieses Ökosystem ist kein zertifiziertes Sicherheitssystem, und es existiert noch keine bestückte URTC-Platine. Die Bootloader prüfen Firmware-Images mit CRC32 und einem HMAC-SHA256 mit gemeinsamem Schlüssel, nicht mit einer asymmetrischen Signatur (geplant); die veröffentlichten Anwendungs-Images sind mit dem öffentlichen Entwicklungsschlüssel signiert (`signing_key_kind: dev`), sodass jeder ein vom Bootloader akzeptiertes Image erzeugen kann; an eine echte Platine wurde noch nichts gesendet. Lesen Sie die [Sicherheitsbasis](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/SECURITY_BASELINE.md) und das [Bedrohungsmodell](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/THREAT_MODEL.md), bevor Sie sich bei der Sicherheit einer Person auf eine Aussage in diesem Repository verlassen.
 
 ## 📋 Auf einen Blick
 
@@ -36,7 +36,7 @@
 | Ziel | Der PC der Person, die es benutzt |
 | Auf echter Hardware | Nur simuliert: gegen Emulatoren, Attrappen oder Simulatoren getestet; für diese Version ist kein Lauf auf echter Hardware vermerkt |
 
-**Springe zu:** [Überblick](#-überblick) · [Architektur](#-architektur) · [Sicherheit](#-sicherheit-und-schutz) · [Schnittstellen](#-schnittstellen) · [Konfiguration](#-konfiguration) · [Schnellstart](#-schnellstart) · [Tests](#-tests) · [Struktur](#-struktur-des-repositorys) · [Verwandte](#-verwandte-projekte)
+**Weiter zu:** [Überblick](#-überblick) · [Architektur](#-architektur) · [Sicherheit](#-sicherheit-und-schutz) · [Schnittstellen](#-schnittstellen) · [Konfiguration](#-konfiguration) · [Schnellstart](#-schnellstart) · [Tests](#-tests) · [Struktur](#-struktur-des-repositorys) · [Verwandte](#-verwandte-projekte)
 
 <!-- urtc-section:status_gateway -->
 ## 🚦 Projektstatus
@@ -59,7 +59,7 @@
 Der CAN-Bus des Werkzeugkopfs authentifiziert den Absender nicht: Jedem Knoten an den Leitungen wird gehorcht. Wenn eine Installation den Bus nicht geschlossen halten kann, sitzt dieses Gateway davor:
 
 * **Kennungsliste, aus der Spezifikation erzeugt:** Nur die Kennungen, die ein Host sendet, gehen zum Bus; die gefährlichen (Bootloader, Update des Erweiterungs-Slaves, Löschen des gespeicherten Zustands, jede dauerhafte Einstellung) werden abgelehnt, solange der Betreiber sie nicht freigibt. [Die Kennungstabelle](docs/ALLOWED_IDS.md) wird erzeugt.
-* **Prüfung der Nutzdaten:** Ein Frame muss die Länge und die Werte haben, die die Spezifikation erlaubt (ein Sollwert in seinem Bereich, eine existierende Richtung, die Magic Bytes dort, wo sie verlangt werden).
+* **Prüfung der Nutzdaten:** Ein Frame muss die Länge und die Werte haben, die die Spezifikation erlaubt (ein Sollwert in seinem Bereich, eine existierende Adresse, die Magic Bytes dort, wo sie verlangt werden).
 * **Ratenbegrenzung:** ein Token-Bucket je Kennung und für die ganze Verbindung, und ein strengerer für eine freigegebene gefährliche Kennung.
 * **Sitzungsschlüssel:** Ein Teilnehmer weist den Besitz eines Schlüssels mit einem HMAC über eine Nonce der Verbindung, einen Zähler und den Frame nach, sodass nichts Aufgezeichnetes wiedereingespielt werden kann.
 * **Jeder Schutz lässt sich abschalten:** in der Konfigurationsdatei oder auf der Befehlszeile, und das Programm listet beim Start jeden abgeschalteten Schutz auf. Es verschlüsselt nicht und ersetzt nicht die Hardware-Maßnahmen des Bedrohungsmodells.
@@ -81,7 +81,7 @@ Wie die Teile dieses Repositorys zusammenpassen: wer es nutzt, was es enthält u
 | Bedrohung | Abwehr |
 |---|---|
 | Ein Knoten an den Leitungen sendet einen gefährlichen Befehl (Bootloader, Aktualisierung des Erweiterungs-Slaves, Löschen des gespeicherten Zustands, eine dauerhafte Einstellung) | Die Kennungsliste lehnt sie ab, bis der Betreiber sie mit `--unlock-dangerous` freigibt |
-| Ein Wert außerhalb dessen, was das Protokoll erlaubt (ein Sollwert außerhalb des Bereichs, eine nicht existierende Richtung, falsche Magic Bytes) | Die Nutzdatenprüfung lehnt den Frame ab |
+| Ein Wert außerhalb dessen, was das Protokoll erlaubt (ein Sollwert außerhalb des Bereichs, eine nicht existierende Adresse, falsche Magic Bytes) | Die Nutzdatenprüfung lehnt den Frame ab |
 | Ein außer Kontrolle geratener oder feindlicher Sender überflutet den Bus | Ein Token-Bucket je Kennung und für die ganze Verbindung sowie ein strengerer für eine freigegebene gefährliche Kennung |
 | Eine aufgezeichnete Nachricht wird erneut gesendet | Der Sitzungsschlüssel: ein HMAC über eine Nonce der Verbindung, einen wachsenden Zähler und den Frame, sodass eine Aufzeichnung später und anderswo nutzlos ist |
 | Das Gateway ist ohne Schlüssel aus einem Netz erreichbar | Das Lauschen auf einer nicht lokalen Adresse ohne Sitzungsschlüssel wird abgelehnt, außer `--allow-open-network` wird angegeben |
@@ -214,7 +214,7 @@ URTC besteht aus unabhängigen Repositories mit jeweils eigener Version, eigenen
   * **URTC-GATEWAY** (dieses Repository) - Gateway vor dem CAN-Bus: lässt nur gelistete Kennungen durch, begrenzt ihre Rate und verlangt einen Sitzungsschlüssel.
   * [URTC-SMART-RACK](https://github.com/JuanenRac/URTC-SMART-RACK) - hardwareunabhängige C-Logik und Befehlsprotokoll für eine Werkzeugablage mit Vorheizen und Lebenszyklusverfolgung.
   * [URTC-TESTER](https://github.com/JuanenRac/URTC-TESTER) - Desktop-Live-Tester für den CAN-Bus, der die Bedienelemente und die Telemetrie des von einer Platine gemeldeten Werkzeugprofils zeigt.
-  * [URTC-VISION-TOOL](https://github.com/JuanenRac/URTC-VISION-TOOL) - Sensorrahmen-Protokoll in C und ein Python-Thermo-/RGB-Begleiter für einen Inspektions-Werkzeugkopf.
+  * [URTC-VISION-TOOL](https://github.com/JuanenRac/URTC-VISION-TOOL) - Sensor-Frame-Protokoll in C und ein Python-Thermo-/RGB-Begleiter für einen Inspektions-Werkzeugkopf.
   * [URTC-WEB-STUDIO](https://github.com/JuanenRac/URTC-WEB-STUDIO) - Browser-App, die die Platine über Web Serial und SLCAN flasht und testet, ohne Installation.
 * **Ecosystem Operations:**
   * [URTC-DEVTOOLS](https://github.com/JuanenRac/URTC-DEVTOOLS) - die gemeinsamen Repository-Werkzeuge der Familie als versionierter Satz, mit einer Sperrdatei, die eine bearbeitete von einer veralteten Kopie unterscheidet.
@@ -240,7 +240,7 @@ Mehr zum Lesen:
 ## 🤝 Mitwirken und Community
 
 * Führen Sie vor einem Pull Request `URTC_CI=1 python tools/ci_validate.py` aus: es muss bestehen. Siehe [CONTRIBUTING.md](CONTRIBUTING.md) und den [Verhaltenskodex](CODE_OF_CONDUCT.md).
-* Das README gibt es in acht Sprachen: Eine Textänderung wird in allen acht Dateien vorgenommen, und die mit anderen Repositorys geteilten Abschnitte schreibt `tools/readme_sections.py` von URTC-COMMON.
+* Das README gibt es in acht Sprachen: Eine Textänderung wird in allen acht Dateien vorgenommen, und die mit anderen Repositories geteilten Abschnitte schreibt `tools/readme_sections.py` von URTC-COMMON.
 * Eine Änderung am CAN-Protokoll beginnt in URTC-COMMON (`spec/can_protocol.json`) und gelangt über die geprüfte Kopie in dieses Repository.
 * Beschreiben Sie nichts als auf einer Platine funktionierend, was nur gebaut wurde.
 * Melden Sie eine Schwachstelle privat: [SECURITY.md](SECURITY.md). Fragen, Ideen und Meldungen: electrohobby3d@gmail.com ([SUPPORT.md](SUPPORT.md)).

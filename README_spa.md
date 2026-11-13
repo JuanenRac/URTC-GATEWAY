@@ -6,7 +6,7 @@
 
 <p align="center"><a href="README.md">🇺🇸 English</a> | 🇪🇸 <b>Español</b> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 简体中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### Una pasarela delante del bus CAN: los identificadores que un host puede enviar, un límite de tasa y una clave de sesión
+### Una pasarela delante del bus CAN: los identificadores que un host puede enviar, un límite de frecuencia y una clave de sesión
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -19,11 +19,11 @@
 
 ---
 
-**Comprobación de honestidad - lo que realmente funciona hoy:** este repositorio contiene una pasarela escrita como software: la lista de identificadores se hace a partir de la especificación del protocolo, la carga de cada trama se comprueba contra ella, la tasa está limitada y un interlocutor tiene que demostrar que posee una clave. Todo se prueba en CI con simulaciones y un socket local. Nunca se ha conectado a un bus CAN real, a un adaptador ni a una placa, y ninguna instalación la usa todavía. Los cabezales de calefacción, láser y soldadura siguen necesitando las medidas de hardware del modelo de amenazas: un enclavamiento que ninguna trama pueda cerrar, un bus cerrado y una parada que corte la alimentación.
+**Aviso de honestidad: lo que realmente funciona hoy:** este repositorio contiene una pasarela escrita como software: la lista de identificadores se hace a partir de la especificación del protocolo, la carga de cada trama se comprueba contra ella, la frecuencia está limitada y un interlocutor tiene que demostrar que posee una clave. Todo se prueba en CI con simulaciones y un socket local. Nunca se ha conectado a un bus CAN real, a un adaptador ni a una placa, y ninguna instalación la usa todavía. Los cabezales de calefacción, láser y soldadura siguen necesitando las medidas de hardware del modelo de amenazas: un enclavamiento que ninguna trama pueda cerrar, un bus cerrado y una parada que corte la alimentación.
 
 ---
 
-> **Estado de seguridad física y de ciberseguridad:** este ecosistema no es un sistema de seguridad certificado y todavía no existe ninguna placa URTC poblada. Los bootloaders comprueban las imágenes de firmware con CRC32 y un HMAC-SHA256 de clave compartida, no con una firma asimétrica (prevista); las imágenes de aplicación publicadas están firmadas con la clave pública de desarrollo (`signing_key_kind: dev`), así que cualquiera puede producir una imagen que el bootloader acepte; no se ha transmitido nada a una placa real. Lee la [línea base de seguridad](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/SECURITY_BASELINE.md) y el [modelo de amenazas](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/THREAT_MODEL.md) antes de fiarte de cualquier afirmación de aquí para la seguridad de una persona.
+> **Estado de seguridad física y de ciberseguridad:** este ecosistema no es un sistema de seguridad certificado y todavía no existe ninguna placa URTC poblada. Los bootloaders comprueban las imágenes de firmware con CRC32 y un HMAC-SHA256 de clave compartida, no con una firma asimétrica (prevista); las imágenes de aplicación publicadas están firmadas con la clave pública de desarrollo (`signing_key_kind: dev`), así que cualquiera puede producir una imagen que el bootloader acepte; no se ha transmitido nada a una placa real. Lee la [línea base de seguridad](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/SECURITY_BASELINE.md) y el [modelo de amenazas](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/THREAT_MODEL.md) antes de fiarte de cualquier afirmación de este repositorio sobre la seguridad de una persona.
 
 ## 📋 De un vistazo
 
@@ -60,7 +60,7 @@ El bus CAN del cabezal de herramienta no autentica al emisor: se obedece a cualq
 
 * **Lista de identificadores, hecha a partir de la especificación:** solo cruzan hacia el bus los identificadores que envía un host; los peligrosos (bootloader, actualización del esclavo de expansión, borrado del estado guardado, cualquier ajuste persistente) se rechazan salvo que el operador los desbloquee. [La tabla de identificadores](docs/ALLOWED_IDS.md) se genera.
 * **Comprobación de la carga:** una trama debe tener la longitud y los valores que permite la especificación (una consigna dentro de su rango, una dirección que existe, los bytes mágicos donde se exigen).
-* **Límite de tasa:** un cubo de fichas por identificador y para todo el enlace, y uno más estricto para un identificador peligroso desbloqueado.
+* **Límite de frecuencia:** un cubo de fichas por identificador y para todo el enlace, y uno más estricto para un identificador peligroso desbloqueado.
 * **Clave de sesión:** un interlocutor demuestra que posee una clave con un HMAC sobre un nonce de la conexión, un contador y la trama, de modo que nada capturado puede repetirse.
 * **Toda protección se puede desactivar:** desde el archivo de configuración o la línea de comandos, y el programa enumera al arrancar cada protección que está apagada. No cifra, y no sustituye las medidas de hardware del modelo de amenazas.
 
@@ -86,7 +86,7 @@ Cómo encajan las partes de este repositorio: quién lo usa, qué contiene y de 
 | Se vuelve a enviar un mensaje capturado | La clave de sesión: un HMAC sobre un nonce de la conexión, un contador que debe crecer y la trama, de modo que una captura no sirve después ni en otro sitio |
 | La pasarela es accesible desde una red sin clave | Escuchar en una dirección no local sin clave de sesión se rechaza salvo que se indique `--allow-open-network` |
 
-No cifra: el bus no es un secreto. No detiene a un interlocutor que tenga la clave y se porte mal; para eso están la lista, la comprobación de la carga y el límite de tasa, y los perros guardianes de los cabezales. No sustituye las medidas de hardware del modelo de amenazas del CAN (un enclavamiento que ninguna trama pueda cerrar, un bus cerrado, una parada que corte la alimentación). Nunca se ha usado en un bus real.
+No cifra: el bus no es un secreto. No detiene a un interlocutor que tenga la clave y se porte mal; para eso están la lista, la comprobación de la carga y el límite de frecuencia, y los perros guardianes de los cabezales. No sustituye las medidas de hardware del modelo de amenazas del CAN (un enclavamiento que ninguna trama pueda cerrar, un bus cerrado, una parada que corte la alimentación). Nunca se ha usado en un bus real.
 
 ## 🔌 Interfaces
 
@@ -103,7 +103,7 @@ La línea de comandos es `urtc-gateway` (o `python -m urtc_gateway.cli`):
 
 ## ⚙️ Configuración
 
-Cada protección está activada por defecto y cualquiera puede desactivarse, en un archivo de configuración JSON (`--config FILE`, `"schema": 1`; una sección u opción desconocida, un tipo erróneo o una tasa negativa es un error que dice qué falla) y en la línea de comandos, que prevalece sobre el archivo. Una protección desactivada o relajada se lista como aviso al arrancar el programa.
+Cada protección está activada por defecto y cualquiera puede desactivarse, en un archivo de configuración JSON (`--config FILE`, `"schema": 1`; una sección u opción desconocida, un tipo erróneo o una frecuencia negativa es un error que dice qué falla) y en la línea de comandos, que prevalece sobre el archivo. Una protección desactivada o relajada se lista como aviso al arrancar el programa.
 
 | Protección | Sección del archivo | Desactivar / activar | Qué hace |
 |---|---|---|---|
@@ -113,7 +113,7 @@ Cada protección está activada por defecto y cualquiera puede desactivarse, en 
 | Bus que mezcla velocidades | `bus_health.tec_warn`, `.rec_warn`, `.bus_off_warn`, `.legacy_heads` | - | la pasarela guarda las tramas de salud (`0x1B8`) que lee del bus y el `summary` lista `bus_warnings`: contadores de error (96 por defecto) o bus-off (1) de los cabezales que se oyen, y un cabezal nombrado en `legacy_heads` (hecho para 500 kbit/s); un cabezal a otra velocidad no se oye, así que el bus se reconoce por sus síntomas |
 | Identificadores añadidos / quitados | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | añadir un identificador a mano o quitar uno diga lo que diga el resto |
 | Comprobación de la carga | `payload.enabled` | `--no-payload-check` / `--payload-check` | la longitud y los valores deben ser los que permite la especificación |
-| Límite de tasa | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 tramas por segundo y una ráfaga de 10 por identificador, una ráfaga de 50 para el enlace, una de 2 para un identificador peligroso desbloqueado; `rate.overrides` da a un identificador su propia tasa y ráfaga |
+| Límite de frecuencia | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 tramas por segundo y una ráfaga de 10 por identificador, una ráfaga de 50 para el enlace, una de 2 para un identificador peligroso desbloqueado; `rate.overrides` da a un identificador su propia frecuencia y ráfaga |
 | Clave de sesión | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | un interlocutor demuestra que tiene una clave |
 | Filtro de salida | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | solo lo que envía una placa va hacia la red, hasta 500 tramas por segundo |
 | Red abierta | `server.allow_open_network` | `--allow-open-network` | escuchar en una dirección no local sin clave de sesión se rechaza salvo que se pida |
@@ -149,7 +149,7 @@ Qué versiones de los programas de URTC funcionan juntas, y qué versión del pr
 
 ## 🧪 Pruebas
 
-La suite tiene 204 pruebas (`python -m pytest tests -q`): la lista de identificadores, la comprobación de la carga, el límite de tasa, la sesión y sus rechazos, las opciones y el archivo de configuración, la línea de comandos, una prueba sobre un socket local real y el extremo serie contra un puerto simulado. Una prueba se omite si falta su dependencia opcional. `python -m mypy` revisa los tipos del paquete y `ruff check .` el código.
+La suite tiene 204 pruebas (`python -m pytest tests -q`): la lista de identificadores, la comprobación de la carga, el límite de frecuencia, la sesión y sus rechazos, las opciones y el archivo de configuración, la línea de comandos, una prueba sobre un socket local real y el extremo serie contra un puerto simulado. Una prueba se omite si falta su dependencia opcional. `python -m mypy` revisa los tipos del paquete y `ruff check .` el código.
 
 ## 🏗️ Compilación y publicación
 
@@ -213,11 +213,11 @@ URTC se compone de repositorios independientes, cada uno con su versión, sus pr
   * [URTC-FLASHER](https://github.com/JuanenRac/URTC-FLASHER) - herramienta de escritorio que actualiza el firmware de la placa por CAN o por SWD/JTAG.
   * **URTC-GATEWAY** (este repositorio) - pasarela delante del bus CAN: solo deja pasar los identificadores de una lista, limita su frecuencia y pide una clave de sesión.
   * [URTC-SMART-RACK](https://github.com/JuanenRac/URTC-SMART-RACK) - lógica en C independiente del hardware y protocolo de órdenes para un soporte de herramientas con precalentamiento y seguimiento del ciclo de vida.
-  * [URTC-TESTER](https://github.com/JuanenRac/URTC-TESTER) - probador de escritorio del bus CAN en vivo que muestra los controles y la telemetría del perfil de herramienta que informa una placa.
+  * [URTC-TESTER](https://github.com/JuanenRac/URTC-TESTER) - tester de escritorio del bus CAN en vivo que muestra los controles y la telemetría del perfil de herramienta que informa una placa.
   * [URTC-VISION-TOOL](https://github.com/JuanenRac/URTC-VISION-TOOL) - protocolo de tramas de sensor en C y un acompañante en Python térmico/RGB para un cabezal de inspección.
   * [URTC-WEB-STUDIO](https://github.com/JuanenRac/URTC-WEB-STUDIO) - aplicación de navegador que graba y prueba la placa por Web Serial y SLCAN, sin instalar nada.
 * **Ecosystem Operations:**
-  * [URTC-DEVTOOLS](https://github.com/JuanenRac/URTC-DEVTOOLS) - las herramientas de repositorio compartidas de la familia como un conjunto con versión y un fichero de bloqueo que distingue una copia editada de una desfasada.
+  * [URTC-DEVTOOLS](https://github.com/JuanenRac/URTC-DEVTOOLS) - las herramientas de repositorio compartidas de la familia como un conjunto con versión y un archivo de bloqueo que distingue una copia editada de una desfasada.
   * [URTC-DOCS](https://github.com/JuanenRac/URTC-DOCS) - arquitectura, interfaces, línea base de seguridad y catálogo generado del ecosistema, más las herramientas que comparan todos los repositorios.
   * [URTC-UPDATER](https://github.com/JuanenRac/URTC-UPDATER) - herramienta de escritorio que detecta, instala y actualiza los repositorios de la familia URTC, una acción explícita cada vez.
 
@@ -239,7 +239,7 @@ Dónde leer más:
 
 ## 🤝 Contribuir y comunidad
 
-* Antes de una pull request ejecuta `URTC_CI=1 python tools/ci_validate.py`: debe pasar. Consulta [CONTRIBUTING.md](CONTRIBUTING.md) y el [código de conducta](CODE_OF_CONDUCT.md).
+* Antes de abrir una pull request, ejecuta `URTC_CI=1 python tools/ci_validate.py`: debe pasar. Consulta [CONTRIBUTING.md](CONTRIBUTING.md) y el [código de conducta](CODE_OF_CONDUCT.md).
 * El README existe en ocho idiomas: un cambio en el texto se hace en los ocho archivos, y las secciones compartidas con otros repositorios las escribe `tools/readme_sections.py` de URTC-COMMON.
 * Un cambio en el protocolo CAN empieza en URTC-COMMON (`spec/can_protocol.json`) y llega a este repositorio mediante la copia comprobada.
 * No describas como funcionando en una placa lo que solo se ha compilado.

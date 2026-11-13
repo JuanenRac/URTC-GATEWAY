@@ -6,7 +6,7 @@
 
 <p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | 🇫🇷 <b>Français</b> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 简体中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### Une passerelle devant le bus CAN : les identifiants qu'un hôte peut envoyer, une limite de débit et une clé de session
+### Une passerelle devant le bus CAN : les identifiants qu'un hôte peut envoyer, une limite de cadence et une clé de session
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -19,11 +19,11 @@
 
 ---
 
-**Vérification d'honnêteté - ce qui fonctionne réellement aujourd'hui :** ce dépôt contient une passerelle écrite comme un logiciel : la liste des identifiants est produite à partir de la spécification du protocole, la charge utile de chaque trame est contrôlée par rapport à elle, le débit est limité et un pair doit prouver qu'il détient une clé. Le tout est testé en CI avec des simulations et un socket local. Il n'a jamais été relié à un vrai bus CAN, à un adaptateur ou à une carte, et aucune installation ne l'utilise encore. Les têtes de chauffage, de laser et de soudure ont toujours besoin des mesures matérielles du modèle de menaces : un verrouillage qu'aucune trame ne peut fermer, un bus fermé et un arrêt qui coupe l'alimentation.
+**Point d'honnêteté : ce qui fonctionne réellement aujourd'hui :** ce dépôt contient une passerelle écrite comme un logiciel : la liste des identifiants est produite à partir de la spécification du protocole, la charge utile de chaque trame est contrôlée par rapport à elle, la cadence est limitée et un pair doit prouver qu'il détient une clé. Le tout est testé en CI avec des simulations et un socket local. Il n'a jamais été relié à un vrai bus CAN, à un adaptateur ou à une carte, et aucune installation ne l'utilise encore. Les têtes de chauffage, de laser et de soudure ont toujours besoin des mesures matérielles du modèle de menaces : un verrouillage qu'aucune trame ne peut fermer, un bus fermé et un arrêt qui coupe l'alimentation.
 
 ---
 
-> **État de la sûreté et de la cybersécurité :** cet écosystème n'est pas un système de sécurité certifié et aucune carte URTC assemblée n'existe encore. Les bootloaders contrôlent les images de firmware par CRC32 et un HMAC-SHA256 à clé partagée, pas par une signature asymétrique (prévue) ; les images d'application publiées sont signées avec la clé publique de développement (`signing_key_kind: dev`), si bien que n'importe qui peut produire une image acceptée par le bootloader ; rien n'a été transmis à une carte réelle. Lisez la [base de sécurité](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/SECURITY_BASELINE.md) et le [modèle de menaces](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/THREAT_MODEL.md) avant de vous fier à une affirmation d'ici pour la sécurité d'une personne.
+> **État de la sûreté et de la cybersécurité :** cet écosystème n'est pas un système de sécurité certifié et aucune carte URTC assemblée n'existe encore. Les bootloaders contrôlent les images de firmware par CRC32 et un HMAC-SHA256 à clé partagée, pas par une signature asymétrique (prévue) ; les images d'application publiées sont signées avec la clé publique de développement (`signing_key_kind: dev`), si bien que n'importe qui peut produire une image acceptée par le bootloader ; rien n'a été transmis à une carte réelle. Lisez la [base de sécurité](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/SECURITY_BASELINE.md) et le [modèle de menaces](https://github.com/JuanenRac/URTC-DOCS/blob/main/docs/THREAT_MODEL.md) avant de vous fier à une affirmation de ce dépôt quant à la sécurité d'une personne.
 
 ## 📋 En un coup d'œil
 
@@ -48,7 +48,7 @@
 | Logiciel | 🟡 | Fonctionne sur un PC et face au simulateur ; jamais utilisé avec une vraie carte. |
 | Tests | 🟡 | La suite de tests passe dans la CI à chaque push. |
 | Matériel réel | 🟠 | Pas encore d'essai sur une vraie carte : l'essai au banc reste à faire. |
-| Sécurité | 🟡 | Ne laisse passer que les identifiants listés et limite leur débit ; vérifié sur PC, jamais devant un vrai bus. |
+| Sécurité | 🟡 | Ne laisse passer que les identifiants listés et limite leur cadence ; vérifié sur PC, jamais devant un vrai bus. |
 | Interface et protocoles | 🟡 | Les routes ou les messages proposés sont documentés et testés avec un client ; tous les clients ne les ont pas encore utilisés |
 | Documentation | 🟡 | README en huit langues et documents de référence ; les traductions n'ont pas été relues par des locuteurs natifs. |
 
@@ -60,7 +60,7 @@ Le bus CAN de la tête d'outil n'authentifie pas l'émetteur : tout nœud raccor
 
 * **Liste d'identifiants, produite à partir de la spécification :** seuls les identifiants qu'un hôte envoie traversent vers le bus ; les dangereux (bootloader, mise à jour de l'esclave d'extension, effacement de l'état enregistré, tout réglage persistant) sont refusés sauf si l'opérateur les débloque. [Le tableau des identifiants](docs/ALLOWED_IDS.md) est généré.
 * **Contrôle de la charge utile :** une trame doit avoir la longueur et les valeurs que la spécification permet (une consigne dans sa plage, un sens qui existe, les octets magiques là où ils sont exigés).
-* **Limite de débit :** un seau à jetons par identifiant et pour toute la liaison, et un seau plus strict pour un identifiant dangereux débloqué.
+* **Limite de cadence :** un seau à jetons par identifiant et pour toute la liaison, et un seau plus strict pour un identifiant dangereux débloqué.
 * **Clé de session :** un pair prouve qu'il détient une clé avec un HMAC sur un nonce de la connexion, un compteur et la trame, de sorte que rien d'enregistré ne peut être rejoué.
 * **Toute protection peut être désactivée :** depuis le fichier de configuration ou la ligne de commande, et le programme énumère au démarrage chaque protection désactivée. Il ne chiffre pas et ne remplace pas les mesures matérielles du modèle de menaces.
 
@@ -86,7 +86,7 @@ Comment les parties de ce dépôt s'articulent : qui l'utilise, ce qu'il contien
 | Un message enregistré est renvoyé | La clé de session : un HMAC sur un nonce de la connexion, un compteur qui doit croître et la trame, de sorte qu'un enregistrement est inutile plus tard et ailleurs |
 | La passerelle est joignable depuis un réseau sans clé | Écouter sur une adresse non locale sans clé de session est refusé sauf si `--allow-open-network` est donné |
 
-Elle ne chiffre pas : le bus n'est pas un secret. Elle n'arrête pas un pair qui détient la clé et se comporte mal ; la liste, le contrôle de la charge et la limite de débit sont là pour cela, ainsi que les chiens de garde des têtes d'outil. Elle ne remplace pas les mesures matérielles du modèle de menaces du CAN (un verrouillage qu'aucune trame ne peut fermer, un bus fermé, un arrêt qui coupe l'alimentation). Elle n'a jamais été utilisée sur un vrai bus.
+Elle ne chiffre pas : le bus n'est pas un secret. Elle n'arrête pas un pair qui détient la clé et se comporte mal ; la liste, le contrôle de la charge et la limite de cadence sont là pour cela, ainsi que les chiens de garde des têtes d'outil. Elle ne remplace pas les mesures matérielles du modèle de menaces du CAN (un verrouillage qu'aucune trame ne peut fermer, un bus fermé, un arrêt qui coupe l'alimentation). Elle n'a jamais été utilisée sur un vrai bus.
 
 ## 🔌 Interfaces
 
@@ -103,7 +103,7 @@ La ligne de commande est `urtc-gateway` (ou `python -m urtc_gateway.cli`) :
 
 ## ⚙️ Configuration
 
-Chaque protection est activée par défaut et chacune peut être désactivée, dans un fichier de configuration JSON (`--config FILE`, `"schema": 1` ; une section ou option inconnue, un mauvais type ou un débit négatif est une erreur qui dit ce qui ne va pas) et sur la ligne de commande, qui l'emporte sur le fichier. Une protection désactivée ou assouplie est listée comme avertissement au démarrage du programme.
+Chaque protection est activée par défaut et chacune peut être désactivée, dans un fichier de configuration JSON (`--config FILE`, `"schema": 1` ; une section ou option inconnue, un mauvais type ou une cadence négative est une erreur qui dit ce qui ne va pas) et sur la ligne de commande, qui l'emporte sur le fichier. Une protection désactivée ou assouplie est listée comme avertissement au démarrage du programme.
 
 | Protection | Section du fichier | Désactiver / activer | Ce qu'elle fait |
 |---|---|---|---|
@@ -113,7 +113,7 @@ Chaque protection est activée par défaut et chacune peut être désactivée, d
 | Bus qui mélange les vitesses | `bus_health.tec_warn`, `.rec_warn`, `.bus_off_warn`, `.legacy_heads` | - | la passerelle garde les trames de santé (`0x1B8`) qu'elle lit sur le bus et le `summary` liste `bus_warnings` : compteurs d'erreurs (96 par défaut) ou bus-offs (1) des têtes entendues, et une tête nommée dans `legacy_heads` (prévue pour 500 kbit/s) ; une tête à une autre vitesse ne s'entend pas, le bus est donc reconnu à ses symptômes |
 | Identifiants ajoutés / retirés | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | ajouter un identifiant à la main ou en retirer un quoi que dise le reste |
 | Contrôle de la charge | `payload.enabled` | `--no-payload-check` / `--payload-check` | la longueur et les valeurs doivent être celles que la spécification permet |
-| Limite de débit | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 trames par seconde et une rafale de 10 par identifiant, une rafale de 50 pour la liaison, une de 2 pour un identifiant dangereux déverrouillé ; `rate.overrides` donne à un identifiant son propre débit et sa propre rafale |
+| Limite de cadence | `rate.*` | `--no-rate-limit` / `--rate-limit` | 20 trames par seconde et une rafale de 10 par identifiant, une rafale de 50 pour la liaison, une de 2 pour un identifiant dangereux déverrouillé ; `rate.overrides` donne à un identifiant sa propre cadence et sa propre rafale |
 | Clé de session | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | un pair prouve qu'il détient une clé |
 | Filtre sortant | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | seul ce qu'envoie une carte va vers le réseau, jusqu'à 500 trames par seconde |
 | Réseau ouvert | `server.allow_open_network` | `--allow-open-network` | écouter sur une adresse non locale sans clé de session est refusé sauf demande explicite |
@@ -149,7 +149,7 @@ Les versions des programmes URTC qui fonctionnent ensemble, et la version du pro
 
 ## 🧪 Tests
 
-La suite compte 204 tests (`python -m pytest tests -q`) : la liste d'identifiants, le contrôle de la charge, la limite de débit, la session et ses refus, les options et le fichier de configuration, la ligne de commande, un test sur un vrai socket local et l'extrémité série face à un port simulé. Un test est ignoré quand sa dépendance optionnelle manque. `python -m mypy` vérifie les types du paquet et `ruff check .` le code.
+La suite compte 204 tests (`python -m pytest tests -q`) : la liste d'identifiants, le contrôle de la charge, la limite de cadence, la session et ses refus, les options et le fichier de configuration, la ligne de commande, un test sur un vrai socket local et l'extrémité série face à un port simulé. Un test est ignoré quand sa dépendance optionnelle manque. `python -m mypy` vérifie les types du paquet et `ruff check .` le code.
 
 ## 🏗️ Compilation et publication
 
@@ -166,7 +166,7 @@ La suite compte 204 tests (`python -m pytest tests -q`) : la liste d'identifiant
 
 ```text
 URTC-GATEWAY/
-├── src/urtc_gateway/                                la passerelle : liste d'identifiants, politique, limite de débit, clés de session, options, extrémités TCP et série, ligne de commande
+├── src/urtc_gateway/                                la passerelle : liste d'identifiants, politique, limite de cadence, clés de session, options, extrémités TCP et série, ligne de commande
 ├── docs/                                            les options (POLICY.md) et le tableau généré des identifiants
 ├── tests/                                           tests unitaires de chaque protection et un test sur un vrai socket local
 ├── tools/                                           make_id_table.py et les outils partagés de CI et d'images
@@ -213,11 +213,11 @@ URTC est fait de dépôts indépendants, chacun avec sa version, ses tests et so
   * [URTC-FLASHER](https://github.com/JuanenRac/URTC-FLASHER) - outil de bureau qui met à jour le firmware de la carte par CAN ou par SWD/JTAG.
   * **URTC-GATEWAY** (ce dépôt) - passerelle devant le bus CAN : ne laisse passer que les identifiants d'une liste, limite leur cadence et demande une clé de session.
   * [URTC-SMART-RACK](https://github.com/JuanenRac/URTC-SMART-RACK) - logique C indépendante du matériel et protocole de commandes pour un support d'outils avec préchauffage et suivi du cycle de vie.
-  * [URTC-TESTER](https://github.com/JuanenRac/URTC-TESTER) - testeur de bureau du bus CAN en direct qui affiche les commandes et la télémétrie du profil d'outil signalé par une carte.
-  * [URTC-VISION-TOOL](https://github.com/JuanenRac/URTC-VISION-TOOL) - protocole de trames de capteur en C et compagnon Python thermique/RVB pour une tête d'outil d'inspection.
+  * [URTC-TESTER](https://github.com/JuanenRac/URTC-TESTER) - tester de bureau du bus CAN en direct qui affiche les commandes et la télémétrie du profil d'outil signalé par une carte.
+  * [URTC-VISION-TOOL](https://github.com/JuanenRac/URTC-VISION-TOOL) - protocole de trames de capteur en C et compagnon Python thermique/RGB pour une tête d'outil d'inspection.
   * [URTC-WEB-STUDIO](https://github.com/JuanenRac/URTC-WEB-STUDIO) - application de navigateur qui flashe et teste la carte via Web Serial et SLCAN, sans rien installer.
 * **Ecosystem Operations:**
-  * [URTC-DEVTOOLS](https://github.com/JuanenRac/URTC-DEVTOOLS) - les outils de dépôt communs de la famille en un ensemble versionné, avec un fichier de verrou qui distingue une copie modifiée d'une copie en retard.
+  * [URTC-DEVTOOLS](https://github.com/JuanenRac/URTC-DEVTOOLS) - les outils de dépôt communs de la famille en un ensemble versionné, avec un fichier de verrouillage qui distingue une copie modifiée d'une copie en retard.
   * [URTC-DOCS](https://github.com/JuanenRac/URTC-DOCS) - architecture, interfaces, base de sécurité et catalogue généré de l'écosystème, plus les outils qui comparent tous les dépôts.
   * [URTC-UPDATER](https://github.com/JuanenRac/URTC-UPDATER) - outil de bureau qui détecte, installe et met à jour les dépôts de la famille URTC, une action explicite à la fois.
 

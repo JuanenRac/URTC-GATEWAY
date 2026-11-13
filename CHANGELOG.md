@@ -20,6 +20,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The Spanish, German, French and European Portuguese README were read for register and wording:** the programs are called the same way in every language (tester, updater, Web Studio), the rate limit is a frequency (cadence in French) and never a bit rate, an address is no longer called a direction in two languages, calques and straight quotes were corrected, and the Related Projects section follows the shared texts.
+
 - **The identity frame of a head and the text of a rate are tested over generated frames with a fixed seed:** what is encoded is read back for every protocol version, a frame of the wrong length or of an older version never declares a rate, an unknown code is never taken for one, and the coverage floor of the continuous check is raised to the value that is measured.
 
 - **The gateway reports the bus speed that the heads declare:** heads of protocol version 2 state in their identity frame (`0x1BB`) the bit rate they were built for. The gateway keeps the last identity frames that it reads from the bus (whatever the policy forwards), lists the distinct declared speeds in `summary()['declared_bus_rates']` and adds the warning `rates_declared_differ`, first of all, when two heads declare different speeds. Heads of older firmware declare nothing and the judgement by symptoms is unchanged. The shared copies of the protocol tables and of the bus-health module are refreshed, with the new `health_info` module. Tested with virtual frames; not tried against a bus with real heads.
