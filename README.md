@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-200-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-204-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -149,7 +149,7 @@ Which versions of the URTC programs work together, and which protocol version ea
 
 ## 🧪 Testing
 
-The suite has 200 tests (`python -m pytest tests -q`): the identifier list, the payload check, the rate limit, the session and its refusals, the options and the configuration file, the command line, a test over a real local socket and the serial end against a fake port. One test skips where its optional dependency is missing. `python -m mypy` type-checks the package and `ruff check .` the sources.
+The suite has 204 tests (`python -m pytest tests -q`): the identifier list, the payload check, the rate limit, the session and its refusals, the options and the configuration file, the command line, a test over a real local socket and the serial end against a fake port. One test skips where its optional dependency is missing. `python -m mypy` type-checks the package and `ruff check .` the sources.
 
 ## 🏗️ Build & Release
 
