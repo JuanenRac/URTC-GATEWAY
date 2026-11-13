@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## [Unreleased]
+
+- **The copies taken from URTC-COMMON are refreshed:** the protocol layer and the virtual board follow the catalog again (the identifier of the clear-error command, the heater-only layout of 0x170 and the implicit index of the digest chunks), so the comparison of the shared nightly passes.
+
 ## [0.0.8] - The gateway opens adapters at 1 Mbit/s, warns of a bus that mixes speeds and checks an update against the header inside its image
 
 - **The rate limit and the lists of identifiers are tested at the ends of their ranges:** the burst and the refill of the token buckets, a clock that goes back, a flood of one identifier that must not use the tokens of the others, overrides, the sets of identifiers that cross the gateway never overlapping and being the ones the specification gives, and the table of the documents being the one the code makes.
