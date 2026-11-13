@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "urtc_common_version": "0.2.5",
+  "urtc_common_version": "0.2.6",
   "files": {
     "bus_health.py": {
       "from": "src/urtc_common/bus_health.py",
