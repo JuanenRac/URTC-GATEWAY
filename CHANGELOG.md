@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The version the package reports and the README badges are the version of the project:** `__version__` and the badge of the eight READMEs still said 0.0.2 while the manifest and `pyproject.toml` said 0.0.8. Three tests keep the package, the manifest, `pyproject.toml` and the eight badges equal.
 - **The copies taken from URTC-COMMON are refreshed:** the protocol layer and the virtual board follow the catalog again (the identifier of the clear-error command, the heater-only layout of 0x170 and the implicit index of the digest chunks), so the comparison of the shared nightly passes.
 
 ## [0.0.8] - The gateway opens adapters at 1 Mbit/s, warns of a bus that mixes speeds and checks an update against the header inside its image
