@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "ecosystem": "URTC",
   "name": "URTC-GATEWAY",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "min_common": "0.2.6",
   "role": "tool",
   "stack": "python",

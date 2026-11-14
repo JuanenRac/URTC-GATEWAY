@@ -11,4 +11,4 @@ proves it holds a key. This package is that gateway as software; it has not been
 """
 from __future__ import annotations
 
-__version__ = "0.0.8"
+__version__ = "0.0.9"
