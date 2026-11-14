@@ -12,8 +12,8 @@
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
-  <img src="https://img.shields.io/badge/Version-0.0.2-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-222-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Version-0.0.8-0f6cbd.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Tests-225-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.8` |
 | Maturité | Ébauche |
-| Tests | 222 |
+| Tests | 225 |
 | Technologie | Python / CAN / HMAC |
 | Cible | Le PC de la personne qui l'utilise |
 | Sur matériel réel | Simulé seulement : testé avec des émulateurs, des doubles de test ou des simulateurs ; aucune exécution sur du matériel réel n'est consignée pour cette version |
@@ -149,7 +149,7 @@ Les versions des programmes URTC qui fonctionnent ensemble, et la version du pro
 
 ## 🧪 Tests
 
-La suite compte 222 tests (`python -m pytest tests -q`) : la liste d'identifiants, le contrôle de la charge, la limite de cadence, la session et ses refus, les options et le fichier de configuration, la ligne de commande, un test sur un vrai socket local et l'extrémité série face à un port simulé. Un test est ignoré quand sa dépendance optionnelle manque. `python -m mypy` vérifie les types du paquet et `ruff check .` le code.
+La suite compte 225 tests (`python -m pytest tests -q`) : la liste d'identifiants, le contrôle de la charge, la limite de cadence, la session et ses refus, les options et le fichier de configuration, la ligne de commande, un test sur un vrai socket local et l'extrémité série face à un port simulé. Un test est ignoré quand sa dépendance optionnelle manque. `python -m mypy` vérifie les types du paquet et `ruff check .` le code.
 
 ## 🏗️ Compilation et publication
 
