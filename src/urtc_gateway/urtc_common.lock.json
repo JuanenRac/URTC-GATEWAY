@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "urtc_common_version": "0.2.6",
+  "urtc_common_version": "0.2.7",
   "files": {
     "bus_health.py": {
       "from": "src/urtc_common/bus_health.py",
@@ -16,7 +16,7 @@
     },
     "urtc_protocol.py": {
       "from": "src/urtc_common/protocol.py",
-      "sha256": "4bf72dea52d3e1c6b19425b05d8ba7201d308c3e48a80d517d2ddb7cfe8e180a"
+      "sha256": "c00473ebf0c33b4b5c88523e142447c899e68723cff69e6ada9ac5e2b637d43a"
     }
   }
 }
