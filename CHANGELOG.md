@@ -9,6 +9,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The security note of the README describes the Ed25519 bootloader:** the main bootloader checks the image against a table of public keys and holds no secret, official releases are signed with the release image-signing key and bench builds trust the public development key; the note no longer speaks of a shared-key HMAC. The eight languages follow.
+
 - **A peer that cannot be written to no longer stops the gateway:** a failed send of the greeting or of a refusal (a peer that sends invalid lines and closes) ends only that connection, which is logged, and the gateway goes on to wait for the next peer. Tested with a connection whose sends fail.
 
 ## [0.0.8] - The gateway opens adapters at 1 Mbit/s, warns of a bus that mixes speeds and checks an update against the header inside its image
