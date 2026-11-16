@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-225-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Versione | `0.0.9` |
 | Maturità | Impalcatura |
-| Test | 225 |
+| Test | 239 |
 | Tecnologia | Python / CAN / HMAC |
 | Destinazione | Il PC di chi lo usa |
 | Su hardware reale | Solo simulato: provato con emulatori, test double o simulatori; per questa versione non risulta alcuna esecuzione su hardware reale |
@@ -117,6 +117,9 @@ Ogni protezione è attiva per impostazione predefinita e ognuna può essere disa
 | Chiave di sessione | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | un peer dimostra di possedere una chiave |
 | Filtro in uscita | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | verso la rete va solo ciò che invia una scheda, fino a 500 frame al secondo |
 | Rete aperta | `server.allow_open_network` | `--allow-open-network` | l'ascolto su un indirizzo non locale senza chiave di sessione viene rifiutato salvo richiesta esplicita |
+| Timeout di invio | `server.send_timeout_s` | - | un messaggio verso il peer che non può essere scritto per questo tempo (30 secondi per impostazione predefinita, 0 per nessun limite) chiude la connessione |
+| Termine di autenticazione | `server.auth_timeout_s` | - | con le sessioni, un peer che non ha inviato alcun messaggio valido entro questo tempo (30 secondi per impostazione predefinita, 0 per nessun limite) viene disconnesso |
+| Bus prima della chiave | `server.forward_bus_before_auth` | - | con le sessioni, i frame del bus vengono mostrati a un peer solo dopo che ha dimostrato la sua chiave; `true` li mostra fin dall'inizio (disattivato per impostazione predefinita) |
 
 ```json
 {
@@ -149,7 +152,7 @@ Quali versioni dei programmi URTC funzionano insieme, e quale versione del proto
 
 ## 🧪 Test
 
-La suite ha 225 test (`python -m pytest tests -q`): l'elenco degli identificatori, il controllo del payload, il limite di frequenza, la sessione e i suoi rifiuti, le opzioni e il file di configurazione, la riga di comando, un test su un vero socket locale e l'estremità seriale contro una porta simulata. Un test viene saltato se manca la sua dipendenza opzionale. `python -m mypy` controlla i tipi del pacchetto e `ruff check .` il codice.
+La suite ha 239 test (`python -m pytest tests -q`): l'elenco degli identificatori, il controllo del payload, il limite di frequenza, la sessione e i suoi rifiuti, le opzioni e il file di configurazione, la riga di comando, un test su un vero socket locale e l'estremità seriale contro una porta simulata. Un test viene saltato se manca la sua dipendenza opzionale. `python -m mypy` controlla i tipi del pacchetto e `ruff check .` il codice.
 
 ## 🏗️ Compilazione e rilascio
 

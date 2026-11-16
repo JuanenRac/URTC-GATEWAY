@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-225-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Versión | `0.0.9` |
 | Madurez | Andamiaje |
-| Tests | 225 |
+| Tests | 239 |
 | Tecnología | Python / CAN / HMAC |
 | Destino | El PC de quien lo usa |
 | En hardware real | Solo simulado: probado con emuladores, dobles de prueba o simuladores; no consta ninguna ejecución en hardware real para esta versión |
@@ -117,6 +117,9 @@ Cada protección está activada por defecto y cualquiera puede desactivarse, en 
 | Clave de sesión | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | un interlocutor demuestra que tiene una clave |
 | Filtro de salida | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | solo lo que envía una placa va hacia la red, hasta 500 tramas por segundo |
 | Red abierta | `server.allow_open_network` | `--allow-open-network` | escuchar en una dirección no local sin clave de sesión se rechaza salvo que se pida |
+| Tiempo de envío | `server.send_timeout_s` | - | un mensaje hacia el interlocutor que no se puede escribir durante este tiempo (30 segundos por defecto, 0 para sin límite) termina la conexión |
+| Plazo de autenticación | `server.auth_timeout_s` | - | con sesiones, un interlocutor que no ha enviado ningún mensaje válido en este tiempo (30 segundos por defecto, 0 para sin límite) se desconecta |
+| Bus antes de la clave | `server.forward_bus_before_auth` | - | con sesiones, las tramas del bus solo se muestran a un interlocutor después de que demuestre su clave; `true` se las muestra desde el principio (desactivado por defecto) |
 
 ```json
 {
@@ -149,7 +152,7 @@ Qué versiones de los programas de URTC funcionan juntas, y qué versión del pr
 
 ## 🧪 Pruebas
 
-La suite tiene 225 pruebas (`python -m pytest tests -q`): la lista de identificadores, la comprobación de la carga, el límite de frecuencia, la sesión y sus rechazos, las opciones y el archivo de configuración, la línea de comandos, una prueba sobre un socket local real y el extremo serie contra un puerto simulado. Una prueba se omite si falta su dependencia opcional. `python -m mypy` revisa los tipos del paquete y `ruff check .` el código.
+La suite tiene 239 pruebas (`python -m pytest tests -q`): la lista de identificadores, la comprobación de la carga, el límite de frecuencia, la sesión y sus rechazos, las opciones y el archivo de configuración, la línea de comandos, una prueba sobre un socket local real y el extremo serie contra un puerto simulado. Una prueba se omite si falta su dependencia opcional. `python -m mypy` revisa los tipos del paquete y `ruff check .` el código.
 
 ## 🏗️ Compilación y publicación
 
