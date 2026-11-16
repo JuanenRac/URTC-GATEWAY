@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-225-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.9` |
 | Maturity | Scaffolding |
-| Tests | 239 |
+| Tests | 225 |
 | Stack | Python / CAN / HMAC |
 | Target | The PC of the person using it |
 | On real hardware | Simulated only: tested against emulators, fakes or simulators; no run on real hardware is recorded for this version |
@@ -117,9 +117,6 @@ Every protection is on by default and every one can be switched off, in a JSON c
 | Session key | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | a peer proves it holds a key |
 | Outbound filter | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | only what a board sends goes towards the network, at up to 500 frames per second |
 | Open network | `server.allow_open_network` | `--allow-open-network` | listening on a non-local address without a session key is refused unless asked for |
-| Send timeout | `server.send_timeout_s` | (file only) | a message towards the peer that cannot be written for this long (30 s by default, 0 = no limit) ends the connection |
-| Authentication deadline | `server.auth_timeout_s` | (file only) | with sessions, a peer that has not sent one valid message within this time (30 s by default, 0 = no limit) is disconnected |
-| Bus before the key | `server.forward_bus_before_auth` | (file only) | with sessions, frames of the bus are shown to a peer only after it proved its key; `true` shows them from the start (off by default) |
 
 ```json
 {

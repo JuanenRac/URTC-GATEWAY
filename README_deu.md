@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-225-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.9` |
 | Reifegrad | Gerüst |
-| Tests | 239 |
+| Tests | 225 |
 | Technik | Python / CAN / HMAC |
 | Ziel | Der PC der Person, die es benutzt |
 | Auf echter Hardware | Nur simuliert: gegen Emulatoren, Attrappen oder Simulatoren getestet; für diese Version ist kein Lauf auf echter Hardware vermerkt |
@@ -117,9 +117,6 @@ Jede Schutzfunktion ist standardmäßig aktiv und jede lässt sich abschalten, i
 | Sitzungsschlüssel | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | ein Teilnehmer beweist, dass er einen Schlüssel besitzt |
 | Ausgangsfilter | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | nur was eine Platine sendet, geht Richtung Netz, mit bis zu 500 Frames pro Sekunde |
 | Offenes Netz | `server.allow_open_network` | `--allow-open-network` | das Lauschen auf einer nicht lokalen Adresse ohne Sitzungsschlüssel wird abgelehnt, außer es wird verlangt |
-| Sendezeitlimit | `server.send_timeout_s` | (nur Datei) | eine Nachricht an die Gegenstelle, die so lange nicht geschrieben werden kann (standardmäßig 30 s, 0 = unbegrenzt), beendet die Verbindung |
-| Frist zur Anmeldung | `server.auth_timeout_s` | (nur Datei) | mit Sitzungen wird eine Gegenstelle getrennt, die in dieser Zeit keine gültige Nachricht gesendet hat (standardmäßig 30 s, 0 = unbegrenzt) |
-| Bus vor dem Schlüssel | `server.forward_bus_before_auth` | (nur Datei) | mit Sitzungen sieht eine Gegenstelle Busframes erst, nachdem sie ihren Schlüssel nachgewiesen hat; `true` zeigt sie von Anfang an (standardmäßig aus) |
 
 ```json
 {

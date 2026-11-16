@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-225-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | 版本 | `0.0.9` |
 | 成熟度 | 雏形 |
-| 测试 | 239 |
+| 测试 | 225 |
 | 技术栈 | Python / CAN / HMAC |
 | 目标 | 使用者的电脑 |
 | 真实硬件 | 仅模拟：使用模拟器、替身或仿真测试；此版本没有在真实硬件上运行的记录 |
@@ -117,9 +117,6 @@ URTC 仓库的威胁模型指出：如果安装环境无法保持总线封闭，
 | 会话密钥 | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | 对端证明自己持有密钥 |
 | 出站过滤 | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | 只有板卡发出的内容才会流向网络，每秒最多 500 帧 |
 | 开放网络 | `server.allow_open_network` | `--allow-open-network` | 没有会话密钥时监听非本地地址会被拒绝，除非明确要求 |
-| 发送超时 | `server.send_timeout_s` | （仅文件） | 发往对端的消息在此时间内（默认 30 秒，0 = 不限）无法写出时，连接将被终止 |
-| 认证期限 | `server.auth_timeout_s` | （仅文件） | 启用会话时，在此时间内（默认 30 秒，0 = 不限）未发送任何有效消息的对端会被断开 |
-| 密钥之前的总线 | `server.forward_bus_before_auth` | （仅文件） | 启用会话时，总线帧只有在对端证明其密钥之后才会显示给它；`true` 表示从一开始就显示（默认关闭） |
 
 ```json
 {

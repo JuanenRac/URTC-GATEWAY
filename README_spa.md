@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-225-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Versión | `0.0.9` |
 | Madurez | Andamiaje |
-| Tests | 239 |
+| Tests | 225 |
 | Tecnología | Python / CAN / HMAC |
 | Destino | El PC de quien lo usa |
 | En hardware real | Solo simulado: probado con emuladores, dobles de prueba o simuladores; no consta ninguna ejecución en hardware real para esta versión |
@@ -117,9 +117,6 @@ Cada protección está activada por defecto y cualquiera puede desactivarse, en 
 | Clave de sesión | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | un interlocutor demuestra que tiene una clave |
 | Filtro de salida | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | solo lo que envía una placa va hacia la red, hasta 500 tramas por segundo |
 | Red abierta | `server.allow_open_network` | `--allow-open-network` | escuchar en una dirección no local sin clave de sesión se rechaza salvo que se pida |
-| Plazo de envío | `server.send_timeout_s` | (solo fichero) | un mensaje hacia el par que no se puede escribir durante este tiempo (30 s por defecto, 0 = sin límite) termina la conexión |
-| Plazo de autenticación | `server.auth_timeout_s` | (solo fichero) | con sesiones, un par que no ha enviado ningún mensaje válido en este plazo (30 s por defecto, 0 = sin límite) se desconecta |
-| Bus antes de la clave | `server.forward_bus_before_auth` | (solo fichero) | con sesiones, las tramas del bus se muestran a un par solo después de demostrar su clave; `true` las muestra desde el principio (apagado por defecto) |
 
 ```json
 {
