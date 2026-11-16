@@ -9,6 +9,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A peer that cannot be written to no longer stops the gateway:** a failed send of the greeting or of a refusal (a peer that sends invalid lines and closes) ends only that connection, which is logged, and the gateway goes on to wait for the next peer. Tested with a connection whose sends fail.
+
 ## [0.0.8] - The gateway opens adapters at 1 Mbit/s, warns of a bus that mixes speeds and checks an update against the header inside its image
 
 - **The rate limit and the lists of identifiers are tested at the ends of their ranges:** the burst and the refill of the token buckets, a clock that goes back, a flood of one identifier that must not use the tokens of the others, overrides, the sets of identifiers that cross the gateway never overlapping and being the ones the specification gives, and the table of the documents being the one the code makes.
