@@ -101,10 +101,30 @@ class SerialSlcanBus:
             self._port.close()
 
 
-def _lines(conn: socket.socket, stop: threading.Event):
+POLL_S = 0.2
+
+
+def _send_all(conn: socket.socket, payload: bytes, limit_s: float) -> None:
+    """Write all of ``payload``; raise ``TimeoutError`` when the peer lets it take longer than ``limit_s`` seconds (0 = no limit)."""
+    if not hasattr(conn, "send"):
+        conn.sendall(payload)
+        return
+    deadline = time.monotonic() + limit_s if limit_s > 0 else None
+    view = memoryview(payload)
+    while view:
+        try:
+            sent = conn.send(view)
+        except TimeoutError:
+            if deadline is not None and time.monotonic() >= deadline:
+                raise
+            continue
+        view = view[sent:]
+
+
+def _lines(conn: socket.socket, stop: threading.Event, give_up=lambda: False):
     buffer = b""
-    conn.settimeout(0.2)
-    while not stop.is_set():
+    conn.settimeout(POLL_S)
+    while not stop.is_set() and not give_up():
         try:
             chunk = conn.recv(1024)
         except TimeoutError:
@@ -124,10 +144,16 @@ def _lines(conn: socket.socket, stop: threading.Event):
 def serve_connection(conn: socket.socket, gateway: Gateway, bus: Bus, stop: threading.Event, log=lambda text: None) -> None:
     """Serve one peer until it closes, or the stop event is set. The bus reader runs beside the line reader."""
     send_lock = threading.Lock()
+    config = getattr(gateway, "config", None)
+    send_limit = float(getattr(getattr(config, "server", None), "send_timeout_s", 0.0))
+    sessions_on = bool(getattr(getattr(config, "session", None), "enabled", False))
+    auth_limit = float(getattr(getattr(config, "server", None), "auth_timeout_s", 0.0)) if sessions_on else 0.0
+    conn.settimeout(POLL_S)         # a write is attempted in short steps, so that a peer that stops reading is noticed after ``send_limit``
+    started = time.monotonic()
 
     def to_network(message: dict[str, Any]) -> None:
         with send_lock:
-            conn.sendall(json.dumps(message, separators=(",", ":")).encode("utf-8") + b"\n")
+            _send_all(conn, json.dumps(message, separators=(",", ":")).encode("utf-8") + b"\n", send_limit)
 
     gateway.to_network = to_network
     try:
@@ -143,13 +169,23 @@ def serve_connection(conn: socket.socket, gateway: Gateway, bus: Bus, stop: thre
             if frame is not None:
                 try:
                     gateway.from_bus(*frame)
-                except OSError:
+                except OSError as error:
+                    log(f"peer lost while writing to it: {error.__class__.__name__}")
+                    done.set()      # the connection cannot go on without its bus reader: the line reader gives up too
                     return
 
     reader = threading.Thread(target=bus_reader, daemon=True, name="urtc-gateway-bus")
     reader.start()
     try:
-        for raw in _lines(conn, stop):
+        def give_up() -> bool:
+            if done.is_set():
+                return True
+            if auth_limit > 0 and not getattr(gateway, "authenticated", True) and time.monotonic() - started >= auth_limit:
+                log(f"peer disconnected: it did not prove its key within {auth_limit:g} s")
+                return True
+            return False
+
+        for raw in _lines(conn, stop, give_up):
             try:
                 message = json.loads(raw.decode("utf-8"))
             except ValueError:
