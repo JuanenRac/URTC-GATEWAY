@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-225-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | 版本 | `0.0.9` |
 | 成熟度 | 雏形 |
-| 测试 | 225 |
+| 测试 | 239 |
 | 技术栈 | Python / CAN / HMAC |
 | 目标 | 使用者的电脑 |
 | 真实硬件 | 仅模拟：使用模拟器、替身或仿真测试；此版本没有在真实硬件上运行的记录 |
@@ -117,6 +117,9 @@ URTC 仓库的威胁模型指出：如果安装环境无法保持总线封闭，
 | 会话密钥 | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | 对端证明自己持有密钥 |
 | 出站过滤 | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | 只有板卡发出的内容才会流向网络，每秒最多 500 帧 |
 | 开放网络 | `server.allow_open_network` | `--allow-open-network` | 没有会话密钥时监听非本地地址会被拒绝，除非明确要求 |
+| 发送超时 | `server.send_timeout_s` | - | 发往对端的消息若在此时间内无法写出（默认 30 秒，0 表示不限制），则结束该连接 |
+| 认证期限 | `server.auth_timeout_s` | - | 启用会话时，在此时间内（默认 30 秒，0 表示不限制）没有发送任何有效消息的对端会被断开 |
+| 密钥之前的总线 | `server.forward_bus_before_auth` | - | 启用会话时，总线帧只有在对端证明其密钥之后才会展示给它；`true` 则从一开始就展示（默认关闭） |
 
 ```json
 {
@@ -149,7 +152,7 @@ python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777
 
 ## 🧪 测试
 
-测试套件共有 225 个测试（`python -m pytest tests -q`）：标识符列表、载荷检查、速率限制、会话及其拒绝情形、选项和配置文件、命令行、通过真实本地套接字的测试，以及针对模拟端口的串口端。缺少可选依赖时有一个测试会被跳过。`python -m mypy` 检查软件包的类型，`ruff check .` 检查源码。
+测试套件共有 239 个测试（`python -m pytest tests -q`）：标识符列表、载荷检查、速率限制、会话及其拒绝情形、选项和配置文件、命令行、通过真实本地套接字的测试，以及针对模拟端口的串口端。缺少可选依赖时有一个测试会被跳过。`python -m mypy` 检查软件包的类型，`ruff check .` 检查源码。
 
 ## 🏗️ 构建与发布
 

@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-225-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.9` |
 | Maturité | Ébauche |
-| Tests | 225 |
+| Tests | 239 |
 | Technologie | Python / CAN / HMAC |
 | Cible | Le PC de la personne qui l'utilise |
 | Sur matériel réel | Simulé seulement : testé avec des émulateurs, des doubles de test ou des simulateurs ; aucune exécution sur du matériel réel n'est consignée pour cette version |
@@ -117,6 +117,9 @@ Chaque protection est activée par défaut et chacune peut être désactivée, d
 | Clé de session | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | un pair prouve qu'il détient une clé |
 | Filtre sortant | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | seul ce qu'envoie une carte va vers le réseau, jusqu'à 500 trames par seconde |
 | Réseau ouvert | `server.allow_open_network` | `--allow-open-network` | écouter sur une adresse non locale sans clé de session est refusé sauf demande explicite |
+| Délai d'envoi | `server.send_timeout_s` | - | un message vers le pair qui ne peut pas être écrit pendant ce temps (30 secondes par défaut, 0 pour aucune limite) met fin à la connexion |
+| Délai d'authentification | `server.auth_timeout_s` | - | avec les sessions, un pair qui n'a envoyé aucun message valide dans ce délai (30 secondes par défaut, 0 pour aucune limite) est déconnecté |
+| Bus avant la clé | `server.forward_bus_before_auth` | - | avec les sessions, les trames du bus ne sont montrées à un pair qu'après la preuve de sa clé ; `true` les montre dès le début (désactivé par défaut) |
 
 ```json
 {
@@ -149,7 +152,7 @@ Les versions des programmes URTC qui fonctionnent ensemble, et la version du pro
 
 ## 🧪 Tests
 
-La suite compte 225 tests (`python -m pytest tests -q`) : la liste d'identifiants, le contrôle de la charge, la limite de cadence, la session et ses refus, les options et le fichier de configuration, la ligne de commande, un test sur un vrai socket local et l'extrémité série face à un port simulé. Un test est ignoré quand sa dépendance optionnelle manque. `python -m mypy` vérifie les types du paquet et `ruff check .` le code.
+La suite compte 239 tests (`python -m pytest tests -q`) : la liste d'identifiants, le contrôle de la charge, la limite de cadence, la session et ses refus, les options et le fichier de configuration, la ligne de commande, un test sur un vrai socket local et l'extrémité série face à un port simulé. Un test est ignoré quand sa dépendance optionnelle manque. `python -m mypy` vérifie les types du paquet et `ruff check .` le code.
 
 ## 🏗️ Compilation et publication
 

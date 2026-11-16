@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-225-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | バージョン | `0.0.9` |
 | 成熟度 | 足場段階 |
-| テスト | 225 |
+| テスト | 239 |
 | 技術 | Python / CAN / HMAC |
 | 対象 | 利用者の PC |
 | 実機での確認 | シミュレーションのみ：エミュレーター、模擬部品、シミュレーターで試験済み。このバージョンについて実機での動作記録はありません |
@@ -117,6 +117,9 @@ URTC リポジトリの脅威モデルは、設置環境でバスを閉じてお
 | セッション鍵 | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | ピアが鍵を持っていることを証明します |
 | 送信側フィルター | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | ボードが送ったものだけがネットワークへ向かい、毎秒最大 500 フレームです |
 | オープンネットワーク | `server.allow_open_network` | `--allow-open-network` | セッション鍵なしでローカル以外のアドレスで待ち受けることは、求めない限り拒否されます |
+| 送信タイムアウト | `server.send_timeout_s` | - | この時間（既定は 30 秒、0 で無制限）書き込めないピア宛てのメッセージは、接続を終了させます |
+| 認証の期限 | `server.auth_timeout_s` | - | セッションを使う場合、この時間（既定は 30 秒、0 で無制限）内に有効なメッセージを 1 つも送らないピアは切断されます |
+| 鍵の前のバス | `server.forward_bus_before_auth` | - | セッションを使う場合、バスのフレームはピアが鍵を証明した後でのみ見せます。`true` にすると最初から見せます（既定はオフ） |
 
 ```json
 {
@@ -149,7 +152,7 @@ python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777
 
 ## 🧪 テスト
 
-テストスイートは 225 件です（`python -m pytest tests -q`）。識別子リスト、ペイロード検査、レート制限、セッションとその拒否、オプションと設定ファイル、コマンドライン、実際のローカルソケットでのテスト、模擬ポートに対するシリアル側を検査します。任意の依存関係がない場合、1 件のテストはスキップされます。`python -m mypy` がパッケージの型を、`ruff check .` がソースを検査します。
+テストスイートは 239 件です（`python -m pytest tests -q`）。識別子リスト、ペイロード検査、レート制限、セッションとその拒否、オプションと設定ファイル、コマンドライン、実際のローカルソケットでのテスト、模擬ポートに対するシリアル側を検査します。任意の依存関係がない場合、1 件のテストはスキップされます。`python -m mypy` がパッケージの型を、`ruff check .` がソースを検査します。
 
 ## 🏗️ ビルドとリリース
 
