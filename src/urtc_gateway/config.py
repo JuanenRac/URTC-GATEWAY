@@ -77,6 +77,9 @@ class ServerOptions:
     host: str = "127.0.0.1"
     port: int = 8765
     allow_open_network: bool = False          # listen on a non-local address even without a session key
+    send_timeout_s: float = 30.0              # a message towards the peer that cannot be written for this long ends the connection (0 = no limit)
+    auth_timeout_s: float = 30.0              # with sessions: a peer that has not sent one valid message by then is disconnected (0 = no limit)
+    forward_bus_before_auth: bool = False     # with sessions: frames of the bus go to a peer only after it proved its key (true = from the start, as before)
 
 
 @dataclass
@@ -135,7 +138,7 @@ def config_from_dict(data: Any) -> GatewayConfig:
             elif isinstance(default, (int, float)):
                 if isinstance(value, bool) or not isinstance(value, (int, float)):
                     raise ConfigError(f"{name}.{key} must be a number")
-                if key.endswith(("_hz", "_burst")) and value < 0:
+                if key.endswith(("_hz", "_burst", "_s")) and value < 0:
                     raise ConfigError(f"{name}.{key} must not be negative")
                 if key == "port" and not 0 <= value <= 65535:
                     raise ConfigError("server.port must be 0 (the system chooses) to 65535")
@@ -205,6 +208,12 @@ def warnings(config: GatewayConfig) -> list[str]:
         out.append("the outbound filter is OFF: every frame of the bus goes to the network")
     if config.update_image.header == "accept":
         out.append("the image header check is lenient: an update whose image has no header inside it is forwarded without a note")
+    if config.server.send_timeout_s == 0:
+        out.append("the send timeout is OFF: a peer that stops reading can hold the gateway on one write for as long as it likes")
+    if config.session.enabled and config.server.auth_timeout_s == 0:
+        out.append("the authentication deadline is OFF: a peer can stay connected without ever proving its key")
+    if config.session.enabled and config.server.forward_bus_before_auth:
+        out.append("frames of the bus are forwarded to a peer before it has proved its key")
     if config.server.host not in ("127.0.0.1", "::1", "localhost") and not config.session.enabled:
         out.append(f"listening on {config.server.host} without session authentication")
     return out

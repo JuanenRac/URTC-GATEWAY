@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-225-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Versione | `0.0.9` |
 | Maturità | Impalcatura |
-| Test | 225 |
+| Test | 239 |
 | Tecnologia | Python / CAN / HMAC |
 | Destinazione | Il PC di chi lo usa |
 | Su hardware reale | Solo simulato: provato con emulatori, test double o simulatori; per questa versione non risulta alcuna esecuzione su hardware reale |
@@ -117,6 +117,9 @@ Ogni protezione è attiva per impostazione predefinita e ognuna può essere disa
 | Chiave di sessione | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | un peer dimostra di possedere una chiave |
 | Filtro in uscita | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | verso la rete va solo ciò che invia una scheda, fino a 500 frame al secondo |
 | Rete aperta | `server.allow_open_network` | `--allow-open-network` | l'ascolto su un indirizzo non locale senza chiave di sessione viene rifiutato salvo richiesta esplicita |
+| Tempo di invio | `server.send_timeout_s` | (solo file) | un messaggio verso il peer che non può essere scritto per questo tempo (30 s di default, 0 = nessun limite) chiude la connessione |
+| Tempo di autenticazione | `server.auth_timeout_s` | (solo file) | con le sessioni, un peer che non ha inviato alcun messaggio valido entro questo tempo (30 s di default, 0 = nessun limite) viene disconnesso |
+| Bus prima della chiave | `server.forward_bus_before_auth` | (solo file) | con le sessioni, i frame del bus sono mostrati a un peer solo dopo che ha dimostrato la sua chiave; `true` li mostra dall'inizio (spento di default) |
 
 ```json
 {

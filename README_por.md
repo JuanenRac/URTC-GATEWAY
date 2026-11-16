@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-225-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Versão | `0.0.9` |
 | Maturidade | Estrutura inicial |
-| Testes | 225 |
+| Testes | 239 |
 | Tecnologia | Python / CAN / HMAC |
 | Destino | O PC de quem o usa |
 | Em hardware real | Só simulado: testado com emuladores, dublês de teste ou simuladores; não há registo de execução em hardware real para esta versão |
@@ -117,6 +117,9 @@ Cada proteção está ativada por omissão e qualquer uma pode ser desativada, n
 | Chave de sessão | `session.enabled`, `session.key_file` | `--no-session` / `--session`, `--key-file` | um par prova que tem uma chave |
 | Filtro de saída | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` / `--outbound-filter` | só o que uma placa envia vai para a rede, até 500 tramas por segundo |
 | Rede aberta | `server.allow_open_network` | `--allow-open-network` | escutar num endereço não local sem chave de sessão é recusado, salvo se for pedido |
+| Limite de envio | `server.send_timeout_s` | (só ficheiro) | uma mensagem para o par que não possa ser escrita durante este tempo (30 s por omissão, 0 = sem limite) termina a ligação |
+| Prazo de autenticação | `server.auth_timeout_s` | (só ficheiro) | com sessões, um par que não tenha enviado nenhuma mensagem válida neste prazo (30 s por omissão, 0 = sem limite) é desligado |
+| Barramento antes da chave | `server.forward_bus_before_auth` | (só ficheiro) | com sessões, as tramas do barramento só são mostradas a um par depois de provar a sua chave; `true` mostra-as desde o início (desligado por omissão) |
 
 ```json
 {

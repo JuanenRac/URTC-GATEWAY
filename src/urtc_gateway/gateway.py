@@ -49,10 +49,12 @@ class Gateway:
         self.health_frames: collections.deque[bytes] = collections.deque(maxlen=HEALTH_FRAMES_KEPT)
         self.info_frames: collections.deque[bytes] = collections.deque(maxlen=INFO_FRAMES_KEPT)
         self.session = sessions.Session(self.keys)
+        self.authenticated = not config.session.enabled      # without sessions there is nothing to prove
 
     def hello(self) -> dict[str, Any]:
         """The first message to a peer that connects: the nonce its frames must be authenticated with."""
         self.session = sessions.Session(self.keys)
+        self.authenticated = not self.config.session.enabled
         return {"type": "hello", "gateway": "urtc-gateway/1", "session": self.config.session.enabled, "nonce": self.session.nonce.hex()}
 
     def _refuse(self, decision: Decision, who: str = "") -> Decision:
@@ -84,6 +86,7 @@ class Gateway:
             if problem:
                 return self._refuse(Decision(False, problem, f"{problem.replace('_', ' ')}"), peer if isinstance(peer, str) else "")
             who = peer
+            self.authenticated = True
         decision = self.policy.check_inbound(can_id, data, self.clock())
         if not decision:
             return self._refuse(decision, who)
@@ -99,6 +102,9 @@ class Gateway:
             self.health_frames.append(bytes(data))          # kept whatever the policy says about forwarding it: the gateway itself judges the bus by them
         elif can_id == bus_health.CAN_ID_HEALTH_INFO:
             self.info_frames.append(bytes(data))            # the speed the heads declare (protocol version 2); kept like the health frames
+        if not self.authenticated and not self.config.server.forward_bus_before_auth:
+            self.stats.refused["out_unauthenticated"] += 1   # the peer has not proved its key yet: nothing of the bus is shown to it
+            return Decision(False, "unauthenticated", "the peer has not proved its key yet")
         decision = self.policy.check_outbound(can_id, self.clock())
         if not decision:
             self.stats.refused["out_" + decision.code] += 1
