@@ -130,7 +130,11 @@ def serve_connection(conn: socket.socket, gateway: Gateway, bus: Bus, stop: thre
             conn.sendall(json.dumps(message, separators=(",", ":")).encode("utf-8") + b"\n")
 
     gateway.to_network = to_network
-    to_network(gateway.hello())
+    try:
+        to_network(gateway.hello())
+    except OSError as error:
+        log(f"peer lost before it was greeted: {error.__class__.__name__}")   # one bad peer must not end the gateway
+        return
     done = threading.Event()
 
     def bus_reader() -> None:
@@ -154,6 +158,8 @@ def serve_connection(conn: socket.socket, gateway: Gateway, bus: Bus, stop: thre
             if not decision:
                 log(f"refused {decision.code}: {decision.detail}")
                 to_network({"type": "refused", "code": decision.code})
+    except OSError as error:
+        log(f"peer lost: {error.__class__.__name__}")      # only this connection ends; the gateway goes on to the next peer
     finally:
         done.set()
         reader.join(timeout=1.0)
