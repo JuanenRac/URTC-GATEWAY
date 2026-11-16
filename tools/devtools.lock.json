@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "source": "URTC-DEVTOOLS",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "files": {
     ".github/actions/urtc-baseline/action.yml": "51df94800b5addbcf99836b8455262370bf0483c0892e95f0a6c8d2c720f8721",
     ".github/workflows/dashboard-dispatch.yml": "15d1d1abbd41bf181cdff859c2d788fb6a83feac36b707a2be044ccf890e0069",
     "bump_manifest_version.py": "fbd3433f100e701457c2053495e2ba86771f9cb25f8d396eba2d173ef5462bda",
     "test.bat": "fb2b23917eeda28fb1bbe05dc1753635c2e9fab0ba12c12c40ea6a69d910bcfd",
     "test.sh": "c78d79c0d8cf80e9f187d09c3a1fd147413a0bf2187e1b9b673909f5635a3a0a",
-    "tools/_doc_policy.py": "d821917d255a4dd705b7731f09ed7e80590de26cb77b7757bb3f2e240aa75496",
+    "tools/_doc_policy.py": "e66a22251fa191585a1b8dcb2d85916222caa6dae5c7be9c6bed21e19f503df6",
     "tools/_readme_parity.py": "f03c59350897889b46c1bd0040c0d537b9db4958312424df321b9dbb5824600f",
     "tools/_readme_svg.py": "7bb8388deb11c15dfbc202c8da1b808540853ec2c263260795d3cb2664d6f94d",
     "tools/_tracked_names.py": "c61bec1f6a112f4bdb90a94ba468391a3783597de125f3e583509596ddb2c31b",
