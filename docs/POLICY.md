@@ -12,10 +12,10 @@ Every protection is **on by default** and every one can be switched off, in the 
 | Session key | `session.enabled`, `session.key_file` | `--no-session` | `--session`, `--key-file` | a peer proves it holds a key (HMAC with a nonce and a counter) |
 | Outbound filter | `outbound.enabled`, `outbound.rate_hz` | `--no-outbound-filter` | `--outbound-filter` | only what a board sends goes towards the network, at a limited rate |
 | Open network | `server.allow_open_network` | (default) | `--allow-open-network` | listening on a non-local address without a session key is refused unless asked for |
-| Send timeout | `server.send_timeout_s` | (default) | (file only) | a message towards the peer that cannot be written for this long (30 s by default, 0 = no limit) ends the connection |
-| Authentication deadline | `server.auth_timeout_s` | (default) | (file only) | with sessions, a peer that has not sent one valid message within this time (30 s by default, 0 = no limit) is disconnected |
+| Send timeout | `server.send_timeout_s` | (default) | `--send-timeout S` | a message towards the peer that cannot be written for this long (30 s by default, 0 = no limit) ends the connection |
+| Authentication deadline | `server.auth_timeout_s` | (default) | `--auth-timeout S` | with sessions, a peer that has not sent one valid message within this time (30 s by default, 0 = no limit) is disconnected |
 | Idle deadline | `server.idle_timeout_s` | (default) | (file only) | a peer that has sent nothing for this long is disconnected (0 = no limit, the default) |
-| Bus before the key | `server.forward_bus_before_auth` | (default) | (file only) | with sessions, frames of the bus are shown to a peer only after it proved its key; `true` shows them from the start (off by default) |
+| Bus before the key | `server.forward_bus_before_auth` | `--no-forward-bus-before-auth` | `--forward-bus-before-auth` | with sessions, frames of the bus are shown to a peer only after it proved its key; `true` shows them from the start (off by default) |
 
 ## The configuration file
 

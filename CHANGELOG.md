@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The times of the connection and the bus-before-key option have command-line flags:** `--send-timeout S`, `--auth-timeout S` (0 = no limit; negative or absurd times are refused) and `--forward-bus-before-auth` / `--no-forward-bus-before-auth`, which override the configuration file like the other protection flags. The defaults are unchanged. Tested with the flags, the file and the refusals.
+
 - **The vendored copy of the common library is refreshed:** the protocol layer follows the current catalog again (minimum common version 0.2.8).
 
 ## [0.0.9] - Package version follows the project and refreshed shared copies

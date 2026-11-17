@@ -134,3 +134,16 @@ def test_keygen_never_overwrites_and_reports_the_error(capsys, tmp_path):
     assert "2 key(s)" in out and "the keys are not shown" in out
     assert cli.main(["keygen", str(target), "a"]) == 2
     assert capsys.readouterr().err.startswith("error:")
+
+
+def test_the_times_of_the_connection_and_the_bus_before_the_key_have_flags():
+    parse = cli.build_parser().parse_args
+    config = cli.config_from_args(parse(["policy"]))
+    assert (config.server.send_timeout_s, config.server.auth_timeout_s, config.server.forward_bus_before_auth) == (30.0, 30.0, False)
+    config = cli.config_from_args(parse(["policy", "--send-timeout", "5", "--auth-timeout", "0", "--forward-bus-before-auth"]))
+    assert (config.server.send_timeout_s, config.server.auth_timeout_s, config.server.forward_bus_before_auth) == (5.0, 0.0, True)
+    for bad in (["--send-timeout", "-1"], ["--auth-timeout", "x"], ["--send-timeout", "86400"]):
+        with pytest.raises(SystemExit):
+            parse(["policy", *bad])
+    with pytest.raises(SystemExit):
+        parse(["policy", "--forward-bus-before-auth", "--no-forward-bus-before-auth"])
