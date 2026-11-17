@@ -119,6 +119,7 @@ Every protection is on by default and every one can be switched off, in a JSON c
 | Open network | `server.allow_open_network` | `--allow-open-network` | listening on a non-local address without a session key is refused unless asked for |
 | Send timeout | `server.send_timeout_s` | - | a message towards the peer that cannot be written for this long (30 seconds by default, 0 for no limit) ends the connection |
 | Authentication deadline | `server.auth_timeout_s` | - | with sessions, a peer that has not sent one valid message within this time (30 seconds by default, 0 for no limit) is disconnected |
+| Idle deadline | `server.idle_timeout_s` | - | a peer that has sent nothing for this long is disconnected (0 for no limit, the default) |
 | Bus before the key | `server.forward_bus_before_auth` | - | with sessions, frames of the bus are shown to a peer only after it proved its key; `true` shows them from the start (off by default) |
 
 ```json

@@ -119,6 +119,7 @@ Ogni protezione è attiva per impostazione predefinita e ognuna può essere disa
 | Rete aperta | `server.allow_open_network` | `--allow-open-network` | l'ascolto su un indirizzo non locale senza chiave di sessione viene rifiutato salvo richiesta esplicita |
 | Timeout di invio | `server.send_timeout_s` | - | un messaggio verso il peer che non può essere scritto per questo tempo (30 secondi per impostazione predefinita, 0 per nessun limite) chiude la connessione |
 | Termine di autenticazione | `server.auth_timeout_s` | - | con le sessioni, un peer che non ha inviato alcun messaggio valido entro questo tempo (30 secondi per impostazione predefinita, 0 per nessun limite) viene disconnesso |
+| Termine di inattività | `server.idle_timeout_s` | - | un peer che non ha inviato nulla per questo tempo viene disconnesso (0 per nessun limite, il valore predefinito) |
 | Bus prima della chiave | `server.forward_bus_before_auth` | - | con le sessioni, i frame del bus vengono mostrati a un peer solo dopo che ha dimostrato la sua chiave; `true` li mostra fin dall'inizio (disattivato per impostazione predefinita) |
 
 ```json

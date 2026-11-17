@@ -119,6 +119,7 @@ Cada protección está activada por defecto y cualquiera puede desactivarse, en 
 | Red abierta | `server.allow_open_network` | `--allow-open-network` | escuchar en una dirección no local sin clave de sesión se rechaza salvo que se pida |
 | Tiempo de envío | `server.send_timeout_s` | - | un mensaje hacia el interlocutor que no se puede escribir durante este tiempo (30 segundos por defecto, 0 para sin límite) termina la conexión |
 | Plazo de autenticación | `server.auth_timeout_s` | - | con sesiones, un interlocutor que no ha enviado ningún mensaje válido en este tiempo (30 segundos por defecto, 0 para sin límite) se desconecta |
+| Plazo de inactividad | `server.idle_timeout_s` | - | un interlocutor que no ha enviado nada en este tiempo se desconecta (0 para sin límite, el valor por defecto) |
 | Bus antes de la clave | `server.forward_bus_before_auth` | - | con sesiones, las tramas del bus solo se muestran a un interlocutor después de que demuestre su clave; `true` se las muestra desde el principio (desactivado por defecto) |
 
 ```json
