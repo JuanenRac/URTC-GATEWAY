@@ -13,6 +13,7 @@
 Every protection is on by default and has a flag to switch it off (and a flag to switch it back on, so a file can be overridden):
 --no-session / --session, --no-whitelist / --whitelist, --unlock-dangerous, --no-payload-check / --payload-check,
 --no-rate-limit / --rate-limit, --no-outbound-filter / --outbound-filter, --allow-id, --deny-id, --image-header accept|warn|require.
+The times of the connection are --send-timeout S and --auth-timeout S (0 = no limit), and --forward-bus-before-auth / --no-forward-bus-before-auth shows the bus to a peer before its key.
 """
 from __future__ import annotations
 
@@ -37,6 +38,16 @@ def _id(text: str) -> int:
     return value
 
 
+def _seconds(text: str) -> float:
+    try:
+        value = float(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{text!r} is not a number of seconds") from None
+    if not 0.0 <= value < 86400.0:
+        raise argparse.ArgumentTypeError("a time is from 0 to 86400 seconds (0 = no limit)")
+    return value
+
+
 def add_protection_flags(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--config", metavar="FILE", help="a JSON file with the options (see docs/POLICY.md)")
     for name, dest in (("session", "session"), ("whitelist", "whitelist"), ("payload-check", "payload"), ("rate-limit", "rate"), ("outbound-filter", "outbound")):
@@ -47,6 +58,15 @@ def add_protection_flags(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--allow-id", type=_id, action="append", default=[], metavar="ID", help="add an identifier to the list (repeatable)")
     parser.add_argument("--deny-id", type=_id, action="append", default=[], metavar="ID", help="remove an identifier from the list (repeatable)")
     parser.add_argument("--key-file", metavar="FILE", help="the session key file")
+    parser.add_argument("--send-timeout", type=_seconds, default=None, metavar="S",
+                        help="a message towards a peer that cannot be written for this long ends its connection (default 30 s, 0 = no limit)")
+    parser.add_argument("--auth-timeout", type=_seconds, default=None, metavar="S",
+                        help="with sessions, a peer that has not sent one valid message within this time is disconnected (default 30 s, 0 = no limit)")
+    forward = parser.add_mutually_exclusive_group()
+    forward.add_argument("--forward-bus-before-auth", dest="on_forward_before_auth", action="store_true",
+                         help="with sessions, show the frames of the bus to a peer from the start and not only after it proved its key")
+    forward.add_argument("--no-forward-bus-before-auth", dest="off_forward_before_auth", action="store_true",
+                         help="with sessions, show the frames of the bus only after the peer proved its key (the default; overrides the file)")
     parser.add_argument("--image-header", choices=("accept", "warn", "require"), default=None,
                         help="what to do with an update whose image has no header inside it (default warn); a header that is there is always checked")
 
@@ -64,6 +84,14 @@ def config_from_args(args: argparse.Namespace) -> GatewayConfig:
     config.whitelist.deny = sorted(set(config.whitelist.deny) | set(getattr(args, "deny_id", [])))
     if getattr(args, "key_file", None):
         config.session.key_file = args.key_file
+    if getattr(args, "send_timeout", None) is not None:
+        config.server.send_timeout_s = args.send_timeout
+    if getattr(args, "auth_timeout", None) is not None:
+        config.server.auth_timeout_s = args.auth_timeout
+    if getattr(args, "off_forward_before_auth", False):
+        config.server.forward_bus_before_auth = False
+    if getattr(args, "on_forward_before_auth", False):
+        config.server.forward_bus_before_auth = True
     if getattr(args, "image_header", None):
         config.update_image.header = args.image_header
     for attr in ("host", "port"):
