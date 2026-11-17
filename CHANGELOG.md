@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The copy of URTC-COMMON brings the switch that lets an update of a slave board end while a tool is active (the switch stays off):** the generated protocol now names the extended feature bit `ALLOW_UPDATE_ACTIVE_ACTUATOR` (0x02) and its description. Nothing changes on the bus: the gateway never sets the bit.
 - **The times of the connection and the bus-before-key option have command-line flags:** `--send-timeout S`, `--auth-timeout S` (0 = no limit; negative or absurd times are refused) and `--forward-bus-before-auth` / `--no-forward-bus-before-auth`, which override the configuration file like the other protection flags. The defaults are unchanged. Tested with the flags, the file and the refusals.
 
 - **The vendored copy of the common library is refreshed:** the protocol layer follows the current catalog again (minimum common version 0.2.8).
