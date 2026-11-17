@@ -21,6 +21,7 @@ from __future__ import annotations
 
 from typing import Any, cast
 
+from . import dangerous_ids as _dangerous
 from . import urtc_protocol as proto
 
 # the table of the shared protocol copy, typed as what it is (the copy is generated and is not edited here)
@@ -28,24 +29,13 @@ MESSAGES = cast("dict[int, dict[str, Any]]", proto.MESSAGES)
 RACK_NAMES = cast("dict[int, str]", proto.RACK_NAMES)
 RACK_DIRECTIONS = cast("dict[int, str]", proto.RACK_DIRECTIONS)
 
-LOCKED_GROUPS = {"bootloader", "slave_bridge"}
-PERSISTENT_NAMES = {"PID_CONFIG"}
+LOCKED_GROUPS = _dangerous.LOCKED_GROUPS
+PERSISTENT_NAMES = _dangerous.PERSISTENT_NAMES
 
 
 def dangerous_reason(can_id: int) -> str | None:
-    """Why an identifier is dangerous to forward, or None when it is not."""
-    info = MESSAGES.get(can_id)
-    if info is None:
-        return None
-    if info.get("gates", {}).get("needs_magic"):
-        return "it needs a magic payload: it erases, resets or rewrites something that stays"
-    if info["name"].startswith("QUERY_"):
-        return None   # a question changes nothing, whatever group it is in (the version query, the error counters)
-    if info["group"] in LOCKED_GROUPS:
-        return "it belongs to the bootloader or to the update of the expansion slave"
-    if info["name"].startswith("SET_") or info["name"] in PERSISTENT_NAMES:
-        return "it changes a setting that is kept after a restart"
-    return None
+    """Why an identifier is dangerous to forward, or None when it is not (the rule is the shared one of the tester, ``dangerous_ids.py``)."""
+    return _dangerous.dangerous_reason(can_id, MESSAGES)
 
 
 def _from_hosts() -> dict[int, dict]:

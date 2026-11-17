@@ -9,6 +9,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The rule that tells which identifiers are dangerous is the shared one:** `ids.dangerous_reason` now calls the copy of the common rule (`dangerous_ids.py`, listed in the lock), the same one the test plans of the tester use, so both judge an identifier the same way. The answer for every identifier is unchanged (the existing tests over the table pass as they were).
+
 - **A failed accept no longer ends the gateway:** an error while taking a connection is logged and counted, the loop waits a moment and goes on, and a connection that ends with a socket error counts as dropped; the count is added to the summary logged when a peer closes (`connections_dropped`). Tested with a listening socket whose first accept fails.
 
 - **A stalled peer, a peer that never proves its key and the bus before the key are handled by three options:** `server.send_timeout_s` (30 s by default, 0 = no limit) ends a connection whose peer stops reading, the write is tried in short steps so that the gateway is never held on it, and a failed write towards the peer now ends the whole connection instead of leaving it without its bus reader; `server.auth_timeout_s` (30 s) disconnects a peer that has not sent one valid message with sessions on; `server.forward_bus_before_auth` (false) keeps the frames of the bus from a peer until it proved its key (the health frames are still kept for the judgement of the bus). Without sessions nothing is held back, as before. Loosening any of them is listed in the warnings at start. Tested with stalled and slow sockets, an unauthenticated peer and the options of the file.
