@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## [Unreleased]
+
+- **The vendored copy of the common library is refreshed:** the protocol layer follows the current catalog again (minimum common version 0.2.8).
+
 ## [0.0.9] - Package version follows the project and refreshed shared copies
 
 - **The version the package reports and the README badges are the version of the project:** `__version__` and the badge of the eight READMEs still said 0.0.2 while the manifest and `pyproject.toml` said 0.0.8. Three tests keep the package, the manifest, `pyproject.toml` and the eight badges equal.
