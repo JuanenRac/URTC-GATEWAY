@@ -213,16 +213,27 @@ def run(config: GatewayConfig, keys: dict[str, bytes] | None, bus: Bus, stop: th
         bound.append(server.getsockname()[1])
     if ready is not None:
         ready.set()
+    dropped = 0
     try:
         while not stop.is_set():
             try:
                 conn, address = server.accept()
             except TimeoutError:
                 continue
+            except OSError as error:
+                # A failed accept (no free descriptors, a connection reset before it was taken) must not end the service.
+                dropped += 1
+                log(f"accept failed ({error.__class__.__name__}); {dropped} connections dropped")
+                stop.wait(0.2)
+                continue
             log(f"peer connected from {address[0]}")
             gateway = Gateway(config, keys, bus.send, lambda m: None, time.monotonic)
-            with conn:
-                serve_connection(conn, gateway, bus, stop, log)
-            log("peer closed; " + json.dumps(gateway.summary()))
+            try:
+                with conn:
+                    serve_connection(conn, gateway, bus, stop, log)
+            except OSError as error:
+                dropped += 1
+                log(f"connection ended by {error.__class__.__name__}; {dropped} connections dropped")
+            log("peer closed; " + json.dumps({**gateway.summary(), "connections_dropped": dropped}))
     finally:
         server.close()
