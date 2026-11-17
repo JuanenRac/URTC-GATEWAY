@@ -79,6 +79,7 @@ class ServerOptions:
     allow_open_network: bool = False          # listen on a non-local address even without a session key
     send_timeout_s: float = 30.0              # a message towards the peer that cannot be written for this long ends the connection (0 = no limit)
     auth_timeout_s: float = 30.0              # with sessions: a peer that has not sent one valid message by then is disconnected (0 = no limit)
+    idle_timeout_s: float = 0.0               # a peer that has sent nothing for this long is disconnected (0 = no limit, as before)
     forward_bus_before_auth: bool = False     # with sessions: frames of the bus go to a peer only after it proved its key (true = from the start, as before)
 
 

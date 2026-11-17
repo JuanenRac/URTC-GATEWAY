@@ -9,6 +9,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A peer that goes quiet can be disconnected after a time:** the option `server.idle_timeout_s` (0 by default, which keeps the connection as long as the peer stays, as before) ends the connection of a peer that has sent no line for that many seconds. Tested with a quiet peer, a peer that keeps sending, and the default.
+
 - **The rule that tells which identifiers are dangerous is the shared one:** `ids.dangerous_reason` now calls the copy of the common rule (`dangerous_ids.py`, listed in the lock), the same one the test plans of the tester use, so both judge an identifier the same way. The answer for every identifier is unchanged (the existing tests over the table pass as they were).
 
 - **A failed accept no longer ends the gateway:** an error while taking a connection is logged and counted, the loop waits a moment and goes on, and a connection that ends with a socket error counts as dropped; the count is added to the summary logged when a peer closes (`connections_dropped`). Tested with a listening socket whose first accept fails.
