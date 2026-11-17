@@ -6,6 +6,10 @@
       "from": "src/urtc_common/bus_health.py",
       "sha256": "618b6a3deaeab2eec8090e6332edefb691c9195c896c6882b6c1b9a7e2658826"
     },
+    "dangerous_ids.py": {
+      "from": "src/urtc_common/dangerous_ids.py",
+      "sha256": "6c47008b9a7de40aac52738b2eed1d38b636e38a3e362f42d5f55cf942c427ca"
+    },
     "health_info.py": {
       "from": "src/urtc_common/health_info.py",
       "sha256": "16d65c2c97d5e7a487d06c63d17050fa5fe28fb18641698d5209a43f8ced185b"
