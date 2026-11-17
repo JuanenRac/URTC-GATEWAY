@@ -119,6 +119,7 @@ Jede Schutzfunktion ist standardmäßig aktiv und jede lässt sich abschalten, i
 | Offenes Netz | `server.allow_open_network` | `--allow-open-network` | das Lauschen auf einer nicht lokalen Adresse ohne Sitzungsschlüssel wird abgelehnt, außer es wird verlangt |
 | Sendezeitlimit | `server.send_timeout_s` | - | eine Nachricht an den Teilnehmer, die so lange nicht geschrieben werden kann (standardmäßig 30 Sekunden, 0 für kein Limit), beendet die Verbindung |
 | Frist für die Anmeldung | `server.auth_timeout_s` | - | mit Sitzungen wird ein Teilnehmer, der in dieser Zeit keine gültige Nachricht gesendet hat (standardmäßig 30 Sekunden, 0 für kein Limit), getrennt |
+| Frist für Inaktivität | `server.idle_timeout_s` | - | ein Teilnehmer, der in dieser Zeit nichts gesendet hat, wird getrennt (0 für kein Limit, der Standard) |
 | Bus vor dem Schlüssel | `server.forward_bus_before_auth` | - | mit Sitzungen werden Frames des Busses einem Teilnehmer erst gezeigt, nachdem er seinen Schlüssel nachgewiesen hat; `true` zeigt sie von Anfang an (standardmäßig aus) |
 
 ```json

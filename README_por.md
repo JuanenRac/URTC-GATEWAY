@@ -119,6 +119,7 @@ Cada proteção está ativada por omissão e qualquer uma pode ser desativada, n
 | Rede aberta | `server.allow_open_network` | `--allow-open-network` | escutar num endereço não local sem chave de sessão é recusado, salvo se for pedido |
 | Tempo de envio | `server.send_timeout_s` | - | uma mensagem para o par que não pode ser escrita durante este tempo (30 segundos por omissão, 0 para sem limite) termina a ligação |
 | Prazo de autenticação | `server.auth_timeout_s` | - | com sessões, um par que não enviou nenhuma mensagem válida dentro deste tempo (30 segundos por omissão, 0 para sem limite) é desligado |
+| Prazo de inatividade | `server.idle_timeout_s` | - | um par que não enviou nada durante este tempo é desligado (0 para sem limite, o valor por omissão) |
 | Barramento antes da chave | `server.forward_bus_before_auth` | - | com sessões, as tramas do barramento só são mostradas a um par depois de ele provar a sua chave; `true` mostra-as desde o início (desativado por omissão) |
 
 ```json

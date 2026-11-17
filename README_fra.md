@@ -119,6 +119,7 @@ Chaque protection est activée par défaut et chacune peut être désactivée, d
 | Réseau ouvert | `server.allow_open_network` | `--allow-open-network` | écouter sur une adresse non locale sans clé de session est refusé sauf demande explicite |
 | Délai d'envoi | `server.send_timeout_s` | - | un message vers le pair qui ne peut pas être écrit pendant ce temps (30 secondes par défaut, 0 pour aucune limite) met fin à la connexion |
 | Délai d'authentification | `server.auth_timeout_s` | - | avec les sessions, un pair qui n'a envoyé aucun message valide dans ce délai (30 secondes par défaut, 0 pour aucune limite) est déconnecté |
+| Délai d'inactivité | `server.idle_timeout_s` | - | un pair qui n'a rien envoyé pendant ce délai est déconnecté (0 pour aucune limite, valeur par défaut) |
 | Bus avant la clé | `server.forward_bus_before_auth` | - | avec les sessions, les trames du bus ne sont montrées à un pair qu'après la preuve de sa clé ; `true` les montre dès le début (désactivé par défaut) |
 
 ```json
