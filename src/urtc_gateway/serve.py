@@ -149,7 +149,9 @@ def serve_connection(conn: socket.socket, gateway: Gateway, bus: Bus, stop: thre
     sessions_on = bool(getattr(getattr(config, "session", None), "enabled", False))
     auth_limit = float(getattr(getattr(config, "server", None), "auth_timeout_s", 0.0)) if sessions_on else 0.0
     conn.settimeout(POLL_S)         # a write is attempted in short steps, so that a peer that stops reading is noticed after ``send_limit``
+    idle_limit = float(getattr(getattr(config, "server", None), "idle_timeout_s", 0.0))
     started = time.monotonic()
+    last_heard = [started]          # when the peer last sent a line
 
     def to_network(message: dict[str, Any]) -> None:
         with send_lock:
@@ -183,9 +185,13 @@ def serve_connection(conn: socket.socket, gateway: Gateway, bus: Bus, stop: thre
             if auth_limit > 0 and not getattr(gateway, "authenticated", True) and time.monotonic() - started >= auth_limit:
                 log(f"peer disconnected: it did not prove its key within {auth_limit:g} s")
                 return True
+            if idle_limit > 0 and time.monotonic() - last_heard[0] >= idle_limit:
+                log(f"peer disconnected: it sent nothing for {idle_limit:g} s")
+                return True
             return False
 
         for raw in _lines(conn, stop, give_up):
+            last_heard[0] = time.monotonic()
             try:
                 message = json.loads(raw.decode("utf-8"))
             except ValueError:

@@ -159,3 +159,42 @@ def test_a_peer_that_proves_its_key_in_time_is_kept():
     worker.join(5.0)
     left.close()
     right.close()
+
+
+# ---- the idle deadline ---------------------------------------------------------------------------------------------------------------------
+def test_the_idle_deadline_is_off_by_default_and_read_from_the_file():
+    assert config_from_dict({}).server.idle_timeout_s == 0.0
+    assert config_from_dict({"server": {"idle_timeout_s": 12}}).server.idle_timeout_s == 12
+
+
+def test_a_peer_that_sends_nothing_for_the_idle_deadline_is_disconnected():
+    config = config_from_dict({"session": {"enabled": False}, "server": {"idle_timeout_s": 0.4}})
+    gateway = Gateway(config, None, lambda i, d: None, lambda m: None, time.monotonic)
+    left, right = socket.socketpair()
+    messages: list[str] = []
+    worker = threading.Thread(target=serve_connection, args=(left, gateway, LoopbackBus(), threading.Event(), messages.append), daemon=True)
+    started = time.monotonic()
+    worker.start()
+    worker.join(10.0)
+    assert not worker.is_alive()
+    assert 0.35 <= time.monotonic() - started < 5.0
+    assert any("sent nothing for" in m for m in messages)
+    left.close()
+    right.close()
+
+
+def test_a_peer_that_keeps_sending_is_not_idle():
+    config = config_from_dict({"session": {"enabled": False}, "server": {"idle_timeout_s": 0.6}})
+    gateway = Gateway(config, None, lambda i, d: None, lambda m: None, time.monotonic)
+    left, right = socket.socketpair()
+    stop = threading.Event()
+    worker = threading.Thread(target=serve_connection, args=(left, gateway, LoopbackBus(), stop), daemon=True)
+    worker.start()
+    for _ in range(4):
+        time.sleep(0.3)
+        right.sendall(b"{}\n")
+    assert worker.is_alive()
+    stop.set()
+    worker.join(5.0)
+    left.close()
+    right.close()
