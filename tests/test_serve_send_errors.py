@@ -57,3 +57,49 @@ def test_a_failed_hello_ends_only_that_connection():
     conn = BrokenConn(b"", sends_before_failure=0)
     serve.serve_connection(conn, Gateway(), LoopbackBus(), threading.Event(), messages.append)
     assert any("before it was greeted" in m for m in messages)
+
+
+def test_a_failed_accept_does_not_end_the_service(monkeypatch):
+    """The listening loop logs a failed accept, counts it and keeps waiting for the next peer."""
+    from urtc_gateway.config import GatewayConfig
+
+    stop = threading.Event()
+    messages: list[str] = []
+
+    class FlakyServer:
+        def __init__(self, *_args) -> None:
+            self.calls = 0
+
+        def setsockopt(self, *_args) -> None:
+            pass
+
+        def bind(self, _address) -> None:
+            pass
+
+        def listen(self, _backlog) -> None:
+            pass
+
+        def settimeout(self, _value) -> None:
+            pass
+
+        def getsockname(self):
+            return ("127.0.0.1", 1)
+
+        def accept(self):
+            self.calls += 1
+            if self.calls == 1:
+                raise OSError("too many open files")
+            stop.set()
+            raise TimeoutError
+
+        def close(self) -> None:
+            pass
+
+    monkeypatch.setattr(serve.socket, "socket", FlakyServer)
+    timer = threading.Timer(10.0, stop.set)
+    timer.start()
+    try:
+        serve.run(GatewayConfig(), None, LoopbackBus(), stop, messages.append)
+    finally:
+        timer.cancel()
+    assert any(m.startswith("accept failed") and "1 connections dropped" in m for m in messages)

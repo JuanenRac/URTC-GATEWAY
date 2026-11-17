@@ -9,6 +9,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A failed accept no longer ends the gateway:** an error while taking a connection is logged and counted, the loop waits a moment and goes on, and a connection that ends with a socket error counts as dropped; the count is added to the summary logged when a peer closes (`connections_dropped`). Tested with a listening socket whose first accept fails.
+
 - **A stalled peer, a peer that never proves its key and the bus before the key are handled by three options:** `server.send_timeout_s` (30 s by default, 0 = no limit) ends a connection whose peer stops reading, the write is tried in short steps so that the gateway is never held on it, and a failed write towards the peer now ends the whole connection instead of leaving it without its bus reader; `server.auth_timeout_s` (30 s) disconnects a peer that has not sent one valid message with sessions on; `server.forward_bus_before_auth` (false) keeps the frames of the bus from a peer until it proved its key (the health frames are still kept for the judgement of the bus). Without sessions nothing is held back, as before. Loosening any of them is listed in the warnings at start. Tested with stalled and slow sockets, an unauthenticated peer and the options of the file.
 - **The security note of the README describes the Ed25519 bootloader:** the main bootloader checks the image against a table of public keys and holds no secret, official releases are signed with the release image-signing key and bench builds trust the public development key; the note no longer speaks of a shared-key HMAC. The eight languages follow.
 
