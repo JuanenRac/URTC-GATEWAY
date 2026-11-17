@@ -20,7 +20,7 @@
     },
     "urtc_protocol.py": {
       "from": "src/urtc_common/protocol.py",
-      "sha256": "a2c2f0fdd6ffc7cbb741444bf1e67400de64cc88d3541487e4a0c32afb9d8263"
+      "sha256": "0f7005c38a1f132d09c72cff119360748850c3102a044d8afdfb3720839e3746"
     }
   }
 }
