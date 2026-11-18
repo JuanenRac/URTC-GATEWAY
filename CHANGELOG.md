@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A peer that reads slowly can cost frames without blocking the bus reader (off by default):** the option `server.send_queue` (0 by default, which writes each frame at once as before) puts the frames of the bus in a queue of that size with one writer of their own; when it is full the oldest frame is dropped and counted as `out_slow_peer` in the summary, a failed write ends the connection as before, and the greeting, the refusals and the answers are still written at once. Tested with a stalled peer.
 - **The copy of URTC-COMMON brings the switch that lets an update of a slave board end while a tool is active (the switch stays off):** the generated protocol now names the extended feature bit `ALLOW_UPDATE_ACTIVE_ACTUATOR` (0x02) and its description. Nothing changes on the bus: the gateway never sets the bit.
 - **The times of the connection and the bus-before-key option have command-line flags:** `--send-timeout S`, `--auth-timeout S` (0 = no limit; negative or absurd times are refused) and `--forward-bus-before-auth` / `--no-forward-bus-before-auth`, which override the configuration file like the other protection flags. The defaults are unchanged. Tested with the flags, the file and the refusals.
 

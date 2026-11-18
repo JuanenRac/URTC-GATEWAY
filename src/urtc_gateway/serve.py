@@ -152,10 +152,36 @@ def serve_connection(conn: socket.socket, gateway: Gateway, bus: Bus, stop: thre
     idle_limit = float(getattr(getattr(config, "server", None), "idle_timeout_s", 0.0))
     started = time.monotonic()
     last_heard = [started]          # when the peer last sent a line
+    queue_size = max(0, int(getattr(getattr(config, "server", None), "send_queue", 0)))
+    outbox: queue.Queue[dict[str, Any]] = queue.Queue(maxsize=queue_size)    # not used when queue_size is 0
+    done = threading.Event()
 
-    def to_network(message: dict[str, Any]) -> None:
+    def write(message: dict[str, Any]) -> None:
         with send_lock:
             _send_all(conn, json.dumps(message, separators=(",", ":")).encode("utf-8") + b"\n", send_limit)
+
+    def enqueue(message: dict[str, Any]) -> None:
+        """Queue a frame for the writer; when the queue is full the oldest frame goes, and the drop is counted as ``out_slow_peer``."""
+        while True:
+            try:
+                outbox.put_nowait(message)
+                return
+            except queue.Full:
+                try:
+                    outbox.get_nowait()
+                except queue.Empty:
+                    continue
+                stats = getattr(gateway, "stats", None)
+                if stats is not None:
+                    stats.refused["out_slow_peer"] += 1
+
+    def to_network(message: dict[str, Any]) -> None:
+        # Messages of control (the greeting, a refusal, an answer) are written at once; frames of the bus go through the queue when there is one, so a peer that reads
+        # slowly costs frames (counted) and not the bus reader. The writer holds the same lock, so a line is never written in pieces among others.
+        if queue_size > 0 and message.get("type") == "frame":
+            enqueue(message)
+        else:
+            write(message)
 
     gateway.to_network = to_network
     try:
@@ -163,7 +189,19 @@ def serve_connection(conn: socket.socket, gateway: Gateway, bus: Bus, stop: thre
     except OSError as error:
         log(f"peer lost before it was greeted: {error.__class__.__name__}")   # one bad peer must not end the gateway
         return
-    done = threading.Event()
+
+    def writer() -> None:
+        while not done.is_set() and not stop.is_set():
+            try:
+                message = outbox.get(timeout=0.1)
+            except queue.Empty:
+                continue
+            try:
+                write(message)
+            except OSError as error:
+                log(f"peer lost while writing to it: {error.__class__.__name__}")
+                done.set()      # as for the bus reader: the connection cannot go on, and the line reader gives up too
+                return
 
     def bus_reader() -> None:
         while not done.is_set() and not stop.is_set():
@@ -178,6 +216,9 @@ def serve_connection(conn: socket.socket, gateway: Gateway, bus: Bus, stop: thre
 
     reader = threading.Thread(target=bus_reader, daemon=True, name="urtc-gateway-bus")
     reader.start()
+    emitter = threading.Thread(target=writer, daemon=True, name="urtc-gateway-writer")
+    if queue_size > 0:
+        emitter.start()
     try:
         def give_up() -> bool:
             if done.is_set():
@@ -205,6 +246,8 @@ def serve_connection(conn: socket.socket, gateway: Gateway, bus: Bus, stop: thre
     finally:
         done.set()
         reader.join(timeout=1.0)
+        if queue_size > 0:
+            emitter.join(timeout=1.0)
 
 
 def run(config: GatewayConfig, keys: dict[str, bytes] | None, bus: Bus, stop: threading.Event, log=print,
