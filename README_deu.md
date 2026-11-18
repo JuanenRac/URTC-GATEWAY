@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-245-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.9` |
 | Reifegrad | Gerüst |
-| Tests | 239 |
+| Tests | 245 |
 | Technik | Python / CAN / HMAC |
 | Ziel | Der PC der Person, die es benutzt |
 | Auf echter Hardware | Nur simuliert: gegen Emulatoren, Attrappen oder Simulatoren getestet; für diese Version ist kein Lauf auf echter Hardware vermerkt |
@@ -120,6 +120,7 @@ Jede Schutzfunktion ist standardmäßig aktiv und jede lässt sich abschalten, i
 | Sendezeitlimit | `server.send_timeout_s` | - | eine Nachricht an den Teilnehmer, die so lange nicht geschrieben werden kann (standardmäßig 30 Sekunden, 0 für kein Limit), beendet die Verbindung |
 | Frist für die Anmeldung | `server.auth_timeout_s` | - | mit Sitzungen wird ein Teilnehmer, der in dieser Zeit keine gültige Nachricht gesendet hat (standardmäßig 30 Sekunden, 0 für kein Limit), getrennt |
 | Frist für Inaktivität | `server.idle_timeout_s` | - | ein Teilnehmer, der in dieser Zeit nichts gesendet hat, wird getrennt (0 für kein Limit, der Standard) |
+| Warteschlange zum Teilnehmer | `server.send_queue` | - | die Frames des Busses warten in einer Warteschlange dieser Größe auf einen eigenen Schreiber, sodass ein Teilnehmer, der langsam liest, die ältesten Frames kostet und nicht den Busleser (0 schreibt jeden Frame sofort, der Standard); jeder verworfene Frame wird als `out_slow_peer` gezählt; nur in der Datei |
 | Bus vor dem Schlüssel | `server.forward_bus_before_auth` | - | mit Sitzungen werden Frames des Busses einem Teilnehmer erst gezeigt, nachdem er seinen Schlüssel nachgewiesen hat; `true` zeigt sie von Anfang an (standardmäßig aus) |
 
 ```json
@@ -153,7 +154,7 @@ Welche Versionen der URTC-Programme zusammenarbeiten und welche Protokollversion
 
 ## 🧪 Tests
 
-Die Suite hat 239 Tests (`python -m pytest tests -q`): die Kennungsliste, die Nutzdatenprüfung, die Ratenbegrenzung, die Sitzung und ihre Ablehnungen, die Optionen und die Konfigurationsdatei, die Befehlszeile, ein Test über einen echten lokalen Socket und das serielle Ende gegen einen Schein-Port. Ein Test wird übersprungen, wenn seine optionale Abhängigkeit fehlt. `python -m mypy` prüft die Typen des Pakets und `ruff check .` den Quelltext.
+Die Suite hat 245 Tests (`python -m pytest tests -q`): die Kennungsliste, die Nutzdatenprüfung, die Ratenbegrenzung, die Sitzung und ihre Ablehnungen, die Optionen und die Konfigurationsdatei, die Befehlszeile, ein Test über einen echten lokalen Socket und das serielle Ende gegen einen Schein-Port. Ein Test wird übersprungen, wenn seine optionale Abhängigkeit fehlt. `python -m mypy` prüft die Typen des Pakets und `ruff check .` den Quelltext.
 
 ## 🏗️ Build und Veröffentlichung
 

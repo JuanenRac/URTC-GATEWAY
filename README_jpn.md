@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-245-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | バージョン | `0.0.9` |
 | 成熟度 | 足場段階 |
-| テスト | 239 |
+| テスト | 245 |
 | 技術 | Python / CAN / HMAC |
 | 対象 | 利用者の PC |
 | 実機での確認 | シミュレーションのみ：エミュレーター、模擬部品、シミュレーターで試験済み。このバージョンについて実機での動作記録はありません |
@@ -120,6 +120,7 @@ URTC リポジトリの脅威モデルは、設置環境でバスを閉じてお
 | 送信タイムアウト | `server.send_timeout_s` | - | この時間（既定は 30 秒、0 で無制限）書き込めないピア宛てのメッセージは、接続を終了させます |
 | 認証の期限 | `server.auth_timeout_s` | - | セッションを使う場合、この時間（既定は 30 秒、0 で無制限）内に有効なメッセージを 1 つも送らないピアは切断されます |
 | アイドル期限 | `server.idle_timeout_s` | - | この時間のあいだ何も送らないピアは切断されます（0 で無制限、これが既定） |
+| ピア向けのキュー | `server.send_queue` | - | バスのフレームはこのサイズのキューで専用の書き込み役を待つので、読むのが遅いピアのために犠牲になるのはバスの読み取りではなく最も古いフレームです（0 は各フレームをすぐ書き込み、これが既定）。捨てたフレームはすべて `out_slow_peer` として数えます。ファイルでのみ指定 |
 | 鍵の前のバス | `server.forward_bus_before_auth` | - | セッションを使う場合、バスのフレームはピアが鍵を証明した後でのみ見せます。`true` にすると最初から見せます（既定はオフ） |
 
 ```json
@@ -153,7 +154,7 @@ python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777
 
 ## 🧪 テスト
 
-テストスイートは 239 件です（`python -m pytest tests -q`）。識別子リスト、ペイロード検査、レート制限、セッションとその拒否、オプションと設定ファイル、コマンドライン、実際のローカルソケットでのテスト、模擬ポートに対するシリアル側を検査します。任意の依存関係がない場合、1 件のテストはスキップされます。`python -m mypy` がパッケージの型を、`ruff check .` がソースを検査します。
+テストスイートは 245 件です（`python -m pytest tests -q`）。識別子リスト、ペイロード検査、レート制限、セッションとその拒否、オプションと設定ファイル、コマンドライン、実際のローカルソケットでのテスト、模擬ポートに対するシリアル側を検査します。任意の依存関係がない場合、1 件のテストはスキップされます。`python -m mypy` がパッケージの型を、`ruff check .` がソースを検査します。
 
 ## 🏗️ ビルドとリリース
 
