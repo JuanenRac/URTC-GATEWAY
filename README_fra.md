@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-245-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.9` |
 | Maturité | Ébauche |
-| Tests | 239 |
+| Tests | 245 |
 | Technologie | Python / CAN / HMAC |
 | Cible | Le PC de la personne qui l'utilise |
 | Sur matériel réel | Simulé seulement : testé avec des émulateurs, des doubles de test ou des simulateurs ; aucune exécution sur du matériel réel n'est consignée pour cette version |
@@ -120,6 +120,7 @@ Chaque protection est activée par défaut et chacune peut être désactivée, d
 | Délai d'envoi | `server.send_timeout_s` | - | un message vers le pair qui ne peut pas être écrit pendant ce temps (30 secondes par défaut, 0 pour aucune limite) met fin à la connexion |
 | Délai d'authentification | `server.auth_timeout_s` | - | avec les sessions, un pair qui n'a envoyé aucun message valide dans ce délai (30 secondes par défaut, 0 pour aucune limite) est déconnecté |
 | Délai d'inactivité | `server.idle_timeout_s` | - | un pair qui n'a rien envoyé pendant ce délai est déconnecté (0 pour aucune limite, valeur par défaut) |
+| File vers le pair | `server.send_queue` | - | les trames du bus attendent dans une file de cette taille un écrivain à elles, si bien qu'un pair qui lit lentement coûte les plus anciennes trames et non le lecteur du bus (0 écrit chaque trame tout de suite, valeur par défaut) ; chaque trame abandonnée est comptée comme `out_slow_peer` ; seulement dans le fichier |
 | Bus avant la clé | `server.forward_bus_before_auth` | - | avec les sessions, les trames du bus ne sont montrées à un pair qu'après la preuve de sa clé ; `true` les montre dès le début (désactivé par défaut) |
 
 ```json
@@ -153,7 +154,7 @@ Les versions des programmes URTC qui fonctionnent ensemble, et la version du pro
 
 ## 🧪 Tests
 
-La suite compte 239 tests (`python -m pytest tests -q`) : la liste d'identifiants, le contrôle de la charge, la limite de cadence, la session et ses refus, les options et le fichier de configuration, la ligne de commande, un test sur un vrai socket local et l'extrémité série face à un port simulé. Un test est ignoré quand sa dépendance optionnelle manque. `python -m mypy` vérifie les types du paquet et `ruff check .` le code.
+La suite compte 245 tests (`python -m pytest tests -q`) : la liste d'identifiants, le contrôle de la charge, la limite de cadence, la session et ses refus, les options et le fichier de configuration, la ligne de commande, un test sur un vrai socket local et l'extrémité série face à un port simulé. Un test est ignoré quand sa dépendance optionnelle manque. `python -m mypy` vérifie les types du paquet et `ruff check .` le code.
 
 ## 🏗️ Compilation et publication
 

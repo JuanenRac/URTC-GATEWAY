@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.0.9-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-239-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-245-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.9` |
 | Maturity | Scaffolding |
-| Tests | 239 |
+| Tests | 245 |
 | Stack | Python / CAN / HMAC |
 | Target | The PC of the person using it |
 | On real hardware | Simulated only: tested against emulators, fakes or simulators; no run on real hardware is recorded for this version |
@@ -120,6 +120,7 @@ Every protection is on by default and every one can be switched off, in a JSON c
 | Send timeout | `server.send_timeout_s` | - | a message towards the peer that cannot be written for this long (30 seconds by default, 0 for no limit) ends the connection |
 | Authentication deadline | `server.auth_timeout_s` | - | with sessions, a peer that has not sent one valid message within this time (30 seconds by default, 0 for no limit) is disconnected |
 | Idle deadline | `server.idle_timeout_s` | - | a peer that has sent nothing for this long is disconnected (0 for no limit, the default) |
+| Queue towards the peer | `server.send_queue` | - | frames of the bus wait in a queue of this size for a writer of their own, so a peer that reads slowly costs the oldest frames and not the bus reader (0 writes each frame at once, the default); every dropped frame is counted as `out_slow_peer`; only in the file |
 | Bus before the key | `server.forward_bus_before_auth` | - | with sessions, frames of the bus are shown to a peer only after it proved its key; `true` shows them from the start (off by default) |
 
 ```json
@@ -153,7 +154,7 @@ Which versions of the URTC programs work together, and which protocol version ea
 
 ## 🧪 Testing
 
-The suite has 239 tests (`python -m pytest tests -q`): the identifier list, the payload check, the rate limit, the session and its refusals, the options and the configuration file, the command line, a test over a real local socket and the serial end against a fake port. One test skips where its optional dependency is missing. `python -m mypy` type-checks the package and `ruff check .` the sources.
+The suite has 245 tests (`python -m pytest tests -q`): the identifier list, the payload check, the rate limit, the session and its refusals, the options and the configuration file, the command line, a test over a real local socket and the serial end against a fake port. One test skips where its optional dependency is missing. `python -m mypy` type-checks the package and `ruff check .` the sources.
 
 ## 🏗️ Build & Release
 
