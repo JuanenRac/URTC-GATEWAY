@@ -81,6 +81,7 @@ class ServerOptions:
     auth_timeout_s: float = 30.0              # with sessions: a peer that has not sent one valid message by then is disconnected (0 = no limit)
     idle_timeout_s: float = 0.0               # a peer that has sent nothing for this long is disconnected (0 = no limit, as before)
     forward_bus_before_auth: bool = False     # with sessions: frames of the bus go to a peer only after it proved its key (true = from the start, as before)
+    send_queue: int = 0                       # frames of the bus wait in a queue of this size for a writer of their own (0 = written at once by the bus reader, as before); when it is full the oldest frame is dropped and counted
 
 
 @dataclass
@@ -141,6 +142,8 @@ def config_from_dict(data: Any) -> GatewayConfig:
                     raise ConfigError(f"{name}.{key} must be a number")
                 if key.endswith(("_hz", "_burst", "_s")) and value < 0:
                     raise ConfigError(f"{name}.{key} must not be negative")
+                if key == "send_queue" and (isinstance(value, float) or value < 0):
+                    raise ConfigError("server.send_queue must be a whole number, 0 or more")
                 if key == "port" and not 0 <= value <= 65535:
                     raise ConfigError("server.port must be 0 (the system chooses) to 65535")
                 if name == "bus_health" and (isinstance(value, float) or not 1 <= value <= 255):

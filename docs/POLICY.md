@@ -15,6 +15,7 @@ Every protection is **on by default** and every one can be switched off, in the 
 | Send timeout | `server.send_timeout_s` | (default) | `--send-timeout S` | a message towards the peer that cannot be written for this long (30 s by default, 0 = no limit) ends the connection |
 | Authentication deadline | `server.auth_timeout_s` | (default) | `--auth-timeout S` | with sessions, a peer that has not sent one valid message within this time (30 s by default, 0 = no limit) is disconnected |
 | Idle deadline | `server.idle_timeout_s` | (default) | (file only) | a peer that has sent nothing for this long is disconnected (0 = no limit, the default) |
+| Queue towards the peer | `server.send_queue` | (default) | (file only) | frames of the bus wait in a queue of this size for a writer of their own, so a peer that reads slowly costs the oldest frames and not the bus reader (0 = written at once, the default); every dropped frame is counted as `out_slow_peer` |
 | Bus before the key | `server.forward_bus_before_auth` | `--no-forward-bus-before-auth` | `--forward-bus-before-auth` | with sessions, frames of the bus are shown to a peer only after it proved its key; `true` shows them from the start (off by default) |
 
 ## The configuration file

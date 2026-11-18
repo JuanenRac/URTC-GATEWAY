@@ -7,13 +7,16 @@
 wait for the key."""
 from __future__ import annotations
 
+import collections
 import json
 import socket
 import threading
 import time
+import types
 
 import pytest
 
+from urtc_gateway import policy, serve
 from urtc_gateway import urtc_protocol as proto
 from urtc_gateway.config import ConfigError, GatewayConfig, config_from_dict, warnings
 from urtc_gateway.gateway import Gateway, sign_message
@@ -194,6 +197,68 @@ def test_a_peer_that_keeps_sending_is_not_idle():
         time.sleep(0.3)
         right.sendall(b"{}\n")
     assert worker.is_alive()
+    stop.set()
+    worker.join(5.0)
+    left.close()
+    right.close()
+
+
+# ---- the queue of frames towards the peer ----------------------------------------------------------------------------------------------------
+class FrameGateway:
+    """A gateway that turns every frame of the bus into a message of type frame; the queue is the only thing under test."""
+
+    def __init__(self) -> None:
+        self.to_network = None
+        self.stats = types.SimpleNamespace(refused=collections.Counter())
+
+    def hello(self):
+        return {"type": "hello"}
+
+    def from_bus(self, can_id, data):
+        self.to_network({"type": "frame", "id": can_id, "data": data.hex()})
+
+    def from_network(self, _message):
+        return policy.OK
+
+
+def test_a_peer_that_reads_slowly_costs_the_oldest_frames_and_they_are_counted():
+    assert config_from_dict({}).server.send_queue == 0 and config_from_dict({"server": {"send_queue": 8}}).server.send_queue == 8
+    for bad in (-1, 1.5, "8"):
+        with pytest.raises(ConfigError):
+            config_from_dict({"server": {"send_queue": bad}})
+    config = config_from_dict({"server": {"send_queue": 4, "send_timeout_s": 5}})
+    gateway = FrameGateway()
+    gateway.config = config
+    bus = LoopbackBus()
+    left, right = socket.socketpair()
+    stop = threading.Event()
+    gate = threading.Lock()
+    gate.acquire()                                   # the peer's side is stalled: the writer waits for this lock inside its write
+    real_send_all = serve._send_all
+
+    def stalled(conn, payload, limit):
+        if b'"frame"' in payload:
+            with gate:
+                real_send_all(conn, payload, limit)
+        else:
+            real_send_all(conn, payload, limit)
+
+    serve._send_all = stalled
+    try:
+        worker = threading.Thread(target=serve_connection, args=(left, gateway, bus, stop), daemon=True)
+        worker.start()
+        for number in range(40):
+            bus.inject(0x100 + number, bytes([number]))
+        deadline = time.monotonic() + 5.0
+        while gateway.stats.refused["out_slow_peer"] < 30 and time.monotonic() < deadline:
+            time.sleep(0.02)
+        assert gateway.stats.refused["out_slow_peer"] >= 30       # the bus reader was never blocked: it went through all 40 frames
+    finally:
+        serve._send_all = real_send_all
+        gate.release()
+    reader = right.makefile("rb")
+    lines = [json.loads(reader.readline()) for _ in range(2)]
+    assert lines[0]["type"] == "hello" and all(line["type"] == "frame" for line in lines[1:])
     stop.set()
     worker.join(5.0)
     left.close()
