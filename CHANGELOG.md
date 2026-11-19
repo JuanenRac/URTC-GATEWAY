@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.1.0] - Slow, silent and stalled peers handled by options, the shared rule for dangerous identifiers and a current protocol layer
+
 - **The copy of the common library follows the current one:** the generated frame builders and parsers carry the silence of the master of the emergency stop (limits of 40 and 500 ms) and the eight-byte forms of the optional-function frames; nothing the gateway sends or reads changes.
 
 - **The README lists the queue towards the peer and the test count is current:** the table of the policy has a row for `server.send_queue` (file only, 0 by default; a peer that reads slowly costs the oldest frames, counted as `out_slow_peer`), and the number of tests of the README and of the glance data is the measured one. The README and its seven translations are updated.
@@ -18,8 +20,6 @@ All notable changes to this project are documented here.
 
 - **The version the package reports and the README badges are the version of the project:** `__version__` and the badge of the eight READMEs still said 0.0.2 while the manifest and `pyproject.toml` said 0.0.8. Three tests keep the package, the manifest, `pyproject.toml` and the eight badges equal.
 - **The copies taken from URTC-COMMON are refreshed:** the protocol layer and the virtual board follow the catalog again (the identifier of the clear-error command, the heater-only layout of 0x170 and the implicit index of the digest chunks), so the comparison of the shared nightly passes.
-
-## [Unreleased]
 
 - **A peer that goes quiet can be disconnected after a time:** the option `server.idle_timeout_s` (0 by default, which keeps the connection as long as the peer stays, as before) ends the connection of a peer that has sent no line for that many seconds. Tested with a quiet peer, a peer that keeps sending, and the default.
 
@@ -47,8 +47,6 @@ All notable changes to this project are documented here.
 - **An update that crosses the gateway is checked against the header inside its image:** the gateway follows the start frame (size and hardware) and the first data of a main-board or expansion-slave update, reads the 32-byte header at the fixed offset, and refuses the rest of the update when the header does not hold, states another length than the start frame announced or names another hardware.
 
 - **`update_image.header` (`--image-header`) is the compatibility switch for an image without the header:** `warn` (the default) forwards it and leaves a note in the audit, `accept` forwards it, `require` refuses it; a header that is there is always checked.
-
-## [Unreleased]
 
 - **The Spanish, German, French and European Portuguese README were read for register and wording:** the programs are called the same way in every language (tester, updater, Web Studio), the rate limit is a frequency (cadence in French) and never a bit rate, an address is no longer called a direction in two languages, calques and straight quotes were corrected, and the Related Projects section follows the shared texts.
 
