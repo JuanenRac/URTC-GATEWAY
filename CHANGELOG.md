@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The copy of the common library follows the current one:** the generated frame builders and parsers carry the silence of the master of the emergency stop (limits of 40 and 500 ms) and the eight-byte forms of the optional-function frames; nothing the gateway sends or reads changes.
+
 - **The README lists the queue towards the peer and the test count is current:** the table of the policy has a row for `server.send_queue` (file only, 0 by default; a peer that reads slowly costs the oldest frames, counted as `out_slow_peer`), and the number of tests of the README and of the glance data is the measured one. The README and its seven translations are updated.
 
 - **A peer that reads slowly can cost frames without blocking the bus reader (off by default):** the option `server.send_queue` (0 by default, which writes each frame at once as before) puts the frames of the bus in a queue of that size with one writer of their own; when it is full the oldest frame is dropped and counted as `out_slow_peer` in the summary, a failed write ends the connection as before, and the greeting, the refusals and the answers are still written at once. Tested with a stalled peer.
