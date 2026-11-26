@@ -26,7 +26,7 @@ def _gateway(**whitelist):
 
 
 def _send(gw: Gateway, peer: str, can_id: int, counter: int = 1):
-    nonce = bytes.fromhex(gw.new_connection()["nonce"])
+    nonce = bytes.fromhex(gw.hello()["nonce"])
     return gw.from_network(sign_message(KEYS[peer], nonce, peer, counter, can_id, b"\x00\x00"))
 
 
@@ -34,7 +34,7 @@ def test_the_actuator_set_comes_from_the_groups_of_the_specification():
     actuators = ids.actuator_ids()
     assert {0x120, 0x130, 0x140, LASER, 0x170, 0x1B0, 0x1C0, 0x1E0, 0x1F0, 0x200} <= actuators
     assert not {GLOBAL_STATUS, 0x110, 0x190, 0x1A8, 0x250, 0x7F8} & actuators
-    assert not actuators & ids.dangerous_ids()
+    assert actuators & ids.dangerous_ids() == {0x131}   # the reset of the solder feeder moves it: unlocking it is not enough without the actuator permission
 
 
 def test_by_default_every_peer_may_send_an_actuator_command():
