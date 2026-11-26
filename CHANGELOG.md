@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Actuator commands can be limited to named peers:** with `whitelist.allow_actuators` set to false (or `--no-actuators`), the commands that move, heat or switch an output of a head cross only from the peers named in `whitelist.actuator_peers` (`--actuator-peer`), whose name the session proved; the others are refused with the code `actuator` and the start of the program lists who is allowed. The default is true: every peer may send them, as before.
+
 ## [0.1.0] - Slow, silent and stalled peers handled by options, the shared rule for dangerous identifiers and a current protocol layer
 
 - **The copy of the common library follows the current one:** the generated frame builders and parsers carry the silence of the master of the emergency stop (limits of 40 and 500 ms) and the eight-byte forms of the optional-function frames; nothing the gateway sends or reads changes.

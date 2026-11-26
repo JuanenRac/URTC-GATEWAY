@@ -55,6 +55,10 @@ def add_protection_flags(parser: argparse.ArgumentParser) -> None:
         group.add_argument(f"--no-{name}", dest=f"off_{dest}", action="store_true", help=f"switch the {name.replace('-', ' ')} off")
         group.add_argument(f"--{name}", dest=f"on_{dest}", action="store_true", help=f"switch the {name.replace('-', ' ')} on (overrides the file)")
     parser.add_argument("--unlock-dangerous", action="store_true", help="let the bootloader and persistent-setting identifiers through")
+    actuators = parser.add_mutually_exclusive_group()
+    actuators.add_argument("--no-actuators", dest="off_actuators", action="store_true", help="refuse the commands that move, heat or switch an output, except from --actuator-peer")
+    actuators.add_argument("--actuators", dest="on_actuators", action="store_true", help="let every peer send actuator commands (the default; overrides the file)")
+    parser.add_argument("--actuator-peer", action="append", default=[], metavar="NAME", help="with --no-actuators, a peer of the key file that may still send them (repeatable)")
     parser.add_argument("--allow-id", type=_id, action="append", default=[], metavar="ID", help="add an identifier to the list (repeatable)")
     parser.add_argument("--deny-id", type=_id, action="append", default=[], metavar="ID", help="remove an identifier from the list (repeatable)")
     parser.add_argument("--key-file", metavar="FILE", help="the session key file")
@@ -82,6 +86,11 @@ def config_from_args(args: argparse.Namespace) -> GatewayConfig:
         config.whitelist.unlock_dangerous = True
     config.whitelist.extra_allow = sorted(set(config.whitelist.extra_allow) | set(getattr(args, "allow_id", [])))
     config.whitelist.deny = sorted(set(config.whitelist.deny) | set(getattr(args, "deny_id", [])))
+    if getattr(args, "off_actuators", False):
+        config.whitelist.allow_actuators = False
+    if getattr(args, "on_actuators", False):
+        config.whitelist.allow_actuators = True
+    config.whitelist.actuator_peers = sorted(set(config.whitelist.actuator_peers) | set(getattr(args, "actuator_peer", [])))
     if getattr(args, "key_file", None):
         config.session.key_file = args.key_file
     if getattr(args, "send_timeout", None) is not None:

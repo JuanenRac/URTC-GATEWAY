@@ -50,6 +50,15 @@ def dangerous_ids() -> frozenset[int]:
     return frozenset(i for i in _from_hosts() if dangerous_reason(i) is not None)
 
 
+#: Groups whose commands neither move nor heat nor switch an output of a head. Every other group counts as an actuator group, a new one included.
+QUIET_GROUPS = frozenset({"global", "configuration", "diagnostics", "functionaltest", "thermal"}) | LOCKED_GROUPS
+
+
+def actuator_ids() -> frozenset[int]:
+    """The identifiers a host sends that move, heat or switch an output of a head (taken from the group of each message of the specification)."""
+    return frozenset(i for i, m in _from_hosts().items() if m["group"] not in QUIET_GROUPS and not m["name"].startswith("QUERY_"))
+
+
 def rack_ids() -> frozenset[int]:
     """The identifiers of the tool rack (the ``rack`` section of the specification, outside the messages of the tool head)."""
     return frozenset(RACK_DIRECTIONS)

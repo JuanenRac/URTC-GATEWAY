@@ -28,6 +28,8 @@ class WhitelistOptions:
     unlock_dangerous: bool = False            # also let the dangerous ones (bootloader, persistent settings) cross
     extra_allow: list[int] = field(default_factory=list)   # identifiers added to the list
     deny: list[int] = field(default_factory=list)          # identifiers removed from the list, whatever the rest says
+    allow_actuators: bool = True              # every peer may send the commands that move, heat or switch an output (true = as before); false = only the peers below
+    actuator_peers: list[str] = field(default_factory=list)  # with allow_actuators false: the names (from the key file) that may still send them
 
 
 @dataclass
@@ -153,6 +155,10 @@ def config_from_dict(data: Any) -> GatewayConfig:
                     raise ConfigError(f"{name}.{key} must be text")
                 if name == "update_image" and value not in ("accept", "warn", "require"):
                     raise ConfigError("update_image.header must be accept, warn or require")
+            elif key == "actuator_peers":
+                if not isinstance(value, list) or not all(isinstance(v, str) and v for v in value):
+                    raise ConfigError("whitelist.actuator_peers must be a list of peer names")
+                value = list(value)
             elif key == "legacy_heads":
                 if not isinstance(value, list) or not all(isinstance(v, (str, int)) and not isinstance(v, bool) for v in value):
                     raise ConfigError("bus_health.legacy_heads must be a list of names or serial numbers")
@@ -204,6 +210,14 @@ def warnings(config: GatewayConfig) -> list[str]:
         out.append("dangerous identifiers are UNLOCKED: the bootloader, the slave update and the persistent settings can be reached from the network")
     if config.whitelist.extra_allow:
         out.append("identifiers added to the list by hand: " + ", ".join(f"0x{i:03X}" for i in config.whitelist.extra_allow))
+    if config.whitelist.actuator_peers:
+        names = ", ".join(config.whitelist.actuator_peers)
+        if config.whitelist.allow_actuators:
+            out.append("whitelist.actuator_peers has no effect while whitelist.allow_actuators is true: every peer may send actuator commands")
+        elif not config.session.enabled:
+            out.append("without session authentication no peer has a proven name: whitelist.actuator_peers lets nobody send actuator commands")
+        else:
+            out.append("peers allowed to send actuator commands: " + names)
     if not config.payload.enabled:
         out.append("the payload check is OFF: frames with a length or a value the specification refuses are forwarded")
     if not config.rate.enabled:

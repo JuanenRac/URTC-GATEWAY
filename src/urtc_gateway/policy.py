@@ -23,7 +23,7 @@ for _layout in cast("dict[str, dict[str, Any]]", proto.LAYOUTS).values():
 @dataclass(frozen=True)
 class Decision:
     allowed: bool
-    code: str            # ok, not_listed, dangerous, bad_payload, rate_limited, ...
+    code: str            # ok, not_listed, dangerous, actuator, bad_payload, rate_limited, ...
     detail: str = ""
 
     def __bool__(self) -> bool:
@@ -88,6 +88,7 @@ class Policy:
         base -= set(config.whitelist.deny)
         self.inbound = frozenset(base)
         self.dangerous = ids.dangerous_ids()
+        self.actuators = ids.actuator_ids()
         self.outbound = ids.outbound_ids()
         r = config.rate
         overrides = {int(k, 16): (v[0], v[1]) for k, v in r.overrides.items()}
@@ -97,7 +98,8 @@ class Policy:
         self.guard = UpdateGuard(config.update_image.header)
         self.outbound_bucket = TokenBucket(config.outbound.rate_hz, max(1.0, config.outbound.rate_hz / 10)) if config.outbound.enabled and config.outbound.rate_hz > 0 else None
 
-    def check_inbound(self, can_id: int, data: bytes, now_s: float) -> Decision:
+    def check_inbound(self, can_id: int, data: bytes, now_s: float, peer: str = "") -> Decision:
+        """``peer`` is the name the session proved, or empty when there is no proven name."""
         if not isinstance(can_id, int) or isinstance(can_id, bool) or not 0 <= can_id <= 0x7FF or len(data) > 8:
             return Decision(False, "bad_frame", "not a classic CAN frame")
         wl = self.config.whitelist
@@ -109,6 +111,8 @@ class Policy:
                 if reason and can_id in self.dangerous:
                     return Decision(False, "dangerous", f"0x{can_id:03X} {ids.name_of(can_id)} is refused: {reason}")
                 return Decision(False, "not_listed", f"0x{can_id:03X} is not an identifier a host sends")
+        if not wl.allow_actuators and can_id in self.actuators and not (peer and peer in wl.actuator_peers):
+            return Decision(False, "actuator", f"0x{can_id:03X} {ids.name_of(can_id)} moves, heats or switches an output and this peer may not send it")
         if self.config.payload.enabled:
             problem = payload_problem(can_id, data)
             if problem:

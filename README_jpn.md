@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.1.0-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-245-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-256-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | バージョン | `0.1.0` |
 | 成熟度 | 足場段階 |
-| テスト | 245 |
+| テスト | 256 |
 | 技術 | Python / CAN / HMAC |
 | 対象 | 利用者の PC |
 | 実機での確認 | シミュレーションのみ：エミュレーター、模擬部品、シミュレーターで試験済み。このバージョンについて実機での動作記録はありません |
@@ -109,6 +109,7 @@ URTC リポジトリの脅威モデルは、設置環境でバスを閉じてお
 |---|---|---|---|
 | 識別子リスト | `whitelist.enabled` | `--no-whitelist` / `--whitelist` | ホストが送る識別子だけがバスに向かって通過します |
 | 危険な識別子 | `whitelist.unlock_dangerous` | `--unlock-dangerous` | ブートローダー、拡張スレーブの更新、保存状態の消去、すべての永続設定は、解除するまで拒否されたままです |
+| アクチュエータ命令 | `whitelist.allow_actuators`、`.actuator_peers` | `--actuators` / `--no-actuators`、`--actuator-peer` | 動作・加熱・出力の切り替えを行う命令は、どの接続相手からも通ります（既定で有効）。無効にすると、鍵ファイルのうち名前を指定した相手からのみ通り、それ以外は `actuator` として拒否されます |
 | 更新イメージのヘッダー | `update_image.header` | `--image-header` | イメージ内にヘッダーのない更新は、監査に注記を残して転送されるか（`warn`、既定）、そのまま転送されるか（`accept`）、拒否されます（`require`）。ヘッダーがある場合は常に検証され、ヘッダーが不正な更新の残りは拒否されます |
 | 速度が混在したバス | `bus_health.tec_warn`、`.rec_warn`、`.bus_off_warn`、`.legacy_heads` | - | ゲートウェイはバスから読んだヘルスフレーム（`0x1B8`）を保持し、`summary` が `bus_warnings` を列挙します：聞こえたヘッドのエラーカウンター（既定 96）またはバスオフ（1）と、`legacy_heads` に挙げられたヘッド（500 kbit/s 用）。別の速度のヘッドは聞こえないため、バスは症状から判断されます |
 | 追加・削除した識別子 | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | 識別子を手動で追加する、または他の設定に関わらず外します |
@@ -154,7 +155,7 @@ python -m urtc_gateway.cli run --key-file keys.txt --bus socket://127.0.0.1:7777
 
 ## 🧪 テスト
 
-テストスイートは 245 件です（`python -m pytest tests -q`）。識別子リスト、ペイロード検査、レート制限、セッションとその拒否、オプションと設定ファイル、コマンドライン、実際のローカルソケットでのテスト、模擬ポートに対するシリアル側を検査します。任意の依存関係がない場合、1 件のテストはスキップされます。`python -m mypy` がパッケージの型を、`ruff check .` がソースを検査します。
+テストスイートは 256 件です（`python -m pytest tests -q`）。識別子リスト、ペイロード検査、レート制限、セッションとその拒否、オプションと設定ファイル、コマンドライン、実際のローカルソケットでのテスト、模擬ポートに対するシリアル側を検査します。任意の依存関係がない場合、1 件のテストはスキップされます。`python -m mypy` がパッケージの型を、`ruff check .` がソースを検査します。
 
 ## 🏗️ ビルドとリリース
 
