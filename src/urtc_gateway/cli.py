@@ -48,6 +48,16 @@ def _seconds(text: str) -> float:
     return value
 
 
+def _port(text: str) -> int:
+    try:
+        value = int(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{text!r} is not a port number") from None
+    if not 0 <= value <= 65535:
+        raise argparse.ArgumentTypeError("a port is 0 (the system chooses) to 65535")
+    return value
+
+
 def add_protection_flags(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--config", metavar="FILE", help="a JSON file with the options (see docs/POLICY.md)")
     for name, dest in (("session", "session"), ("whitelist", "whitelist"), ("payload-check", "payload"), ("rate-limit", "rate"), ("outbound-filter", "outbound")):
@@ -174,6 +184,9 @@ def cmd_run(args: argparse.Namespace) -> int:
         serve.run(config, keys, bus, stop)
     except KeyboardInterrupt:
         stop.set()
+    except OSError as error:      # the port is taken, or the address is not one of this computer
+        print(f"error: cannot listen on {config.server.host} port {config.server.port}: {error}", file=sys.stderr)
+        return 2
     finally:
         bus.close()
     return 0
@@ -196,7 +209,7 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("run", help="listen on a TCP port and forward to a bus")
     add_protection_flags(p)
     p.add_argument("--host", default=None, help="address to listen on (default 127.0.0.1)")
-    p.add_argument("--port", type=int, default=None, help="port to listen on (default 8765)")
+    p.add_argument("--port", type=_port, default=None, help="port to listen on (default 8765)")
     p.add_argument("--bus", default="loopback", help="'loopback' (nothing on it) or the serial port of an SLCAN adapter")
     p.add_argument("--bitrate", type=int, default=BUS_BITRATE, help="bus bit rate in bit/s (default 1000000, the speed of the bus of the tool heads; 500000 for early boards)")
     p.add_argument("--allow-open-network", action="store_true", help="listen on a non-local address even without session authentication")

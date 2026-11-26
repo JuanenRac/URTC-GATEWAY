@@ -11,6 +11,7 @@ that is off, or loosened, is listed by :func:`warnings` so that the program says
 from __future__ import annotations
 
 import json
+import math
 from dataclasses import dataclass, field, fields
 from pathlib import Path
 from typing import Any
@@ -142,6 +143,14 @@ def config_from_dict(data: Any) -> GatewayConfig:
             elif isinstance(default, (int, float)):
                 if isinstance(value, bool) or not isinstance(value, (int, float)):
                     raise ConfigError(f"{name}.{key} must be a number")
+                if isinstance(value, float) and not math.isfinite(value):
+                    raise ConfigError(f"{name}.{key} must be a finite number")
+                if key.endswith("_burst") and value < 1:
+                    raise ConfigError(f"{name}.{key} must be at least 1")
+                if key == "dangerous_hz" and value <= 0:
+                    raise ConfigError(f"{name}.{key} must be more than 0")
+                if key == "port" and isinstance(value, float):
+                    raise ConfigError("server.port must be a whole number")
                 if key.endswith(("_hz", "_burst", "_s")) and value < 0:
                     raise ConfigError(f"{name}.{key} must not be negative")
                 if key == "send_queue" and (isinstance(value, float) or value < 0):
@@ -173,8 +182,9 @@ def config_from_dict(data: Any) -> GatewayConfig:
                 cleaned = {}
                 for k, v in value.items():
                     ident = _id(k, "rate.overrides")
-                    if not (isinstance(v, list) and len(v) == 2 and all(isinstance(x, (int, float)) and not isinstance(x, bool) and x > 0 for x in v)):
-                        raise ConfigError(f"rate.overrides[{k}] must be [rate, burst], both positive")
+                    numbers = isinstance(v, list) and len(v) == 2 and all(isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x) for x in v)
+                    if not (numbers and v[0] > 0 and v[1] >= 1):
+                        raise ConfigError(f"rate.overrides[{k}] must be [rate, burst], both positive: a burst of at least 1")
                     cleaned[f"0x{ident:03X}"] = [float(v[0]), float(v[1])]
                 value = cleaned
             setattr(section, key, value)
@@ -183,10 +193,10 @@ def config_from_dict(data: Any) -> GatewayConfig:
 
 def load_config(path: str | Path) -> GatewayConfig:
     try:
-        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        data = json.loads(Path(path).read_text(encoding="utf-8-sig"))   # an editor on Windows may add a byte-order mark
     except OSError as error:
         raise ConfigError(f"cannot read the configuration: {error}") from error
-    except ValueError as error:
+    except (ValueError, RecursionError) as error:
         raise ConfigError(f"the configuration is not valid JSON: {error}") from error
     return config_from_dict(data)
 
@@ -222,6 +232,8 @@ def warnings(config: GatewayConfig) -> list[str]:
         out.append("the payload check is OFF: frames with a length or a value the specification refuses are forwarded")
     if not config.rate.enabled:
         out.append("the rate limit is OFF: a peer can flood the bus")
+    elif config.rate.global_hz == 0 or config.rate.per_id_hz == 0:
+        out.append("the rate limit is OFF because rate.global_hz or rate.per_id_hz is 0: a peer can flood the bus")
     if not config.outbound.enabled:
         out.append("the outbound filter is OFF: every frame of the bus goes to the network")
     if config.update_image.header == "accept":
