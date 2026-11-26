@@ -129,7 +129,7 @@ def test_random_valid_options_always_load_and_round_trip():
     for _ in range(200):
         data = {
             "whitelist": {"enabled": rng.random() < 0.5, "unlock_dangerous": rng.random() < 0.5, "extra_allow": [rng.randrange(0x800) for _ in range(rng.randrange(4))]},
-            "rate": {"per_id_hz": rng.uniform(0, 100), "global_burst": float(rng.randrange(0, 500)), "overrides": {f"0x{rng.randrange(0x800):03X}": [rng.uniform(0.1, 9), rng.uniform(0.1, 9)]}},
+            "rate": {"per_id_hz": rng.uniform(0, 100), "global_burst": float(rng.randrange(1, 500)), "overrides": {f"0x{rng.randrange(0x800):03X}": [rng.uniform(0.1, 9), rng.uniform(1, 9)]}},
             "server": {"port": rng.randrange(0, 65536)},
         }
         cfg = config_from_dict(data)

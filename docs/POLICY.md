@@ -21,7 +21,7 @@ Every protection is **on by default** and every one can be switched off, in the 
 
 ## The configuration file
 
-A JSON object with the sections above; `schema` is 1. An unknown section or option, a wrong type or a negative rate is an error that says what is wrong. Example:
+A JSON object with the sections above; `schema` is 1. An unknown section or option, a wrong type, a negative or non-finite number, a burst below 1 or a `rate.dangerous_hz` of 0 is an error that says what is wrong (`rate.global_hz` or `rate.per_id_hz` of 0 switches the rate limit off, and the warnings say so). A byte-order mark at the start of the file, as some Windows editors write it, is accepted, in this file and in the key file. Example:
 
 ```json
 {

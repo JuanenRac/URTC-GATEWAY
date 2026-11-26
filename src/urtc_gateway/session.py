@@ -47,7 +47,11 @@ def mac(key: bytes, nonce: bytes, counter: int, can_id: int, data: bytes) -> byt
 def load_keys(path: str | Path) -> dict[str, bytes]:
     """Read a key file. Raises KeyError_ for a line that is not ``name key``, a name or key of the wrong shape, or a repeated name."""
     keys: dict[str, bytes] = {}
-    for number, raw in enumerate(Path(path).read_text(encoding="utf-8").splitlines(), 1):
+    try:
+        text = Path(path).read_text(encoding="utf-8-sig")   # a byte-order mark added by an editor is not part of the first name
+    except UnicodeDecodeError:
+        raise KeyError_("the key file is not UTF-8 text") from None      # the decoding error would show bytes of the file
+    for number, raw in enumerate(text.splitlines(), 1):
         line = raw.strip()
         if not line or line.startswith("#"):
             continue

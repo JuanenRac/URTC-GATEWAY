@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import queue
+import re
 import socket
 import threading
 import time
@@ -22,6 +23,20 @@ from .gateway import Gateway
 from .urtc_protocol import BITRATE as BUS_BITRATE
 
 MAX_LINE = 4096
+MAX_SERIAL_LINE = 128    # the longest line of a frame is about 25 characters; more without a line end is noise
+# "tIIIL" + the data, and after it only the four digits of the time stamp that some adapters add
+_SLCAN_FRAME = re.compile(r"t([0-7][0-9A-Fa-f]{2})([0-8])((?:[0-9A-Fa-f]{2}){0,10})")
+
+
+def _slcan_frame(line: bytes) -> tuple[int, bytes] | None:
+    """The identifier and data of a received SLCAN line, or None when it is not a whole standard data frame."""
+    match = _SLCAN_FRAME.fullmatch(line.decode("ascii", errors="replace").lstrip("\a\n"))
+    if match is None:
+        return None
+    count, digits = int(match.group(2)), match.group(3)
+    if len(digits) not in (2 * count, 2 * count + 4):
+        return None   # cut, or run together with another line: it must not be forwarded as a shorter frame
+    return int(match.group(1), 16), bytes.fromhex(digits[:2 * count])
 
 
 class Bus(Protocol):
@@ -81,18 +96,17 @@ class SerialSlcanBus:
 
     def recv(self, timeout: float) -> tuple[int, bytes] | None:
         deadline = time.monotonic() + timeout
-        while time.monotonic() < deadline:
-            self._buffer += self._port.read(64)
-            if b"\r" in self._buffer:
+        while True:
+            while b"\r" in self._buffer:       # what already arrived goes out first, so a busy bus does not pile up here
                 line, _, self._buffer = self._buffer.partition(b"\r")
-                text = line.decode("ascii", errors="replace")
-                if len(text) >= 5 and text[0] == "t":
-                    try:
-                        count = int(text[4], 16)
-                        return int(text[1:4], 16), bytes.fromhex(text[5:5 + 2 * count])
-                    except ValueError:
-                        continue
-        return None
+                frame = _slcan_frame(line)
+                if frame is not None:
+                    return frame
+            if len(self._buffer) > MAX_SERIAL_LINE:
+                self._buffer = b""
+            if time.monotonic() >= deadline:
+                return None
+            self._buffer += self._port.read(64)
 
     def close(self) -> None:
         try:
@@ -205,7 +219,12 @@ def serve_connection(conn: socket.socket, gateway: Gateway, bus: Bus, stop: thre
 
     def bus_reader() -> None:
         while not done.is_set() and not stop.is_set():
-            frame = bus.recv(0.1)
+            try:
+                frame = bus.recv(0.1)
+            except OSError as error:       # the adapter was unplugged or its port failed
+                log(f"the bus failed: {error.__class__.__name__}; the connection ends")
+                done.set()
+                return
             if frame is not None:
                 try:
                     gateway.from_bus(*frame)
@@ -235,7 +254,7 @@ def serve_connection(conn: socket.socket, gateway: Gateway, bus: Bus, stop: thre
             last_heard[0] = time.monotonic()
             try:
                 message = json.loads(raw.decode("utf-8"))
-            except ValueError:
+            except (ValueError, RecursionError):   # a very deeply nested line raises the second one on some versions of Python
                 message = "not json"          # the gateway refuses anything that is not a JSON object, and counts it
             decision = gateway.from_network(message)
             if not decision:
