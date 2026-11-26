@@ -87,7 +87,7 @@ class Gateway:
                 return self._refuse(Decision(False, problem, f"{problem.replace('_', ' ')}"), peer if isinstance(peer, str) else "")
             who = peer
             self.authenticated = True
-        decision = self.policy.check_inbound(can_id, data, self.clock())
+        decision = self.policy.check_inbound(can_id, data, self.clock(), who)
         if not decision:
             return self._refuse(decision, who)
         self.to_bus(can_id, data)

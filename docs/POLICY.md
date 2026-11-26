@@ -6,6 +6,7 @@ Every protection is **on by default** and every one can be switched off, in the 
 |---|---|---|---|---|
 | Identifier list | `whitelist.enabled` | `--no-whitelist` | `--whitelist` | only the identifiers a host sends (taken from the specification) cross towards the bus |
 | Dangerous identifiers | `whitelist.unlock_dangerous` | (default) | `--unlock-dangerous` | the bootloader, the update of the expansion slave, the erase of the saved state and every persistent setting are refused until unlocked |
+| Actuator commands | `whitelist.allow_actuators`, `whitelist.actuator_peers` | `--actuators` | `--no-actuators`, `--actuator-peer NAME` | the commands that move, heat or switch an output of a head (every group of the specification except the global, configuration, diagnostics, functional test, thermal camera and bootloader ones) cross from every peer (`true`, the default); with `false` only from the peers named, whose name the session proved, and the rest are refused with the code `actuator` |
 | Added / removed identifiers | `whitelist.extra_allow`, `whitelist.deny` | | `--allow-id`, `--deny-id` | add an identifier to the list by hand, or take one out whatever the rest says |
 | Payload check | `payload.enabled` | `--no-payload-check` | `--payload-check` | the length and the values of a frame must be those the specification allows |
 | Rate limit | `rate.*` | `--no-rate-limit` | `--rate-limit` | a token bucket per identifier and for the whole link; `rate.overrides` gives an identifier its own rate and burst |
