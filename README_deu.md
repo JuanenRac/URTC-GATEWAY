@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.1.1-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-312-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-325-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.1.1` |
 | Reifegrad | Gerüst |
-| Tests | 312 |
+| Tests | 325 |
 | Technik | Python / CAN / HMAC |
 | Ziel | Der PC der Person, die es benutzt |
 | Auf echter Hardware | Nur simuliert: gegen Emulatoren, Attrappen oder Simulatoren getestet; für diese Version ist kein Lauf auf echter Hardware vermerkt |
@@ -111,7 +111,7 @@ Jede Schutzfunktion ist standardmäßig aktiv und jede lässt sich abschalten, i
 | Gefährliche Kennungen | `whitelist.unlock_dangerous` | `--unlock-dangerous` | Bootloader, Aktualisierung des Erweiterungs-Slaves, Löschen des gespeicherten Zustands und jede dauerhafte Einstellung bleiben abgelehnt, bis sie freigegeben werden |
 | Aktorbefehle | `whitelist.allow_actuators`, `.actuator_peers` | `--actuators` / `--no-actuators`, `--actuator-peer` | Befehle, die bewegen, heizen oder einen Ausgang schalten, gehen von jeder Gegenstelle durch (standardmäßig an); ausgeschaltet nur von den namentlich genannten Gegenstellen der Schlüsseldatei, die übrigen werden als `actuator` abgelehnt |
 | Header im Image eines Updates | `update_image.header` | `--image-header` | ein Update, dessen Image keinen Header enthält, wird mit einem Vermerk im Audit weitergeleitet (`warn`, der Standard), unverändert weitergeleitet (`accept`) oder abgelehnt (`require`); ein vorhandener Header wird immer geprüft, und der Rest eines Updates mit fehlerhaftem Header wird abgelehnt |
-| Abgelehnte Updates nach einem Neustart | `update_image.remember_refused`, `.state_file` | `--no-remember-refused` / `--remember-refused`, `--update-state-file` | ein abgelehntes Update wird in eine Zustandsdatei geschrieben (eine je Bus im Ordner `.urtc-gateway` des Benutzerordners) und bleibt nach einem Neustart des Gateways abgelehnt, bis zu einem neuen Start-Frame (standardmäßig an); eine vorhandene, aber nicht lesbare Datei lehnt jedes Update bis zu einem neuen Start-Frame ab |
+| Abgelehnte Updates nach einem Neustart | `update_image.remember_refused`, `.state_file` | `--no-remember-refused` / `--remember-refused`, `--update-state-file` | ein abgelehntes Update wird in eine Zustandsdatei geschrieben (eine je Bus im Ordner `.urtc-gateway` des Benutzerordners) und bleibt nach einem Neustart des Gateways abgelehnt, bis zu einem neuen Start-Frame (standardmäßig an); auch ein Update, dessen Kopf beim Neustart noch nicht gelesen war, wird abgelehnt; eine vorhandene, aber nicht lesbare Datei lehnt jedes Update bis zu einem neuen Start-Frame ab |
 | Bus mit gemischten Geschwindigkeiten | `bus_health.tec_warn`, `.rec_warn`, `.bus_off_warn`, `.legacy_heads` | - | das Gateway behält die Gesundheitsframes (`0x1B8`), die es vom Bus liest, und die `summary` listet `bus_warnings`: Fehlerzähler (standardmäßig 96) oder Bus-offs (1) der gehörten Köpfe und einen in `legacy_heads` genannten Kopf (für 500 kbit/s gebaut); ein Kopf mit anderer Geschwindigkeit ist nicht zu hören, der Bus wird also an seinen Symptomen erkannt |
 | Hinzugefügte / entfernte Kennungen | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | eine Kennung von Hand hinzufügen oder eine entfernen, was auch immer der Rest sagt |
 | Nutzdatenprüfung | `payload.enabled` | `--no-payload-check` / `--payload-check` | Länge und Werte müssen die sein, die die Spezifikation erlaubt |
@@ -156,7 +156,7 @@ Welche Versionen der URTC-Programme zusammenarbeiten und welche Protokollversion
 
 ## 🧪 Tests
 
-Die Suite hat 312 Tests (`python -m pytest tests -q`): die Kennungsliste, die Nutzdatenprüfung, die Ratenbegrenzung, die Sitzung und ihre Ablehnungen, die Optionen und die Konfigurationsdatei, die Befehlszeile, ein Test über einen echten lokalen Socket und das serielle Ende gegen einen Schein-Port. Ein Test wird übersprungen, wenn seine optionale Abhängigkeit fehlt. `python -m mypy` prüft die Typen des Pakets und `ruff check .` den Quelltext.
+Die Suite hat 325 Tests (`python -m pytest tests -q`): die Kennungsliste, die Nutzdatenprüfung, die Ratenbegrenzung, die Sitzung und ihre Ablehnungen, die Optionen und die Konfigurationsdatei, die Befehlszeile, ein Test über einen echten lokalen Socket und das serielle Ende gegen einen Schein-Port. Ein Test wird übersprungen, wenn seine optionale Abhängigkeit fehlt. `python -m mypy` prüft die Typen des Pakets und `ruff check .` den Quelltext.
 
 ## 🏗️ Build und Veröffentlichung
 
