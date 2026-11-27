@@ -8,16 +8,16 @@
     "bump_manifest_version.py": "fbd3433f100e701457c2053495e2ba86771f9cb25f8d396eba2d173ef5462bda",
     "test.bat": "fb2b23917eeda28fb1bbe05dc1753635c2e9fab0ba12c12c40ea6a69d910bcfd",
     "test.sh": "c78d79c0d8cf80e9f187d09c3a1fd147413a0bf2187e1b9b673909f5635a3a0a",
-    "tools/_doc_policy.py": "e66a22251fa191585a1b8dcb2d85916222caa6dae5c7be9c6bed21e19f503df6",
+    "tools/_doc_policy.py": "9594d3236018f3c4dc25bc66d378ab90da1b6688de47ac37486f82f9741e9451",
     "tools/_readme_parity.py": "f03c59350897889b46c1bd0040c0d537b9db4958312424df321b9dbb5824600f",
     "tools/_readme_svg.py": "7bb8388deb11c15dfbc202c8da1b808540853ec2c263260795d3cb2664d6f94d",
     "tools/_tracked_names.py": "c61bec1f6a112f4bdb90a94ba468391a3783597de125f3e583509596ddb2c31b",
-    "tools/build_test.py": "e6c42a00783420152b0b76c14c10ccb9cafdf7715f83428b1c2a24b9ce86c62b",
+    "tools/build_test.py": "e5da6b42ec5f685eb733214482250b029cb7912195dfbfc6dfc2b733daad9700",
     "tools/make_architecture.py": "9df7d6c00af0f1178c44eae8e849c31218bae196984ec718a7fdc63daa2e2fa9",
     "tools/make_structure.py": "27615e9b6374cbb6cc21b52d52bad4e9db1c9307319a8910b4b75c4ecb9fe5c8",
     "tools/pretty_run.py": "1698bfec531568afaf5319f0a220e9bf7c0087f39cbf5e6e88e7035bfc1327c5",
-    "tools/status_lights.py": "792e013550498cd62c3af3c6680db779345fbf50e5d4f4bbf37c6ef55de00386",
-    "tools/sync_manifests.py": "5ca8257fe91b5fad8c86d330ae5d907a36bb7a022d299067af922af9cf86fc03",
-    "tools/universal_readme_check.py": "ddb5f9986119a8b16800cba627d8a13af8b39ff1e044adc992fd06defea301e5"
+    "tools/status_lights.py": "db9c7af17940a645fd027fcf1113b83d5e6ee521173cc85cb295fcef791ee74d",
+    "tools/sync_manifests.py": "07c0c34233d17a33127164b2a40dd7277504758f656cf193c33a8ac4cd880c06",
+    "tools/universal_readme_check.py": "ad56c0a62fd7cb0a74291c62324b8234bfa904737926158db8bcac24175ffeaf"
   }
 }
