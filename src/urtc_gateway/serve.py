@@ -20,6 +20,7 @@ from typing import Any, Protocol
 
 from .config import GatewayConfig
 from .gateway import Gateway
+from .update_guard import UpdateGuard
 from .urtc_protocol import BITRATE as BUS_BITRATE
 
 MAX_LINE = 4096
@@ -282,6 +283,7 @@ def run(config: GatewayConfig, keys: dict[str, bytes] | None, bus: Bus, stop: th
     if ready is not None:
         ready.set()
     dropped = 0
+    guard = UpdateGuard(config.update_image.header)   # one for all the connections: an update the board is in does not end with the peer
     try:
         while not stop.is_set():
             try:
@@ -295,7 +297,7 @@ def run(config: GatewayConfig, keys: dict[str, bytes] | None, bus: Bus, stop: th
                 stop.wait(0.2)
                 continue
             log(f"peer connected from {address[0]}")
-            gateway = Gateway(config, keys, bus.send, lambda m: None, time.monotonic)
+            gateway = Gateway(config, keys, bus.send, lambda m: None, time.monotonic, guard)
             try:
                 with conn:
                     serve_connection(conn, gateway, bus, stop, log)

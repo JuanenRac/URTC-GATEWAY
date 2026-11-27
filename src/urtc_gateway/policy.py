@@ -79,7 +79,7 @@ def payload_problem(can_id: int, data: bytes) -> str | None:
 
 
 class Policy:
-    def __init__(self, config: GatewayConfig) -> None:
+    def __init__(self, config: GatewayConfig, guard: UpdateGuard | None = None) -> None:
         self.config = config
         base = set(ids.inbound_ids())
         if config.whitelist.unlock_dangerous:
@@ -95,7 +95,7 @@ class Policy:
         for can_id in self.dangerous:
             overrides.setdefault(can_id, (r.dangerous_hz, r.dangerous_burst))
         self.limiter = RateLimiter(r.global_hz, r.global_burst, r.per_id_hz, r.per_id_burst, overrides) if r.enabled and r.global_hz > 0 and r.per_id_hz > 0 else None
-        self.guard = UpdateGuard(config.update_image.header)
+        self.guard = guard if guard is not None else UpdateGuard(config.update_image.header)
         self.outbound_bucket = TokenBucket(config.outbound.rate_hz, max(1.0, config.outbound.rate_hz / 10)) if config.outbound.enabled and config.outbound.rate_hz > 0 else None
 
     def check_inbound(self, can_id: int, data: bytes, now_s: float, peer: str = "") -> Decision:

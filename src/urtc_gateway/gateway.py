@@ -18,6 +18,7 @@ from . import bus_health, health_info
 from . import session as sessions
 from .config import GatewayConfig
 from .policy import Decision, Policy
+from .update_guard import UpdateGuard
 
 MAX_AUDIT = 500
 HEALTH_FRAMES_KEPT = 64       # the health frames (0x1B8) of the heads that were heard, the last ones
@@ -35,9 +36,10 @@ class Gateway:
     """One gateway. ``to_bus(id, data)`` writes to the bus; ``to_network(message)`` sends a message to the peer."""
 
     def __init__(self, config: GatewayConfig, keys: dict[str, bytes] | None, to_bus: Callable[[int, bytes], None],
-                 to_network: Callable[[dict[str, Any]], None], clock: Callable[[], float]) -> None:
+                 to_network: Callable[[dict[str, Any]], None], clock: Callable[[], float], guard: UpdateGuard | None = None) -> None:
+        """``guard`` follows the firmware updates: give the same one to the gateway of every connection to one bus, as the board does not forget with the peer."""
         self.config = config
-        self.policy = Policy(config)
+        self.policy = Policy(config, guard)
         self.keys = keys or {}
         if config.session.enabled and not self.keys:
             raise sessions.KeyError_("session authentication is on but there is no key: give a key file or switch it off")
