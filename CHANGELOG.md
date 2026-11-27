@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.1.1] - Damaged line rejection, clear errors and an actuator peer list
+
 - **A cut or damaged line of the serial adapter is no longer forwarded:** a frame is taken only when the line carries exactly the bytes it states (plus the time stamp some adapters add) and a standard identifier; a line cut on the way used to cross as a shorter frame. Frames already received are handed out before the port is read again, so a busy bus no longer builds up a growing backlog, and noise without a line end no longer fills the memory.
 - **An adapter that goes away ends the connection with a message:** a read error of the bus used to stop the bus reader without a word while the peer stayed connected.
 - **Option values the gateway cannot run with are refused when they are read:** a burst below 1, a `dangerous_hz` of 0, a number that is not finite or a port that is not a whole number used to be accepted and then end the service at the first connection or the first dangerous frame. A rate of 0 that switches the rate limit off is now named in the warnings.
