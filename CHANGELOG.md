@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **A refused firmware update can no longer be completed by sending the end frame again:** the gateway forgot the update when it refused the end frame, so a second one (a retry, or a new connection) reached the board, which was still waiting for it. The update now stays refused until a new start frame, across connections. The board's own check of the image still applies. Checked by host tests; nothing here has run against a real board.
+
 ## [0.1.1] - Damaged line rejection, clear errors and an actuator peer list
 
 - **A cut or damaged line of the serial adapter is no longer forwarded:** a frame is taken only when the line carries exactly the bytes it states (plus the time stamp some adapters add) and a standard identifier; a line cut on the way used to cross as a shorter frame. Frames already received are handed out before the port is read again, so a busy bus no longer builds up a growing backlog, and noise without a line end no longer fills the memory.

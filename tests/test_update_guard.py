@@ -6,15 +6,20 @@
 """The header inside a firmware image, read from an update that passes through the gateway: what is cut, what crosses and what the switch decides."""
 from __future__ import annotations
 
+import json
+import socket
 import struct
+import threading
 
 import pytest
 
 from urtc_gateway import image_header as ih
+from urtc_gateway import serve
 from urtc_gateway import urtc_protocol as proto
 from urtc_gateway.config import ConfigError, GatewayConfig, config_from_dict, config_to_dict, warnings
 from urtc_gateway.gateway import Gateway
 from urtc_gateway.policy import Policy
+from urtc_gateway.serve import LoopbackBus
 from urtc_gateway.update_guard import KINDS, UpdateGuard
 
 MAIN, SLAVE = proto.HARDWARE_ID_MAIN, proto.HARDWARE_ID_SLAVE
@@ -136,3 +141,48 @@ def test_the_option_is_validated_listed_and_warned_about():
         config_from_dict({"update_image": {"header": 1}})
     assert not any("image header" in w for w in warnings(GatewayConfig()))
     assert any("image header" in w for w in warnings(config_from_dict({"update_image": {"header": "accept"}})))
+
+
+@pytest.mark.parametrize("kind, hardware", [("main", MAIN), ("slave", SLAVE)])
+def test_a_refused_update_stays_refused_when_the_end_frame_is_sent_again(kind, hardware):
+    guard = UpdateGuard("require")
+    start, data_id, end = KINDS[kind]
+    assert refused_at(run(guard, kind, plain(), hardware)) is not None
+    # the board never got an end frame, so it is still in the update: neither a second end frame nor more data may cross
+    assert guard.check(end, b"").refused
+    assert guard.check(data_id, b"12345678").refused
+    assert guard.check(end, b"").refused
+    # a start frame too short to be one does not clear it either
+    assert not guard.check(start, b"\x00").refused
+    assert guard.check(end, b"").refused
+    # a whole new start does
+    assert refused_at(run(guard, kind, firmware(hardware), hardware)) is None
+
+
+def test_a_refused_update_stays_refused_for_the_next_connection():
+    config = config_from_dict({"whitelist": {"unlock_dangerous": True}, "rate": {"enabled": False}, "session": {"enabled": False}, "payload": {"enabled": False},
+                               "update_image": {"header": "require"}, "server": {"port": 0}})
+    bus, stop, ready, bound = LoopbackBus(), threading.Event(), threading.Event(), []
+    server = threading.Thread(target=serve.run, args=(config, None, bus, stop), kwargs={"log": lambda text: None, "ready": ready, "bound": bound}, daemon=True)
+    server.start()
+    try:
+        assert ready.wait(5)
+        image = list(frames("main", plain(), MAIN))
+        assert "bad_image_header" in refusals(bound[0], image)
+        assert refusals(bound[0], [image[-1]]) == ["bad_image_header", "bad_frame"]   # the end frame alone, from a new connection
+        assert KINDS["main"][2] not in [can_id for can_id, _data in bus.sent]
+    finally:
+        stop.set()
+        server.join(timeout=5)
+
+
+def refusals(port: int, messages) -> list[str]:
+    """Send the frames and then a line that is not one; the codes of the refusals up to the one that answers that last line."""
+    with socket.create_connection(("127.0.0.1", port), timeout=10) as peer:
+        reader = peer.makefile("rb")
+        reader.readline()   # the greeting
+        peer.sendall(b"".join(json.dumps({"id": can_id, "data": data.hex()}).encode() + b"\n" for can_id, data in messages) + b"[]\n")
+        codes: list[str] = []
+        while "bad_frame" not in codes:
+            codes.append(json.loads(reader.readline())["code"])
+        return codes

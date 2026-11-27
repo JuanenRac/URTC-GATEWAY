@@ -8,7 +8,8 @@
 The update identifiers are dangerous ones: they cross only when the operator unlocks them. When they do, this guard follows each update (the start frame with the
 size and the hardware, then the data) and reads the first bytes of the image, where an image built with the header slot sealed carries its 32-byte header at the
 fixed offset ``EMBED_OFFSET``. The header must hold (its CRC, the embedded form, no signature trailer), state the length the start frame announced and the hardware
-the start frame named. Otherwise the rest of that update is refused. An image with no header follows the switch ``update_image.header``: ``accept`` forwards it,
+the start frame named. Otherwise the rest of that update is refused, and stays refused until a new start frame: the board is still
+waiting for it, so a second end frame (from this connection or from a later one) must not reach it. An image with no header follows the switch ``update_image.header``: ``accept`` forwards it,
 ``warn`` (the default) forwards it and leaves a note in the audit, ``require`` refuses it.
 
 What it cannot do: the bytes before the decision (the first ``EMBED_OFFSET + 32``) have already crossed, so a refused update is cut, not prevented from starting. The
@@ -61,15 +62,16 @@ class UpdateGuard:
                 if len(data) >= 8:
                     size, hardware = struct.unpack(">II", bytes(data[:8]))
                     self._updates[kind] = _Update(size, hardware)
-                else:
-                    self._updates.pop(kind, None)
+                elif kind in self._updates and not self._updates[kind].refused:
+                    del self._updates[kind]
                 return PASS
             if can_id == data_id:
                 return self._data(kind, data)
             if can_id == end:
-                update = self._updates.pop(kind, None)
+                update = self._updates.get(kind)
                 if update is not None and update.refused:
                     return Verdict(True, "bad_image_header", f"the {kind} update was refused earlier: {update.refused}")
+                self._updates.pop(kind, None)
                 return PASS
         return PASS
 
