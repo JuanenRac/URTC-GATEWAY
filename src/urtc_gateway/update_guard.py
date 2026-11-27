@@ -15,11 +15,20 @@ waiting for it, so a second end frame (from this connection or from a later one)
 What it cannot do: the bytes before the decision (the first ``EMBED_OFFSET + 32``) have already crossed, so a refused update is cut, not prevented from starting. The
 board never gets the end frame, it does not install anything, and its own verification of the image (CRC-32 and signature) is the check that decides what runs. The
 CRC-32 of the whole image is the board's to check. A frame that is not part of an update is not looked at.
+
+The board does not forget when the gateway restarts, so neither does a guard that is given a state file: the refused updates are written there and read back at start.
+A file that is there but cannot be read counts as every kind of update refused (a new start frame clears it, as for any refusal).
 """
 from __future__ import annotations
 
+import hashlib
+import json
+import os
+import re
 import struct
+from collections.abc import Callable
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from . import image_header as ih
 from . import urtc_protocol as proto
@@ -30,6 +39,16 @@ KINDS = {
     "slave": (proto.CAN_ID_SLAVE_START_UPDATE, proto.CAN_ID_SLAVE_DATA, proto.CAN_ID_SLAVE_END_UPDATE),
 }
 NEEDED = ih.EMBED_OFFSET + ih.HEADER_SIZE
+STATE_SCHEMA = 1
+MAX_STATE_BYTES = 4096
+UNREADABLE = "the record of refused updates could not be read"
+
+
+def default_state_file(bus: str) -> Path:
+    """Where the refused updates of the bus named ``bus`` (a port or a URL) are kept when no file is given: one file per bus, in the home folder."""
+    name = os.path.normcase(bus)
+    readable = re.sub(r"[^A-Za-z0-9]+", "_", name).strip("_")[:40] or "bus"
+    return Path.home() / ".urtc-gateway" / f"refused-updates-{readable}-{hashlib.sha256(name.encode('utf-8')).hexdigest()[:8]}.json"
 
 
 @dataclass
@@ -52,16 +71,64 @@ class _Update:
 
 
 class UpdateGuard:
-    def __init__(self, policy: str = ih.DEFAULT_POLICY) -> None:
+    def __init__(self, policy: str = ih.DEFAULT_POLICY, state_file: str | Path | None = None, log: Callable[[str], None] | None = None) -> None:
+        """``state_file`` keeps the refused updates across restarts (none: they live as long as this object); ``log`` is told when it cannot be read or written."""
         self.policy = ih.parse_policy(policy)
+        self.state_file = Path(state_file) if state_file else None
+        self._log = log or (lambda text: None)
         self._updates: dict[str, _Update] = {}
+        for kind, reason in self._load().items():
+            self._updates[kind] = _Update(0, 0, decided=True, refused=reason)
+
+    def refused_kinds(self) -> list[str]:
+        """The kinds of update that are refused until a new start frame."""
+        return sorted(kind for kind, update in self._updates.items() if update.refused)
+
+    def _load(self) -> dict[str, str]:
+        if self.state_file is None:
+            return {}
+        try:
+            with self.state_file.open("rb") as handle:
+                raw = handle.read(MAX_STATE_BYTES + 1)
+            if len(raw) > MAX_STATE_BYTES:
+                raise ValueError("too long")
+            data = json.loads(raw.decode("utf-8-sig"))
+            refused = data["refused"]
+            if data["schema"] != STATE_SCHEMA or not isinstance(refused, dict):
+                raise ValueError("not the expected form")
+            if not all(kind in KINDS and isinstance(reason, str) and reason for kind, reason in refused.items()):
+                raise ValueError("not the expected form")
+            return dict(refused)
+        except FileNotFoundError:
+            return {}
+        except (OSError, ValueError, KeyError, TypeError, RecursionError) as error:
+            self._log(f"{UNREADABLE} ({self.state_file}: {error.__class__.__name__}); every update is refused until a new start frame")
+            return dict.fromkeys(KINDS, UNREADABLE)
+
+    def _save(self) -> None:
+        if self.state_file is None:
+            return
+        refused = {kind: update.refused for kind, update in self._updates.items() if update.refused}
+        temporary = self.state_file.with_name(self.state_file.name + ".tmp")
+        try:
+            self.state_file.parent.mkdir(parents=True, exist_ok=True)
+            with temporary.open("w", encoding="utf-8") as handle:
+                json.dump({"schema": STATE_SCHEMA, "refused": refused}, handle)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, self.state_file)
+        except OSError as error:
+            self._log(f"the record of refused updates could not be written ({self.state_file}: {error.__class__.__name__}); a restart would not remember them")
 
     def check(self, can_id: int, data: bytes) -> Verdict:
         for kind, (start, data_id, end) in KINDS.items():
             if can_id == start:
                 if len(data) >= 8:
                     size, hardware = struct.unpack(">II", bytes(data[:8]))
+                    was_refused = kind in self._updates and bool(self._updates[kind].refused)
                     self._updates[kind] = _Update(size, hardware)
+                    if was_refused:
+                        self._save()
                 elif kind in self._updates and not self._updates[kind].refused:
                     del self._updates[kind]
                 return PASS
@@ -99,6 +166,7 @@ class UpdateGuard:
         update.decided = True
         if self.policy == ih.POLICY_REQUIRE:
             update.refused = "the image has no header and the switch requires one"
+            self._save()
             return Verdict(True, "bad_image_header", f"the {kind} update is refused: {update.refused}")
         if self.policy == ih.POLICY_WARN:
             return Verdict(False, "ok_no_header", f"the {kind} update carries an image with no header: its hardware and version were not checked")
@@ -119,5 +187,6 @@ class UpdateGuard:
             problem = f"the header is for hardware 0x{info.hardware_id:08X} but the update names 0x{update.hardware:08X}"
         if problem:
             update.refused = problem
+            self._save()
             return Verdict(True, "bad_image_header", f"the {kind} update is refused: {problem}")
         return PASS

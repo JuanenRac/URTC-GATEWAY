@@ -13,14 +13,14 @@ import threading
 
 import pytest
 
+from urtc_gateway import cli, serve
 from urtc_gateway import image_header as ih
-from urtc_gateway import serve
 from urtc_gateway import urtc_protocol as proto
 from urtc_gateway.config import ConfigError, GatewayConfig, config_from_dict, config_to_dict, warnings
 from urtc_gateway.gateway import Gateway
 from urtc_gateway.policy import Policy
 from urtc_gateway.serve import LoopbackBus
-from urtc_gateway.update_guard import KINDS, UpdateGuard
+from urtc_gateway.update_guard import KINDS, UpdateGuard, default_state_file
 
 MAIN, SLAVE = proto.HARDWARE_ID_MAIN, proto.HARDWARE_ID_SLAVE
 
@@ -134,7 +134,7 @@ def test_a_note_is_left_in_the_audit_for_an_image_without_header():
 
 def test_the_option_is_validated_listed_and_warned_about():
     assert GatewayConfig().update_image.header == "warn"
-    assert config_to_dict(config_from_dict({"update_image": {"header": "require"}}))["update_image"] == {"header": "require"}
+    assert config_to_dict(config_from_dict({"update_image": {"header": "require"}}))["update_image"] == {"header": "require", "remember_refused": True, "state_file": ""}
     with pytest.raises(ConfigError, match="accept, warn or require"):
         config_from_dict({"update_image": {"header": "sometimes"}})
     with pytest.raises(ConfigError):
@@ -186,3 +186,119 @@ def refusals(port: int, messages) -> list[str]:
         while "bad_frame" not in codes:
             codes.append(json.loads(reader.readline())["code"])
         return codes
+
+
+def refuse(state, kind: str = "main", hardware: int = MAIN) -> UpdateGuard:
+    guard = UpdateGuard("require", state)
+    assert refused_at(run(guard, kind, plain(), hardware)) is not None
+    return guard
+
+
+@pytest.mark.parametrize("kind, hardware", [("main", MAIN), ("slave", SLAVE)])
+def test_a_refused_update_is_still_refused_after_a_restart(tmp_path, kind, hardware):
+    state = tmp_path / "sub" / "refused.json"
+    refuse(state, kind, hardware)
+    start, data_id, end = KINDS[kind]
+    again = UpdateGuard("require", state)
+    assert again.refused_kinds() == [kind]
+    assert again.check(end, b"").refused and again.check(data_id, b"12345678").refused
+    assert not again.check(start, b"\x00").refused
+    assert UpdateGuard("require", state).refused_kinds() == [kind]   # a start frame too short clears nothing
+    assert refused_at(run(again, kind, firmware(hardware), hardware)) is None
+    assert UpdateGuard("require", state).refused_kinds() == []       # a whole new start does, in the file too
+
+
+def test_clearing_one_kind_keeps_the_other_in_the_file(tmp_path):
+    state = tmp_path / "refused.json"
+    guard = refuse(state)
+    assert refused_at(run(guard, "slave", plain(), SLAVE)) is not None
+    run(guard, "main", firmware(), MAIN)
+    assert UpdateGuard("require", state).refused_kinds() == ["slave"]
+
+
+def test_no_state_file_yet_refuses_nothing_and_a_good_update_writes_none(tmp_path):
+    state = tmp_path / "refused.json"
+    guard = UpdateGuard("require", state)
+    assert guard.refused_kinds() == [] and refused_at(run(guard, "main", firmware(), MAIN)) is None
+    assert not state.exists()
+
+
+@pytest.mark.parametrize("content", [b"", b"{", b"[]", b'{"schema": 2, "refused": {}}', b'{"schema": 1, "refused": {"other": "x"}}',
+                                     b'{"schema": 1, "refused": {"main": ""}}', b"\xff\xfe", b" " * 5000])
+def test_a_state_file_that_cannot_be_read_refuses_until_a_new_start(tmp_path, content):
+    state = tmp_path / "refused.json"
+    state.write_bytes(content)
+    said: list[str] = []
+    guard = UpdateGuard("warn", state, said.append)
+    assert guard.refused_kinds() == ["main", "slave"] and "could not be read" in said[0]
+    assert guard.check(KINDS["main"][2], b"").refused
+    run(guard, "main", firmware(), MAIN)
+    assert UpdateGuard("warn", state).refused_kinds() == ["slave"]
+
+
+def test_a_state_file_that_cannot_be_written_still_refuses_and_says_so(tmp_path):
+    blocker = tmp_path / "a_file"
+    blocker.write_text("x", encoding="utf-8")
+    said: list[str] = []
+    guard = UpdateGuard("require", blocker / "refused.json", said.append)
+    said.clear()
+    assert refused_at(run(guard, "main", plain(), MAIN)) is not None
+    assert guard.check(KINDS["main"][2], b"").refused and any("could not be written" in line for line in said)
+
+
+def test_the_gateway_remembers_across_a_restart_of_the_service(tmp_path):
+    config = config_from_dict({"whitelist": {"unlock_dangerous": True}, "rate": {"enabled": False}, "session": {"enabled": False}, "payload": {"enabled": False},
+                               "update_image": {"header": "require", "state_file": str(tmp_path / "refused.json")}, "server": {"port": 0}})
+    image = list(frames("main", plain(), MAIN))
+    said: list[str] = []
+
+    def service(messages):
+        bus, stop, ready, bound = LoopbackBus(), threading.Event(), threading.Event(), []
+        server = threading.Thread(target=serve.run, args=(config, None, bus, stop), kwargs={"log": said.append, "ready": ready, "bound": bound}, daemon=True)
+        server.start()
+        try:
+            assert ready.wait(5)
+            return refusals(bound[0], messages), [can_id for can_id, _data in bus.sent]
+        finally:
+            stop.set()
+            server.join(timeout=5)
+
+    assert "bad_image_header" in service(image)[0]
+    codes, sent = service([image[-1]])
+    assert codes == ["bad_image_header", "bad_frame"] and KINDS["main"][2] not in sent
+    assert any("still refused from before the restart" in line for line in said)
+    config.update_image.remember_refused = False
+    codes, sent = service([image[-1]])
+    assert codes == ["bad_frame"] and KINDS["main"][2] in sent
+
+
+def test_the_options_of_the_record_come_from_the_file_and_the_command_line():
+    config = config_from_dict({"update_image": {"remember_refused": False, "state_file": "here.json"}})
+    assert (config.update_image.remember_refused, config.update_image.state_file) == (False, "here.json")
+    assert any("not remembered" in line for line in warnings(config)) and not any("not remembered" in line for line in warnings(GatewayConfig()))
+    with pytest.raises(ConfigError):
+        config_from_dict({"update_image": {"remember_refused": 1}})
+    args = cli.build_parser().parse_args(["policy", "--no-remember-refused", "--update-state-file", "there.json"])
+    given = cli.config_from_args(args)
+    assert (given.update_image.remember_refused, given.update_image.state_file) == (False, "there.json")
+
+
+def test_the_default_record_is_one_file_per_bus():
+    one, other = default_state_file("/dev/ttyACM0"), default_state_file("/dev/ttyACM1")
+    assert one != other and one.parent == other.parent and one.parent.name == ".urtc-gateway"
+    assert default_state_file("socket://127.0.0.1:7777").name.startswith("refused-updates-socket_127_0_0_1_7777-")
+
+
+@pytest.mark.parametrize("bus, flags, expected", [("loopback", [], ""), ("COM7", [], "default"), ("COM7", ["--no-remember-refused"], ""),
+                                                  ("COM7", ["--update-state-file", "x.json"], "x.json")])
+def test_run_chooses_the_record_for_a_real_bus(monkeypatch, bus, flags, expected):
+    seen: list[str] = []
+
+    class Port(LoopbackBus):
+        def __init__(self, *args) -> None:
+            super().__init__()
+
+    monkeypatch.setattr(serve, "SerialSlcanBus", Port)
+    monkeypatch.setattr(serve, "run", lambda config, *rest, **kw: seen.append(config.update_image.state_file))
+    assert cli.cmd_run(cli.build_parser().parse_args(["run", "--bus", bus, "--no-session", *flags])) == 0
+    assert seen == [str(default_state_file(bus)) if expected == "default" else expected]

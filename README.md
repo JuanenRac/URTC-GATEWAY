@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Format-Python-083fa1.svg" alt="Format">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
   <img src="https://img.shields.io/badge/Version-0.1.1-0f6cbd.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Tests-292-2ea44f.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-312-2ea44f.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
 
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.1.1` |
 | Maturity | Scaffolding |
-| Tests | 292 |
+| Tests | 312 |
 | Stack | Python / CAN / HMAC |
 | Target | The PC of the person using it |
 | On real hardware | Simulated only: tested against emulators, fakes or simulators; no run on real hardware is recorded for this version |
@@ -111,6 +111,7 @@ Every protection is on by default and every one can be switched off, in a JSON c
 | Dangerous identifiers | `whitelist.unlock_dangerous` | `--unlock-dangerous` | the bootloader, the expansion-slave update, the erase of the saved state and every persistent setting stay refused until unlocked |
 | Actuator commands | `whitelist.allow_actuators`, `.actuator_peers` | `--actuators` / `--no-actuators`, `--actuator-peer` | commands that move, heat or switch an output cross from every peer (on by default); switched off, only from the peers of the key file that are named, the rest are refused as `actuator` |
 | Image header of an update | `update_image.header` | `--image-header` | an update whose image has no header inside it is forwarded with a note in the audit (`warn`, the default), forwarded as it is (`accept`) or refused (`require`); a header that is there is always checked, and the rest of an update with a bad header is refused |
+| Refused updates after a restart | `update_image.remember_refused`, `.state_file` | `--no-remember-refused` / `--remember-refused`, `--update-state-file` | a refused update is written to a state file (one per bus in the `.urtc-gateway` folder of the home folder) and stays refused after a restart of the gateway, until a new start frame (on by default); a file that is there but cannot be read refuses every update until a new start frame |
 | Bus that mixes speeds | `bus_health.tec_warn`, `.rec_warn`, `.bus_off_warn`, `.legacy_heads` | - | the gateway keeps the health frames (`0x1B8`) it reads from the bus and the `summary` lists `bus_warnings`: error counters (96 by default) or bus-offs (1) of the heads that are heard, and a head named in `legacy_heads` (built for 500 kbit/s); a head at another speed cannot be heard, so the bus is recognised by its symptoms |
 | Added / removed identifiers | `whitelist.extra_allow`, `whitelist.deny` | `--allow-id`, `--deny-id` | add an identifier by hand, or take one out whatever the rest says |
 | Payload check | `payload.enabled` | `--no-payload-check` / `--payload-check` | length and values must be those the specification allows |
@@ -155,7 +156,7 @@ Which versions of the URTC programs work together, and which protocol version ea
 
 ## 🧪 Testing
 
-The suite has 292 tests (`python -m pytest tests -q`): the identifier list, the payload check, the rate limit, the session and its refusals, the options and the configuration file, the command line, a test over a real local socket and the serial end against a fake port. One test skips where its optional dependency is missing. `python -m mypy` type-checks the package and `ruff check .` the sources.
+The suite has 312 tests (`python -m pytest tests -q`): the identifier list, the payload check, the rate limit, the session and its refusals, the options and the configuration file, the command line, a test over a real local socket and the serial end against a fake port. One test skips where its optional dependency is missing. `python -m mypy` type-checks the package and `ruff check .` the sources.
 
 ## 🏗️ Build & Release
 
