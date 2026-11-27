@@ -65,6 +65,8 @@ class OutboundOptions:
 @dataclass
 class UpdateImageOptions:
     header: str = "warn"                      # what to do with an update whose image has no header inside it: accept, warn (the default) or require. A header that is there is always checked
+    remember_refused: bool = True             # a refused update is written to a state file and stays refused after a restart of the gateway, until a new start frame
+    state_file: str = ""                      # that file ("" = one per bus in the .urtc-gateway folder of the home folder; none for the loopback bus)
 
 
 @dataclass
@@ -162,7 +164,7 @@ def config_from_dict(data: Any) -> GatewayConfig:
             elif isinstance(default, str):
                 if not isinstance(value, str):
                     raise ConfigError(f"{name}.{key} must be text")
-                if name == "update_image" and value not in ("accept", "warn", "require"):
+                if name == "update_image" and key == "header" and value not in ("accept", "warn", "require"):
                     raise ConfigError("update_image.header must be accept, warn or require")
             elif key == "actuator_peers":
                 if not isinstance(value, list) or not all(isinstance(v, str) and v for v in value):
@@ -238,6 +240,8 @@ def warnings(config: GatewayConfig) -> list[str]:
         out.append("the outbound filter is OFF: every frame of the bus goes to the network")
     if config.update_image.header == "accept":
         out.append("the image header check is lenient: an update whose image has no header inside it is forwarded without a note")
+    if not config.update_image.remember_refused:
+        out.append("refused updates are not remembered across restarts: after a restart the end frame of a refused update would cross")
     if config.server.send_timeout_s == 0:
         out.append("the send timeout is OFF: a peer that stops reading can hold the gateway on one write for as long as it likes")
     if config.session.enabled and config.server.auth_timeout_s == 0:

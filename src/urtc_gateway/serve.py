@@ -283,7 +283,11 @@ def run(config: GatewayConfig, keys: dict[str, bytes] | None, bus: Bus, stop: th
     if ready is not None:
         ready.set()
     dropped = 0
-    guard = UpdateGuard(config.update_image.header)   # one for all the connections: an update the board is in does not end with the peer
+    images = config.update_image
+    # one for all the connections: an update the board is in does not end with the peer, nor, with a state file, with this process
+    guard = UpdateGuard(images.header, images.state_file if images.remember_refused else None, log)
+    if guard.refused_kinds():
+        log("still refused from before the restart, until a new start frame: " + ", ".join(guard.refused_kinds()) + " update")
     try:
         while not stop.is_set():
             try:

@@ -24,6 +24,7 @@ import threading
 
 from . import __version__, ids, session
 from .config import ConfigError, GatewayConfig, config_to_dict, load_config, warnings
+from .update_guard import default_state_file
 from .policy import Policy
 from .urtc_protocol import BITRATE as BUS_BITRATE
 
@@ -83,6 +84,13 @@ def add_protection_flags(parser: argparse.ArgumentParser) -> None:
                          help="with sessions, show the frames of the bus only after the peer proved its key (the default; overrides the file)")
     parser.add_argument("--image-header", choices=("accept", "warn", "require"), default=None,
                         help="what to do with an update whose image has no header inside it (default warn); a header that is there is always checked")
+    remember = parser.add_mutually_exclusive_group()
+    remember.add_argument("--remember-refused", dest="on_remember_refused", action="store_true",
+                          help="keep a refused update refused after a restart of the gateway (the default; overrides the file)")
+    remember.add_argument("--no-remember-refused", dest="off_remember_refused", action="store_true",
+                          help="forget the refused updates when the gateway stops")
+    parser.add_argument("--update-state-file", metavar="FILE", default=None,
+                        help="where the refused updates are kept (default: one file per bus in the .urtc-gateway folder of the home folder)")
 
 
 def config_from_args(args: argparse.Namespace) -> GatewayConfig:
@@ -113,6 +121,12 @@ def config_from_args(args: argparse.Namespace) -> GatewayConfig:
         config.server.forward_bus_before_auth = True
     if getattr(args, "image_header", None):
         config.update_image.header = args.image_header
+    if getattr(args, "off_remember_refused", False):
+        config.update_image.remember_refused = False
+    if getattr(args, "on_remember_refused", False):
+        config.update_image.remember_refused = True
+    if getattr(args, "update_state_file", None):
+        config.update_image.state_file = args.update_state_file
     for attr in ("host", "port"):
         value = getattr(args, attr, None)
         if value is not None:
@@ -174,6 +188,9 @@ def cmd_run(args: argparse.Namespace) -> int:
         return 2
     for note in warnings(config):
         print(f"WARNING: {note}", file=sys.stderr)
+    images = config.update_image
+    if images.remember_refused and not images.state_file and args.bus != "loopback":   # the loopback bus has no board that could be waiting
+        images.state_file = str(default_state_file(args.bus))
     try:
         bus = serve.LoopbackBus() if args.bus == "loopback" else serve.SerialSlcanBus(args.bus, args.bitrate)
     except (RuntimeError, ValueError, OSError) as error:
