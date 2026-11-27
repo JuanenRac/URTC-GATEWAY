@@ -216,15 +216,62 @@ def test_clearing_one_kind_keeps_the_other_in_the_file(tmp_path):
     assert UpdateGuard("require", state).refused_kinds() == ["slave"]
 
 
-def test_no_state_file_yet_refuses_nothing_and_a_good_update_writes_none(tmp_path):
+def test_no_state_file_yet_refuses_nothing_and_a_good_update_leaves_nothing_to_remember(tmp_path):
     state = tmp_path / "refused.json"
     guard = UpdateGuard("require", state)
     assert guard.refused_kinds() == [] and refused_at(run(guard, "main", firmware(), MAIN)) is None
-    assert not state.exists()
+    assert json.loads(state.read_text(encoding="utf-8")) == {"schema": 1, "refused": {}, "pending": []}
+    assert UpdateGuard("require", state).refused_kinds() == []
+
+
+@pytest.mark.parametrize("kind, hardware", [("main", MAIN), ("slave", SLAVE)])
+@pytest.mark.parametrize("sent", [0, 1, 60])   # data frames before the restart: none, the first, and still short of the header
+def test_an_update_whose_header_was_not_read_is_cut_by_a_restart(tmp_path, kind, hardware, sent):
+    state = tmp_path / "refused.json"
+    image = list(frames(kind, firmware(hardware), hardware))
+    guard = UpdateGuard("warn", state)
+    assert not any(guard.check(can_id, data).refused for can_id, data in image[:1 + sent])
+    said: list[str] = []
+    again = UpdateGuard("warn", state, said.append)
+    _start, data_id, end = KINDS[kind]
+    assert again.refused_kinds() == [kind]
+    assert again.check(data_id, b"12345678").refused and "restarted" in again.check(end, b"").detail
+    assert UpdateGuard("warn", state).refused_kinds() == [kind]   # and after one more restart
+    assert refused_at(run(again, kind, firmware(hardware), hardware)) is None   # a whole new update is followed as always
+    assert UpdateGuard("warn", state).refused_kinds() == []
+
+
+@pytest.mark.parametrize("policy, image", [("require", firmware()), ("warn", plain()), ("accept", plain())])
+def test_an_update_whose_header_was_judged_goes_on_after_a_restart(tmp_path, policy, image):
+    state = tmp_path / "refused.json"
+    whole = list(frames("main", image, MAIN))
+    judged = 1 + (ih.EMBED_OFFSET + ih.HEADER_SIZE) // 8
+    guard = UpdateGuard(policy, state)
+    assert not any(guard.check(can_id, data).refused for can_id, data in whole[:judged])
+    again = UpdateGuard(policy, state)
+    assert again.refused_kinds() == [] and not any(again.check(can_id, data).refused for can_id, data in whole[judged:])
+
+
+def test_an_update_ended_or_dropped_before_its_header_leaves_nothing_to_remember(tmp_path):
+    state = tmp_path / "refused.json"
+    start, _data_id, end = KINDS["main"]
+    for closing in ((end, b""), (start, b"\x00")):
+        guard = UpdateGuard("require", state)
+        guard.check(start, struct.pack(">II", 2048, MAIN))
+        assert UpdateGuard("require", state).refused_kinds() == ["main"]
+        guard.check(*closing)
+        assert UpdateGuard("require", state).refused_kinds() == []
+
+
+def test_a_record_of_an_earlier_version_is_still_read(tmp_path):
+    state = tmp_path / "refused.json"
+    state.write_bytes(b'{"schema": 1, "refused": {"slave": "refused then"}}')
+    assert UpdateGuard("warn", state).refused_kinds() == ["slave"]
 
 
 @pytest.mark.parametrize("content", [b"", b"{", b"[]", b'{"schema": 2, "refused": {}}', b'{"schema": 1, "refused": {"other": "x"}}',
-                                     b'{"schema": 1, "refused": {"main": ""}}', b"\xff\xfe", b" " * 5000])
+                                     b'{"schema": 1, "refused": {"main": ""}}', b"\xff\xfe", b" " * 5000,
+                                     b'{"schema": 1, "refused": {}, "pending": "main"}', b'{"schema": 1, "refused": {}, "pending": [["main"]]}'])
 def test_a_state_file_that_cannot_be_read_refuses_until_a_new_start(tmp_path, content):
     state = tmp_path / "refused.json"
     state.write_bytes(content)

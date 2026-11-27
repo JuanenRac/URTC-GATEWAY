@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **An update cut by a restart before its header was read stays cut:** after a restart the gateway no longer follows such an update, and its remaining data and end frame used to cross unchecked. The updates still waiting for their header are now kept in the state file and come back refused until a new start frame; an update whose header had already been judged goes on. It follows the same switch, `update_image.remember_refused`. Checked by host tests; nothing here has run against a real board.
+
 - **A refused firmware update stays refused after the gateway is restarted:** the refusal was kept only in memory, so after a restart a second end frame reached the board, which was still waiting for it. It is now written to a state file, one per bus, and read back at start; a new start frame clears it, and a file that cannot be read refuses every update until then. `update_image.remember_refused` / `--no-remember-refused` switches it off and `update_image.state_file` / `--update-state-file` chooses the file.
 - **A refused firmware update can no longer be completed by sending the end frame again:** the gateway forgot the update when it refused the end frame, so a second one (a retry, or a new connection) reached the board, which was still waiting for it. The update now stays refused until a new start frame, across connections. The board's own check of the image still applies. Checked by host tests; nothing here has run against a real board.
 
